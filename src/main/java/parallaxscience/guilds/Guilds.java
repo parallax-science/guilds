@@ -1,13 +1,11 @@
 package parallaxscience.guilds;
 
+import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import parallaxscience.guilds.commands.CommandGuild;
 
 @Mod(modid = Guilds.MODID, name = Guilds.NAME, version = Guilds.VERSION, acceptedMinecraftVersions = Guilds.MC_VERSION)
 public class Guilds
@@ -27,11 +25,18 @@ public class Guilds
     @EventHandler
     public void init(FMLInitializationEvent event) {
         LOGGER.info(Guilds.NAME + "says hi!");
-
+        GuildCache.initialize();
+        ChunkCache.initialize();
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
 
+    }
+
+    @Mod.EventHandler
+    public void onServerStart(FMLServerStartingEvent event)
+    {
+        event.registerServerCommand(new CommandGuild());
     }
 }

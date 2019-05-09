@@ -1,7 +1,7 @@
 package parallaxscience.guilds.guild;
 
 import parallaxscience.guilds.alliance.Alliance;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -16,6 +16,7 @@ public class Guild {
     private String guildName;
     private String guildDescription = "";
     private HashMap<UUID, Rank> members;
+    private ArrayList<UUID> invitees;
     private UUID guildMaster;
     private int territoryCount = 0;
     private int wins = 0;
@@ -26,6 +27,7 @@ public class Guild {
         this.guildName = guildName;
         this.guildMaster = guildMaster;
         members = new HashMap<>();
+        invitees = new ArrayList<>();
     }
 
     public void transferOwnership(UUID newMaster)
@@ -66,7 +68,15 @@ public class Guild {
         losses += 1;
     }
 
-    public void kickMember(UUID member)
+    public int getLosses() {
+        return losses;
+    }
+
+    public int getWins() {
+        return wins;
+    }
+
+    public void removeMember(UUID member)
     {
         members.remove(member);
     }
@@ -92,9 +102,11 @@ public class Guild {
         return members.replace(member, members.get(member), Rank.MEMBER);
     }
 
-    public void addMember(UUID member)
+    public boolean acceptInvite(UUID player)
     {
-        members.put(member, Rank.MEMBER);
+        if(!invitees.remove(player)) return false;
+        members.put(player, Rank.MEMBER);
+        return true;
     }
 
     public int getTerritoryCount() {
@@ -114,6 +126,11 @@ public class Guild {
     public boolean isAdmin(UUID player)
     {
         return members.get(player) == Rank.ADMIN || player == guildMaster;
+    }
+
+    public void addInvitee(UUID player)
+    {
+        invitees.add(player);
     }
 
     @Override
