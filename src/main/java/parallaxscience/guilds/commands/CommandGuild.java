@@ -99,7 +99,7 @@ public class CommandGuild extends CommandBase {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if(args.length == 0)
         {
-            sender.sendMessage(new TextComponentString("Type \"/guilds help\" for help"));
+            sender.sendMessage(new TextComponentString("Type \"/guild help\" for help"));
         }
         else
         {
@@ -305,7 +305,7 @@ public class CommandGuild extends CommandBase {
     {
         UUID player = (sender.getCommandSenderEntity()).getUniqueID();
         Guild guild = GuildCache.getPlayerGuild(player);
-        if(guild != null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
+        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
         if(guild.getGuildMaster().equals(player)) sender.sendMessage(new TextComponentString("A Guild Master cannot leave, only disband!"));
         else
         {
@@ -323,7 +323,7 @@ public class CommandGuild extends CommandBase {
     {
         UUID player = (sender.getCommandSenderEntity()).getUniqueID();
         Guild guild = GuildCache.getPlayerGuild(player);
-        if(guild != null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
+        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
         else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to claim land!"));
         else
         {
@@ -350,7 +350,7 @@ public class CommandGuild extends CommandBase {
     {
         UUID player = (sender.getCommandSenderEntity()).getUniqueID();
         Guild guild = GuildCache.getPlayerGuild(player);
-        if(guild != null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
+        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
         else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to abandon land!"));
         else
         {
@@ -378,7 +378,7 @@ public class CommandGuild extends CommandBase {
     {
         UUID player = (sender.getCommandSenderEntity()).getUniqueID();
         Guild guild = GuildCache.getPlayerGuild(player);
-        if(guild != null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
+        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
         else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to kick a member!"));
         else
         {
@@ -408,7 +408,7 @@ public class CommandGuild extends CommandBase {
     {
         UUID player = (sender.getCommandSenderEntity()).getUniqueID();
         Guild guild = GuildCache.getPlayerGuild(player);
-        if(guild != null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
+        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
         else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to promote a member!"));
         else
         {
@@ -439,7 +439,7 @@ public class CommandGuild extends CommandBase {
     {
         UUID player = (sender.getCommandSenderEntity()).getUniqueID();
         Guild guild = GuildCache.getPlayerGuild(player);
-        if(guild != null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
+        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
         else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to demote a member!"));
         else
         {
@@ -470,7 +470,7 @@ public class CommandGuild extends CommandBase {
     {
         UUID player = (sender.getCommandSenderEntity()).getUniqueID();
         Guild guild = GuildCache.getPlayerGuild(player);
-        if(guild != null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
+        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
         else if(!guild.getGuildMaster().equals(player)) sender.sendMessage(new TextComponentString("You are not the Guild Master!"));
         else
         {
