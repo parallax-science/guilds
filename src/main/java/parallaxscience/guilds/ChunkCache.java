@@ -2,16 +2,31 @@ package parallaxscience.guilds;
 
 import net.minecraft.util.math.BlockPos;
 import parallaxscience.guilds.guild.Guild;
+
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ChunkCache
+public final class ChunkCache
 {
+    private static final String fileName = "world/Guilds_ChunkCache.dat";
+
     private static HashMap<Integer, HashMap<Integer, Guild>> chunkMap;
 
     public static void initialize()
     {
-        chunkMap = new HashMap<>();
+        try
+        {
+            FileInputStream fileInputStream = new FileInputStream(fileName);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            chunkMap = (HashMap<Integer, HashMap<Integer,Guild>>) objectInputStream.readObject();
+            objectInputStream.close();
+            fileInputStream.close();
+        }
+        catch(Exception e)
+        {
+            chunkMap = new HashMap<>();
+        }
     }
 
     public static Guild getChunkOwner(int x, int z)
@@ -64,6 +79,35 @@ public class ChunkCache
                 int z = entry.getKey();
                 if(subEntry.getValue().equals(guild)) chunkMap.get(x).remove(z);
             }
+        }
+    }
+
+    public static void save()
+    {
+        File file = new File(fileName);
+        if(!file.exists())
+        {
+            try
+            {
+                file.createNewFile();
+            }
+            catch(Exception e)
+            {
+
+            }
+        }
+
+        try
+        {
+            FileOutputStream fileOutputStream = new FileOutputStream(fileName);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(chunkMap);
+            objectOutputStream.close();
+            fileOutputStream.close();
+        }
+        catch(Exception e)
+        {
+
         }
     }
 }

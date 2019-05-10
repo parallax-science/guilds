@@ -1,11 +1,14 @@
 package parallaxscience.guilds.guild;
 
+import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.alliance.Alliance;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class Guild {
+public class Guild implements Serializable {
 
     enum Rank
     {
@@ -113,9 +116,19 @@ public class Guild {
         return territoryCount;
     }
 
+    public boolean hasMaxClaim()
+    {
+        return (members.size() + 1)* Guilds.claimPerPlayer - territoryCount == 0;
+    }
+
     public void incrementTerritoryCount()
     {
-        territoryCount += territoryCount;
+        territoryCount += 1;
+    }
+
+    public void decrementTerritoryCount()
+    {
+        territoryCount -= 1;
     }
 
     public Rank getRank(UUID member)
@@ -131,11 +144,5 @@ public class Guild {
     public void addInvitee(UUID player)
     {
         invitees.add(player);
-    }
-
-    @Override
-    public String toString()
-    {
-        return guildName;
     }
 }

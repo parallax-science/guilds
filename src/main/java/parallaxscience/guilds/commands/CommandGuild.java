@@ -226,7 +226,11 @@ public class CommandGuild extends CommandBase {
         if(guild != null) sender.sendMessage(new TextComponentString("You are already in a guild!"));
         else
         {
-            if(GuildCache.addGuild(guildName, player)) sender.sendMessage(new TextComponentString("Successfully created guild: " + guildName + "!"));
+            if(GuildCache.addGuild(guildName, player))
+            {
+                sender.sendMessage(new TextComponentString("Successfully created guild: " + guildName + "!"));
+                GuildCache.save();
+            }
             else sender.sendMessage(new TextComponentString("A guild with that name has already been formed!"));
         }
     }
@@ -245,6 +249,7 @@ public class CommandGuild extends CommandBase {
         {
             guild.acceptInvite(player);
             sender.sendMessage(new TextComponentString("Successfully joined " + guildName + "!"));
+            GuildCache.save();
         }
     }
 
@@ -263,6 +268,7 @@ public class CommandGuild extends CommandBase {
         {
             GuildCache.removeGuild(guild);
             sender.sendMessage(new TextComponentString("Successfully disbanded " + guildName + "!"));
+            GuildCache.save();
         }
     }
 
@@ -286,6 +292,7 @@ public class CommandGuild extends CommandBase {
             {
                 guild.addInvitee(invitee);
                 sender.sendMessage(new TextComponentString("Successfully invited " + playerName + " !"));
+                GuildCache.save();
             }
         }
     }
@@ -303,7 +310,8 @@ public class CommandGuild extends CommandBase {
         else
         {
             guild.removeMember(player);
-            sender.sendMessage(new TextComponentString("Successfully left " + guild + "!"));
+            sender.sendMessage(new TextComponentString("Successfully left " + guild.getGuildName() + "!"));
+            GuildCache.save();
         }
     }
 
@@ -321,11 +329,15 @@ public class CommandGuild extends CommandBase {
         {
             BlockPos blockPos = sender.getPosition();
             Guild owner = ChunkCache.getBlockOwner(blockPos);
-            if(owner != null) sender.sendMessage(new TextComponentString("This chunk is already claimed by " + owner + "!"));
+            if(owner != null) sender.sendMessage(new TextComponentString("This chunk is already claimed by " + owner.getGuildName() + "!"));
+            else if(guild.hasMaxClaim()) sender.sendMessage(new TextComponentString("Your guild has reached its max claim limit!"));
             else
             {
                 ChunkCache.setChunkOwner(blockPos, guild);
-                sender.sendMessage(new TextComponentString("Chunk successfully claimed for " + guild));
+                sender.sendMessage(new TextComponentString("Chunk successfully claimed for " + guild.getGuildName()));
+                guild.incrementTerritoryCount();
+                GuildCache.save();
+                ChunkCache.save();
             }
         }
     }
@@ -345,11 +357,14 @@ public class CommandGuild extends CommandBase {
             BlockPos blockPos = sender.getPosition();
             Guild owner = ChunkCache.getBlockOwner(blockPos);
             if(owner == null) sender.sendMessage(new TextComponentString("This chunk is not claimed!"));
-            else if(!owner.equals(guild)) sender.sendMessage(new TextComponentString("This chunk belongs to " + owner + "!"));
+            else if(!owner.equals(guild)) sender.sendMessage(new TextComponentString("This chunk belongs to " + owner.getGuildName() + "!"));
             else
             {
                 ChunkCache.removeChunkOwner(blockPos);
                 sender.sendMessage(new TextComponentString("Chunk successfully abandoned!"));
+                guild.decrementTerritoryCount();
+                GuildCache.save();
+                ChunkCache.save();
             }
         }
     }
@@ -378,6 +393,7 @@ public class CommandGuild extends CommandBase {
                 {
                     guild.removeMember(member);
                     sender.sendMessage(new TextComponentString("Successfully kicked " + playerName + " !"));
+                    GuildCache.save();
                 }
             }
         }
@@ -408,6 +424,7 @@ public class CommandGuild extends CommandBase {
                 {
                     guild.promote(member);
                     sender.sendMessage(new TextComponentString("Successfully promoted " + playerName + " !"));
+                    GuildCache.save();
                 }
             }
         }
@@ -438,6 +455,7 @@ public class CommandGuild extends CommandBase {
                 {
                     guild.demote(member);
                     sender.sendMessage(new TextComponentString("Successfully demoted " + playerName + " !"));
+                    GuildCache.save();
                 }
             }
         }
@@ -467,6 +485,7 @@ public class CommandGuild extends CommandBase {
                 {
                     guild.transferOwnership(member);
                     sender.sendMessage(new TextComponentString("Successfully transferred ownership to " + playerName + " !"));
+                    GuildCache.save();
                 }
             }
         }

@@ -17,6 +17,8 @@ public class Guilds
 
     public static final Logger LOGGER = LogManager.getLogger(Guilds.MODID);
 
+    public static final int claimPerPlayer = 50;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
 
