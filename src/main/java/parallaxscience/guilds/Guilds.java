@@ -1,11 +1,14 @@
 package parallaxscience.guilds;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import parallaxscience.guilds.commands.CommandGuild;
+import parallaxscience.guilds.events.ChunkEvents;
+import parallaxscience.guilds.events.GuildEvents;
 
 @Mod(modid = Guilds.MODID, name = Guilds.NAME, version = Guilds.VERSION, acceptedMinecraftVersions = Guilds.MC_VERSION, acceptableRemoteVersions = "*")
 public class Guilds
@@ -21,7 +24,8 @@ public class Guilds
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-
+        MinecraftForge.EVENT_BUS.register(new GuildEvents());
+        MinecraftForge.EVENT_BUS.register(new ChunkEvents());
     }
 
     @EventHandler
