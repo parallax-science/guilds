@@ -51,7 +51,7 @@ public final class GuildCache {
      */
     public static boolean addGuild(String guildName, UUID guildMaster)
     {
-        for(Guild g : guilds) if(g.toString().equals(guildName)) return false;
+        for(Guild g : guilds) if(g.getGuildName().equals(guildName)) return false;
         guilds.add(new Guild(guildName, guildMaster));
         return true;
     }

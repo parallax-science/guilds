@@ -1,6 +1,5 @@
 package parallaxscience.guilds.commands;
 
-import com.sun.istack.internal.Nullable;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -74,6 +73,7 @@ public class CommandGuild extends CommandBase {
         return 1;
     }
 
+    /*
     /**
      *
      * @param server
@@ -81,13 +81,13 @@ public class CommandGuild extends CommandBase {
      * @param args
      * @param targetPos
      * @return
-     */
+
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         //Needs to be completed!
         return null;
     }
-
+*/
     /**
      *
      * @param server
