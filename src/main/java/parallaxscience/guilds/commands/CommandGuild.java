@@ -144,7 +144,7 @@ public class CommandGuild extends CommandBase {
                 } break;
                 case "disband":
                 {
-                    disbandGuild(sender, args[1]);
+                    disbandGuild(sender);
                 } break;
                 case "promote":
                 {
@@ -256,9 +256,8 @@ public class CommandGuild extends CommandBase {
     /**
      *
      * @param sender
-     * @param guildName
      */
-    private void disbandGuild(ICommandSender sender, String guildName)
+    private void disbandGuild(ICommandSender sender)
     {
         UUID player = (sender.getCommandSenderEntity()).getUniqueID();
         Guild guild = GuildCache.getPlayerGuild(player);
@@ -267,7 +266,7 @@ public class CommandGuild extends CommandBase {
         else
         {
             GuildCache.removeGuild(guild);
-            sender.sendMessage(new TextComponentString("Successfully disbanded " + guildName + "!"));
+            sender.sendMessage(new TextComponentString("Successfully disbanded " + guild.getGuildName() + "!"));
             GuildCache.save();
         }
     }
