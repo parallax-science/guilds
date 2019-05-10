@@ -105,6 +105,8 @@ public class CommandGuild extends CommandBase {
         {
             switch (args[0].toLowerCase())
             {
+                default: sender.sendMessage(new TextComponentString("Invalid command! Type /guild help for valid commands!"));
+                    break;
                 case "help": displayHelp(sender);
                     break;
                 case "form":
