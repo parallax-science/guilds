@@ -31,6 +31,7 @@ public final class ChunkCache
 
     public static Guild getChunkOwner(int x, int z)
     {
+        if(!chunkMap.containsKey(x)) return null;
         return chunkMap.get(x).get(z);
     }
 
