@@ -68,11 +68,12 @@ public class Guild implements Serializable {
         members.replace(member, members.get(member), Rank.MEMBER);
     }
 
-    public void acceptInvite(UUID player)
+    public boolean acceptInvite(UUID player)
     {
-        if(!invitees.contains(player)) return;
+        if(!invitees.contains(player)) return false;
         invitees.remove(player);
         members.put(player, Rank.MEMBER);
+        return true;
     }
 
     int getTerritoryCount() {

@@ -227,9 +227,17 @@ public class CommandGuild extends CommandBase {
         if(guild != null) sender.sendMessage(new TextComponentString("You are already in a guild!"));
         else
         {
-            GuildCache.getGuild(guildName).acceptInvite(player);
-            GuildCache.save();
-            sender.sendMessage(new TextComponentString("Successfully joined " + guildName + "!"));
+            Guild newGuild = GuildCache.getGuild(guildName);
+            if(newGuild == null) sender.sendMessage(new TextComponentString("Guild does not exist!"));
+            else
+            {
+                if(newGuild.acceptInvite(player))
+                {
+                    GuildCache.save();
+                    sender.sendMessage(new TextComponentString("Successfully joined " + guildName + "!"));
+                }
+                else sender.sendMessage(new TextComponentString("You have not received an invitation from " + guildName + "!"));
+            }
         }
     }
 
