@@ -6,6 +6,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.alliance.Alliance;
@@ -185,6 +186,7 @@ public class CommandAlliance extends CommandBase {
                 AllianceCache.getAlliance(allianceName).addInvitee(invitee);
                 AllianceCache.save();
                 sender.sendMessage(new TextComponentString("Successfully invited " + invitee + " to alliance!"));
+                sender.getEntityWorld().getPlayerEntityByUUID(inviteeGuild.getGuildMaster()).sendMessage(new TextComponentString("Your guild has been invited to join " + allianceName + "!"));
             }
         }
     }

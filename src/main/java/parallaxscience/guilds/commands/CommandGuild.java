@@ -263,7 +263,8 @@ public class CommandGuild extends CommandBase {
                 {
                     guild.addInvitee(invitee);
                     GuildCache.save();
-                    sender.sendMessage(new TextComponentString("Successfully invited " + playerName + " !"));
+                    sender.sendMessage(new TextComponentString("Successfully invited " + playerName + "!"));
+                    entityPlayer.sendMessage(new TextComponentString("You have been invited to join " + guild.getGuildName() + "!"));
                 }
             }
 
