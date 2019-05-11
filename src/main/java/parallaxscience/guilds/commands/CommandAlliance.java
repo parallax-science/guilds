@@ -76,7 +76,7 @@ public class CommandAlliance extends CommandBase {
 
         Guild guild = GuildCache.getPlayerGuild(player);
         if(guild == null) sender.sendMessage(new TextComponentString("You are not currently in a guild!"));
-        else if(guild.getGuildMaster().equals(player)) sender.sendMessage(new TextComponentString("Only guild masters can use alliance commands!"));
+        else if(!guild.getGuildMaster().equals(player)) sender.sendMessage(new TextComponentString("Only guild masters can use alliance commands!"));
         else if(args.length == 0)
         {
             sender.sendMessage(new TextComponentString("Type \"/alliance help\" for help"));
