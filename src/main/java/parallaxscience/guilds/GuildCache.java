@@ -73,7 +73,7 @@ public final class GuildCache {
     public static void removeGuild(Guild guild)
     {
         ChunkCache.removeAllClaimed(guild);
-        guilds.remove(guild);
+        guilds.remove(guild.getGuildName());
     }
 
     public static void save()
