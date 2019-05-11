@@ -3,13 +3,13 @@ package parallaxscience.guilds.commands;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import parallaxscience.guilds.ChunkCache;
 import parallaxscience.guilds.GuildCache;
 import parallaxscience.guilds.guild.Guild;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -286,15 +286,20 @@ public class CommandGuild extends CommandBase {
         else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You are not an admin!"));
         else
         {
-            UUID invitee = sender.getEntityWorld().getPlayerEntityByName(playerName).getUniqueID();
-            if(invitee == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
-            else if(GuildCache.getPlayerGuild(invitee) != null) sender.sendMessage(new TextComponentString(playerName + " is already in a guild!"));
+            EntityPlayer entityPlayer = sender.getEntityWorld().getPlayerEntityByName(playerName);
+            if(entityPlayer == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
             else
             {
-                guild.addInvitee(invitee);
-                sender.sendMessage(new TextComponentString("Successfully invited " + playerName + " !"));
-                GuildCache.save();
+                UUID invitee = entityPlayer.getUniqueID();
+                if(GuildCache.getPlayerGuild(invitee) != null) sender.sendMessage(new TextComponentString(playerName + " is already in a guild!"));
+                else
+                {
+                    guild.addInvitee(invitee);
+                    sender.sendMessage(new TextComponentString("Successfully invited " + playerName + " !"));
+                    GuildCache.save();
+                }
             }
+
         }
     }
 
@@ -384,10 +389,11 @@ public class CommandGuild extends CommandBase {
         else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to kick a member!"));
         else
         {
-            UUID member = sender.getEntityWorld().getPlayerEntityByName(playerName).getUniqueID();
-            if(member == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
+            EntityPlayer entityPlayer = sender.getEntityWorld().getPlayerEntityByName(playerName);
+            if(entityPlayer == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
             else
             {
+                UUID member = entityPlayer.getUniqueID();
                 Guild memberGuild = GuildCache.getPlayerGuild(member);
                 if(memberGuild == null) sender.sendMessage(new TextComponentString(playerName + " is not in a guild!"));
                 else if(memberGuild.equals(guild)) sender.sendMessage(new TextComponentString(playerName + " is not in your guild!"));
@@ -414,10 +420,11 @@ public class CommandGuild extends CommandBase {
         else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to promote a member!"));
         else
         {
-            UUID member = sender.getEntityWorld().getPlayerEntityByName(playerName).getUniqueID();
-            if(member == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
+            EntityPlayer entityPlayer = sender.getEntityWorld().getPlayerEntityByName(playerName);
+            if(entityPlayer == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
             else
             {
+                UUID member = entityPlayer.getUniqueID();
                 Guild memberGuild = GuildCache.getPlayerGuild(member);
                 if(memberGuild == null) sender.sendMessage(new TextComponentString(playerName + " is not in a guild!"));
                 else if(memberGuild.equals(guild)) sender.sendMessage(new TextComponentString(playerName + " is not in your guild!"));
@@ -445,10 +452,11 @@ public class CommandGuild extends CommandBase {
         else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to demote a member!"));
         else
         {
-            UUID member = sender.getEntityWorld().getPlayerEntityByName(playerName).getUniqueID();
-            if(member == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
+            EntityPlayer entityPlayer = sender.getEntityWorld().getPlayerEntityByName(playerName);
+            if(entityPlayer == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
             else
             {
+                UUID member = entityPlayer.getUniqueID();
                 Guild memberGuild = GuildCache.getPlayerGuild(member);
                 if(memberGuild == null) sender.sendMessage(new TextComponentString(playerName + " is not in a guild!"));
                 else if(memberGuild.equals(guild)) sender.sendMessage(new TextComponentString(playerName + " is not in your guild!"));
@@ -476,10 +484,11 @@ public class CommandGuild extends CommandBase {
         else if(!guild.getGuildMaster().equals(player)) sender.sendMessage(new TextComponentString("You are not the Guild Master!"));
         else
         {
-            UUID member = sender.getEntityWorld().getPlayerEntityByName(playerName).getUniqueID();
-            if(member == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
+            EntityPlayer entityPlayer = sender.getEntityWorld().getPlayerEntityByName(playerName);
+            if(entityPlayer == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
             else
             {
+                UUID member = entityPlayer.getUniqueID();
                 Guild memberGuild = GuildCache.getPlayerGuild(member);
                 if(memberGuild == null) sender.sendMessage(new TextComponentString(playerName + " is not in a guild!"));
                 else if(memberGuild.equals(guild)) sender.sendMessage(new TextComponentString(playerName + " is not in your guild!"));
