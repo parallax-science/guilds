@@ -41,7 +41,7 @@ public class ChunkEvents {
         Guild owner = ChunkCache.getBlockOwner(event.getPos());
         if(owner == null) return;
 
-        if(owner.isMember((player.getUniqueID())))
+        if(!owner.isMember((player.getUniqueID())))
         {
             event.setCanceled(true);
             player.sendMessage(new TextComponentString(cancelMessage));
@@ -107,7 +107,7 @@ public class ChunkEvents {
         Guild owner = ChunkCache.getBlockOwner(event.getPos());
         if(owner == null) return;
 
-        if(owner.isMember((player.getUniqueID())))
+        if(!owner.isMember((player.getUniqueID())))
         {
             event.setCanceled(true);
             player.sendMessage(new TextComponentString("You cannot interact with blocks in another guilds territory!"));
