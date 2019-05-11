@@ -9,6 +9,8 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import parallaxscience.guilds.commands.CommandGuild;
 import parallaxscience.guilds.events.ChunkEvents;
 import parallaxscience.guilds.events.GuildEvents;
+import parallaxscience.guilds.guild.ChunkCache;
+import parallaxscience.guilds.guild.GuildCache;
 
 @Mod(modid = Guilds.MODID, name = Guilds.NAME, version = Guilds.VERSION, acceptedMinecraftVersions = Guilds.MC_VERSION, acceptableRemoteVersions = "*")
 public class Guilds

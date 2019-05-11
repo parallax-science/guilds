@@ -1,7 +1,5 @@
-package parallaxscience.guilds;
+package parallaxscience.guilds.guild;
 
-
-import parallaxscience.guilds.guild.Guild;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;

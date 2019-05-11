@@ -3,7 +3,7 @@ package parallaxscience.guilds.events;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import parallaxscience.guilds.GuildCache;
+import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.guild.Guild;
 import java.util.UUID;
 

@@ -1,8 +1,7 @@
-package parallaxscience.guilds;
+package parallaxscience.guilds.guild;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import parallaxscience.guilds.guild.Guild;
 
 import java.io.*;
 import java.util.HashMap;

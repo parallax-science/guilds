@@ -12,8 +12,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import parallaxscience.guilds.ChunkCache;
-import parallaxscience.guilds.GuildCache;
+import parallaxscience.guilds.guild.ChunkCache;
+import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.guild.Guild;
 import java.util.List;
 
