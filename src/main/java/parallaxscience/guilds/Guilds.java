@@ -22,6 +22,8 @@ public class Guilds
 
     public static final int claimPerPlayer = 50;
 
+    public static final int maxCharLength = 20;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(new GuildEvents());

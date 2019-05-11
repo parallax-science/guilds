@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TextComponentString;
+import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.guild.ChunkCache;
 import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.guild.Guild;
@@ -210,7 +211,8 @@ public class CommandGuild extends CommandBase {
         if(guild != null) sender.sendMessage(new TextComponentString("You are already in a guild!"));
         else
         {
-            if(GuildCache.addGuild(guildName, player))
+            if(guildName.length() > Guilds.maxCharLength) sender.sendMessage(new TextComponentString("Guild name is too long!"));
+            else if(GuildCache.addGuild(guildName, player))
             {
                 GuildCache.save();
                 sender.sendMessage(new TextComponentString("Successfully created guild: " + guildName + "!"));

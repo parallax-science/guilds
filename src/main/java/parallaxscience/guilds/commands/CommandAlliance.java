@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.alliance.Alliance;
 import parallaxscience.guilds.alliance.AllianceCache;
 import parallaxscience.guilds.guild.Guild;
@@ -125,6 +126,7 @@ public class CommandAlliance extends CommandBase {
     {
         if(guild.getAlliance() != null) sender.sendMessage(new TextComponentString("Your guild is already part of an alliance!"));
         else if(AllianceCache.getAlliance(alliance) != null) sender.sendMessage(new TextComponentString("Alliance " + alliance + " already exists!"));
+        else if(alliance.length() > Guilds.maxCharLength) sender.sendMessage(new TextComponentString("Alliance name is too long!"));
         else
         {
             guild.setAlliance(alliance);
