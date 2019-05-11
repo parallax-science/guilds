@@ -332,10 +332,11 @@ public class CommandGuild extends CommandBase {
             Guild owner = ChunkCache.getBlockOwner(blockPos);
             if(owner != null) sender.sendMessage(new TextComponentString("This chunk is already claimed by " + owner.getGuildName() + "!"));
             else if(guild.hasMaxClaim()) sender.sendMessage(new TextComponentString("Your guild has reached its max claim limit!"));
+            else if(ChunkCache.isConnected(blockPos, guild)) sender.sendMessage(new TextComponentString("You cannot claim this chunk because it is not adjacent to your existing territory!"));
             else
             {
                 ChunkCache.setChunkOwner(blockPos, guild);
-                sender.sendMessage(new TextComponentString("Chunk successfully claimed for " + guild.getGuildName()));
+                sender.sendMessage(new TextComponentString("Chunk successfully claimed!"));
                 guild.incrementTerritoryCount();
                 GuildCache.save();
                 ChunkCache.save();

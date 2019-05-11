@@ -40,6 +40,28 @@ public final class ChunkCache
         return getChunkOwner(blockPos.getX()/16, blockPos.getZ()/16);
     }
 
+    public static boolean isConnected(BlockPos blockPos, Guild guild)
+    {
+        if(guild.getTerritoryCount() == 0) return true;
+
+        int x = blockPos.getX()/16;
+        int z = blockPos.getZ()/16;
+        if(chunkMap.containsKey(x))
+        {
+            if(guild.equals(chunkMap.get(x).get(z + 1))) return true;
+            else if(guild.equals(chunkMap.get(x).get(z - 1))) return true;
+        }
+        if(chunkMap.containsKey(x + 1))
+        {
+            if(guild.equals(chunkMap.get(x + 1).get(z))) return true;
+        }
+        if(chunkMap.containsKey(x - 1))
+        {
+            if(guild.equals(chunkMap.get(x - 1).get(z))) return true;
+        }
+        return false;
+    }
+
     public static void setChunkOwner(BlockPos blockPos, Guild guild)
     {
         int x = blockPos.getX()/16;
@@ -57,7 +79,7 @@ public final class ChunkCache
         }
         else
         {
-            HashMap<Integer, Guild> temp= new HashMap<>();
+            HashMap<Integer, Guild> temp = new HashMap<>();
             temp.put(z, guild);
             chunkMap.put(x, temp);
         }
