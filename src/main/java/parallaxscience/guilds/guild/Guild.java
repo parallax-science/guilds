@@ -70,7 +70,8 @@ public class Guild implements Serializable {
 
     public void acceptInvite(UUID player)
     {
-        if(!invitees.remove(player)) return;
+        if(!invitees.contains(player)) return;
+        invitees.remove(player);
         members.put(player, Rank.MEMBER);
     }
 
