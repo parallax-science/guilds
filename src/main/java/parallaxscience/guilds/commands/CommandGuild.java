@@ -6,6 +6,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TextComponentString;
 import parallaxscience.guilds.ChunkCache;
 import parallaxscience.guilds.GuildCache;
@@ -333,16 +334,15 @@ public class CommandGuild extends CommandBase {
         else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to claim land!"));
         else
         {
-            BlockPos blockPos = sender.getPosition();
-            String owner = ChunkCache.getBlockOwner(blockPos);
+            ChunkPos chunkPos = new ChunkPos(sender.getPosition());
+            String owner = ChunkCache.getChunkOwner(chunkPos);
             if(owner != null) sender.sendMessage(new TextComponentString("This chunk is already claimed by " + owner + "!"));
             else if(guild.hasMaxClaim()) sender.sendMessage(new TextComponentString("Your guild has reached its max claim limit!"));
-            else if(!ChunkCache.isConnected(blockPos, guild)) sender.sendMessage(new TextComponentString("You cannot claim this chunk because it is not adjacent to your existing territory!"));
+            else if(!ChunkCache.isConnected(chunkPos, guild)) sender.sendMessage(new TextComponentString("You cannot claim this chunk because it is not adjacent to your existing territory!"));
             else
             {
-                ChunkCache.setChunkOwner(blockPos, guild.getGuildName());
-                //sender.sendMessage(new TextComponentString("Chunk successfully claimed!"));
-                sender.sendMessage(new TextComponentString("Claimed chunk: " + blockPos.getX()/16 + "" + blockPos.getZ()/16));
+                ChunkCache.setChunkOwner(chunkPos, guild.getGuildName());
+                sender.sendMessage(new TextComponentString("Chunk successfully claimed!"));
                 guild.incrementTerritoryCount();
                 GuildCache.save();
                 ChunkCache.save();
@@ -362,13 +362,13 @@ public class CommandGuild extends CommandBase {
         else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to abandon land!"));
         else
         {
-            BlockPos blockPos = sender.getPosition();
-            String owner = ChunkCache.getBlockOwner(blockPos);
+            ChunkPos chunkPos = new ChunkPos(sender.getPosition());
+            String owner = ChunkCache.getChunkOwner(chunkPos);
             if(owner == null) sender.sendMessage(new TextComponentString("This chunk is not claimed!"));
             else if(!owner.equals(guild.getGuildName())) sender.sendMessage(new TextComponentString("This chunk belongs to " + owner + "!"));
             else
             {
-                ChunkCache.removeChunkOwner(blockPos);
+                ChunkCache.removeChunkOwner(chunkPos);
                 sender.sendMessage(new TextComponentString("Chunk successfully abandoned!"));
                 guild.decrementTerritoryCount();
                 GuildCache.save();

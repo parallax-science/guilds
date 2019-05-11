@@ -1,6 +1,7 @@
 package parallaxscience.guilds;
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import parallaxscience.guilds.guild.Guild;
 
 import java.io.*;
@@ -35,17 +36,23 @@ public final class ChunkCache
         return chunkMap.get(x).get(z);
     }
 
-    public static String getBlockOwner(BlockPos blockPos)
+    public static String getChunkOwner(BlockPos blockPos)
     {
-        return getChunkOwner(blockPos.getX()/16, blockPos.getZ()/16);
+        ChunkPos chunkPos = new ChunkPos(blockPos);
+        return getChunkOwner(chunkPos.x, chunkPos.z);
     }
 
-    public static boolean isConnected(BlockPos blockPos, Guild guild)
+    public static String getChunkOwner(ChunkPos chunkPos)
+    {
+        return getChunkOwner(chunkPos.x, chunkPos.z);
+    }
+
+    public static boolean isConnected(ChunkPos chunkPos, Guild guild)
     {
         if(guild.getTerritoryCount() == 0) return true;
 
-        int x = blockPos.getX()/16;
-        int z = blockPos.getZ()/16;
+        int x = chunkPos.x;
+        int z = chunkPos.z;
         if(chunkMap.containsKey(x))
         {
             if(guild.equals(chunkMap.get(x).get(z + 1))) return true;
@@ -62,10 +69,10 @@ public final class ChunkCache
         return false;
     }
 
-    public static void setChunkOwner(BlockPos blockPos, String guildName)
+    public static void setChunkOwner(ChunkPos chunkPos, String guildName)
     {
-        int x = blockPos.getX()/16;
-        int z = blockPos.getZ()/16;
+        int x = chunkPos.x;
+        int z = chunkPos.z;
         if(chunkMap.containsKey(x))
         {
             if(chunkMap.containsKey(z))
@@ -85,14 +92,14 @@ public final class ChunkCache
         }
     }
 
-    public static void removeChunkOwner(BlockPos blockPos)
+    public static void removeChunkOwner(ChunkPos chunkPos)
     {
-        int x = blockPos.getX()/16;
-        int z = blockPos.getZ()/16;
+        int x = chunkPos.x;
+        int z = chunkPos.z;
         if(chunkMap.get(x).get(z) != null) chunkMap.get(x).remove(z);
     }
 
-    public static void removeAllClaimed(Guild guild)
+    public static void removeAllClaimed(String guildName)
     {
         for(Map.Entry<Integer, HashMap<Integer, String>> entry: chunkMap.entrySet())
         {
@@ -100,7 +107,7 @@ public final class ChunkCache
             for(Map.Entry<Integer, String> subEntry : entry.getValue().entrySet())
             {
                 int z = entry.getKey();
-                if(subEntry.getValue().equals(guild.getGuildName())) chunkMap.get(x).remove(z);
+                if(subEntry.getValue().equals(guildName)) chunkMap.get(x).remove(z);
             }
         }
     }

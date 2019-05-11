@@ -37,7 +37,7 @@ public class ChunkEvents {
 
     private void chunkProtection(BlockEvent event, EntityPlayerMP player, String cancelMessage)
     {
-        Guild owner = GuildCache.getGuild(ChunkCache.getBlockOwner(event.getPos()));
+        Guild owner = GuildCache.getGuild(ChunkCache.getChunkOwner(event.getPos()));
         if(owner == null) return;
 
         if(!owner.isMember((player.getUniqueID())))
@@ -66,10 +66,10 @@ public class ChunkEvents {
     public void onFluidBlockPlaced(BlockEvent.FluidPlaceBlockEvent event)
     {
         if(event.getWorld().isRemote) return;
-        String owner = ChunkCache.getBlockOwner(event.getPos());
+        String owner = ChunkCache.getChunkOwner(event.getPos());
         if(owner != null)
         {
-            String sourceOwner = ChunkCache.getBlockOwner(event.getLiquidPos());
+            String sourceOwner = ChunkCache.getChunkOwner(event.getLiquidPos());
             if(sourceOwner != null) if(owner.equals(sourceOwner)) event.setCanceled(true);
         }
     }
@@ -103,7 +103,7 @@ public class ChunkEvents {
     {
         if(event.getWorld().isRemote) return;
         EntityPlayerMP player = (EntityPlayerMP) event.getEntityPlayer();
-        Guild owner = GuildCache.getGuild(ChunkCache.getBlockOwner(event.getPos()));
+        Guild owner = GuildCache.getGuild(ChunkCache.getChunkOwner(event.getPos()));
         if(owner == null) return;
 
         if(!owner.isMember((player.getUniqueID())))
@@ -121,7 +121,7 @@ public class ChunkEvents {
         List<BlockPos> blocks = event.getAffectedBlocks();
         for(BlockPos blockPos : blocks)
         {
-            if(ChunkCache.getBlockOwner(blockPos) != null) blocks.remove(blockPos);
+            if(ChunkCache.getChunkOwner(blockPos) != null) blocks.remove(blockPos);
         }
 
         List<Entity> entities = event.getAffectedEntities();
@@ -130,7 +130,7 @@ public class ChunkEvents {
             if(entity instanceof EntityPlayerMP)
             {
                 BlockPos entityPos = entity.getPosition();
-                if(GuildCache.getGuild(ChunkCache.getBlockOwner(entityPos)).isMember(entity.getUniqueID()))
+                if(GuildCache.getGuild(ChunkCache.getChunkOwner(entityPos)).isMember(entity.getUniqueID()))
                    entities.remove(entity);
             }
         }
@@ -142,7 +142,7 @@ public class ChunkEvents {
         Entity entity = event.getEntityLiving();
         if(entity.getEntityWorld().isRemote) return;
 
-        Guild owner = GuildCache.getGuild(ChunkCache.getBlockOwner(entity.getPosition()));
+        Guild owner = GuildCache.getGuild(ChunkCache.getChunkOwner(entity.getPosition()));
         if(owner == null) return;
 
         if(entity instanceof EntityPlayerMP)
