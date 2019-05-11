@@ -4,6 +4,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import parallaxscience.guilds.alliance.Alliance;
@@ -46,6 +47,16 @@ public class CommandAlliance extends CommandBase {
     public String getUsage(ICommandSender sender)
     {
         return "/alliance <action> [arguments]";
+    }
+
+    @Override
+    public int getRequiredPermissionLevel() {
+        return 0;
+    }
+
+    @Override
+    public boolean checkPermission(final MinecraftServer server, final ICommandSender sender) {
+        return sender instanceof EntityPlayerMP;
     }
 
     /**

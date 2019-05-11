@@ -5,6 +5,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TextComponentString;
@@ -58,10 +59,14 @@ public class CommandGuild extends CommandBase {
         return "/guild <action> [arguments]";
     }
 
-
     @Override
     public int getRequiredPermissionLevel() {
-        return 1;
+        return 0;
+    }
+
+    @Override
+    public boolean checkPermission(final MinecraftServer server, final ICommandSender sender) {
+        return sender instanceof EntityPlayerMP;
     }
 
     /*
