@@ -334,14 +334,15 @@ public class CommandGuild extends CommandBase {
         else
         {
             BlockPos blockPos = sender.getPosition();
-            Guild owner = ChunkCache.getBlockOwner(blockPos);
-            if(owner != null) sender.sendMessage(new TextComponentString("This chunk is already claimed by " + owner.getGuildName() + "!"));
+            String owner = ChunkCache.getBlockOwner(blockPos);
+            if(owner != null) sender.sendMessage(new TextComponentString("This chunk is already claimed by " + owner + "!"));
             else if(guild.hasMaxClaim()) sender.sendMessage(new TextComponentString("Your guild has reached its max claim limit!"));
             else if(!ChunkCache.isConnected(blockPos, guild)) sender.sendMessage(new TextComponentString("You cannot claim this chunk because it is not adjacent to your existing territory!"));
             else
             {
-                ChunkCache.setChunkOwner(blockPos, guild);
-                sender.sendMessage(new TextComponentString("Chunk successfully claimed!"));
+                ChunkCache.setChunkOwner(blockPos, guild.getGuildName());
+                //sender.sendMessage(new TextComponentString("Chunk successfully claimed!"));
+                sender.sendMessage(new TextComponentString("Claimed chunk: " + blockPos.getX()/16 + "" + blockPos.getZ()/16));
                 guild.incrementTerritoryCount();
                 GuildCache.save();
                 ChunkCache.save();
@@ -362,9 +363,9 @@ public class CommandGuild extends CommandBase {
         else
         {
             BlockPos blockPos = sender.getPosition();
-            Guild owner = ChunkCache.getBlockOwner(blockPos);
+            String owner = ChunkCache.getBlockOwner(blockPos);
             if(owner == null) sender.sendMessage(new TextComponentString("This chunk is not claimed!"));
-            else if(!owner.equals(guild)) sender.sendMessage(new TextComponentString("This chunk belongs to " + owner.getGuildName() + "!"));
+            else if(!owner.equals(guild.getGuildName())) sender.sendMessage(new TextComponentString("This chunk belongs to " + owner + "!"));
             else
             {
                 ChunkCache.removeChunkOwner(blockPos);

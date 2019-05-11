@@ -13,6 +13,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import parallaxscience.guilds.ChunkCache;
+import parallaxscience.guilds.GuildCache;
 import parallaxscience.guilds.guild.Guild;
 import java.util.List;
 
@@ -24,21 +25,19 @@ public class ChunkEvents {
         Entity entity = event.getEntity();
         if(entity instanceof EntityPlayerMP)
         {
-            Guild oldOwner = ChunkCache.getChunkOwner(event.getOldChunkX(), event.getOldChunkZ());
-            Guild newOwner = ChunkCache.getChunkOwner(event.getNewChunkX(), event.getNewChunkZ());
-
-            if(oldOwner != newOwner)
+            String oldOwner = ChunkCache.getChunkOwner(event.getOldChunkX(), event.getOldChunkZ());
+            String newOwner = ChunkCache.getChunkOwner(event.getNewChunkX(), event.getNewChunkZ());
+            if(newOwner == null)
             {
-                EntityPlayerMP player = (EntityPlayerMP) entity;
-                if(newOwner != null) player.sendMessage(new TextComponentString("Entering the Territory of " + newOwner.getGuildName()));
-                else player.sendMessage(new TextComponentString("Entering Wilderness."));
+                if(oldOwner != null) entity.sendMessage(new TextComponentString("Entering Wilderness."));
             }
+            else if(!newOwner.equals(oldOwner)) entity.sendMessage(new TextComponentString("Entering the Territory of " + newOwner));
         }
     }
 
     private void chunkProtection(BlockEvent event, EntityPlayerMP player, String cancelMessage)
     {
-        Guild owner = ChunkCache.getBlockOwner(event.getPos());
+        Guild owner = GuildCache.getGuild(ChunkCache.getBlockOwner(event.getPos()));
         if(owner == null) return;
 
         if(!owner.isMember((player.getUniqueID())))
@@ -67,11 +66,11 @@ public class ChunkEvents {
     public void onFluidBlockPlaced(BlockEvent.FluidPlaceBlockEvent event)
     {
         if(event.getWorld().isRemote) return;
-        Guild owner = ChunkCache.getBlockOwner(event.getPos());
+        String owner = ChunkCache.getBlockOwner(event.getPos());
         if(owner != null)
         {
-            Guild sourceOwner = ChunkCache.getBlockOwner(event.getLiquidPos());
-            if(sourceOwner != null) if(owner != sourceOwner) event.setCanceled(true);
+            String sourceOwner = ChunkCache.getBlockOwner(event.getLiquidPos());
+            if(sourceOwner != null) if(owner.equals(sourceOwner)) event.setCanceled(true);
         }
     }
 
@@ -104,7 +103,7 @@ public class ChunkEvents {
     {
         if(event.getWorld().isRemote) return;
         EntityPlayerMP player = (EntityPlayerMP) event.getEntityPlayer();
-        Guild owner = ChunkCache.getBlockOwner(event.getPos());
+        Guild owner = GuildCache.getGuild(ChunkCache.getBlockOwner(event.getPos()));
         if(owner == null) return;
 
         if(!owner.isMember((player.getUniqueID())))
@@ -131,7 +130,7 @@ public class ChunkEvents {
             if(entity instanceof EntityPlayerMP)
             {
                 BlockPos entityPos = entity.getPosition();
-                if(ChunkCache.getBlockOwner(entityPos).isMember(entity.getUniqueID()))
+                if(GuildCache.getGuild(ChunkCache.getBlockOwner(entityPos)).isMember(entity.getUniqueID()))
                    entities.remove(entity);
             }
         }
@@ -143,7 +142,7 @@ public class ChunkEvents {
         Entity entity = event.getEntityLiving();
         if(entity.getEntityWorld().isRemote) return;
 
-        Guild owner = ChunkCache.getBlockOwner(entity.getPosition());
+        Guild owner = GuildCache.getGuild(ChunkCache.getBlockOwner(entity.getPosition()));
         if(owner == null) return;
 
         if(entity instanceof EntityPlayerMP)

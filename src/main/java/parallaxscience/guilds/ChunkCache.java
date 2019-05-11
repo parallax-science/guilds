@@ -11,7 +11,7 @@ public final class ChunkCache
 {
     private static final String fileName = "world/Guilds_ChunkCache.dat";
 
-    private static HashMap<Integer, HashMap<Integer, Guild>> chunkMap;
+    private static HashMap<Integer, HashMap<Integer, String>> chunkMap;
 
     public static void initialize()
     {
@@ -19,7 +19,7 @@ public final class ChunkCache
         {
             FileInputStream fileInputStream = new FileInputStream(fileName);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            chunkMap = (HashMap<Integer, HashMap<Integer,Guild>>) objectInputStream.readObject();
+            chunkMap = (HashMap<Integer, HashMap<Integer,String>>) objectInputStream.readObject();
             objectInputStream.close();
             fileInputStream.close();
         }
@@ -29,13 +29,13 @@ public final class ChunkCache
         }
     }
 
-    public static Guild getChunkOwner(int x, int z)
+    public static String getChunkOwner(int x, int z)
     {
         if(!chunkMap.containsKey(x)) return null;
         return chunkMap.get(x).get(z);
     }
 
-    public static Guild getBlockOwner(BlockPos blockPos)
+    public static String getBlockOwner(BlockPos blockPos)
     {
         return getChunkOwner(blockPos.getX()/16, blockPos.getZ()/16);
     }
@@ -62,7 +62,7 @@ public final class ChunkCache
         return false;
     }
 
-    public static void setChunkOwner(BlockPos blockPos, Guild guild)
+    public static void setChunkOwner(BlockPos blockPos, String guildName)
     {
         int x = blockPos.getX()/16;
         int z = blockPos.getZ()/16;
@@ -70,17 +70,17 @@ public final class ChunkCache
         {
             if(chunkMap.containsKey(z))
             {
-                chunkMap.get(x).replace(z, guild);
+                chunkMap.get(x).replace(z, guildName);
             }
             else
             {
-                chunkMap.get(x).put(z, guild);
+                chunkMap.get(x).put(z, guildName);
             }
         }
         else
         {
-            HashMap<Integer, Guild> temp = new HashMap<>();
-            temp.put(z, guild);
+            HashMap<Integer, String> temp = new HashMap<>();
+            temp.put(z, guildName);
             chunkMap.put(x, temp);
         }
     }
@@ -94,13 +94,13 @@ public final class ChunkCache
 
     public static void removeAllClaimed(Guild guild)
     {
-        for(Map.Entry<Integer, HashMap<Integer, Guild>> entry: chunkMap.entrySet())
+        for(Map.Entry<Integer, HashMap<Integer, String>> entry: chunkMap.entrySet())
         {
             int x = entry.getKey();
-            for(Map.Entry<Integer, Guild> subEntry : entry.getValue().entrySet())
+            for(Map.Entry<Integer, String> subEntry : entry.getValue().entrySet())
             {
                 int z = entry.getKey();
-                if(subEntry.getValue().equals(guild)) chunkMap.get(x).remove(z);
+                if(subEntry.getValue().equals(guild.getGuildName())) chunkMap.get(x).remove(z);
             }
         }
     }

@@ -2,9 +2,9 @@ package parallaxscience.guilds;
 
 
 import parallaxscience.guilds.guild.Guild;
-
 import java.io.*;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -14,7 +14,7 @@ public final class GuildCache {
 
     private final static String fileName = "world/Guilds_GuildCache.dat";
 
-    private static ArrayList<Guild> guilds;
+    private static HashMap<String, Guild> guilds;
 
     public static void initialize()
     {
@@ -22,13 +22,13 @@ public final class GuildCache {
         {
             FileInputStream fileInputStream = new FileInputStream(fileName);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            guilds = (ArrayList<Guild>) objectInputStream.readObject();
+            guilds = (HashMap<String, Guild>) objectInputStream.readObject();
             objectInputStream.close();
             fileInputStream.close();
         }
         catch(Exception e)
         {
-            guilds = new ArrayList<>();
+            guilds = new HashMap<>();
         }
     }
 
@@ -39,8 +39,18 @@ public final class GuildCache {
      */
     public static Guild getPlayerGuild(UUID player)
     {
-        for(Guild g : guilds) if(g.isMember(player)) return g;
+        for(Map.Entry<String, Guild> g : guilds.entrySet()) if(g.getValue().isMember(player)) return g.getValue();
         return null;
+    }
+
+    /**
+     *
+     * @param guildName
+     * @return
+     */
+    public static Guild getGuild(String guildName)
+    {
+        return guilds.get(guildName);
     }
 
     /**
@@ -51,8 +61,8 @@ public final class GuildCache {
      */
     public static boolean addGuild(String guildName, UUID guildMaster)
     {
-        for(Guild g : guilds) if(g.getGuildName().equals(guildName)) return false;
-        guilds.add(new Guild(guildName, guildMaster));
+        if(guilds.containsKey(guildName)) return false;
+        guilds.put(guildName, new Guild(guildName, guildMaster));
         return true;
     }
 
