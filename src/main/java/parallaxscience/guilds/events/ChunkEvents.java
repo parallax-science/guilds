@@ -30,7 +30,7 @@ public class ChunkEvents {
             if(oldOwner != newOwner)
             {
                 EntityPlayerMP player = (EntityPlayerMP) entity;
-                if(newOwner != null) player.sendMessage(new TextComponentString("Entering the Territory of " + newOwner));
+                if(newOwner != null) player.sendMessage(new TextComponentString("Entering the Territory of " + newOwner.getGuildName()));
                 else player.sendMessage(new TextComponentString("Entering Wilderness."));
             }
         }
