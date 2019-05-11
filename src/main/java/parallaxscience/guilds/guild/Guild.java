@@ -138,7 +138,7 @@ public class Guild implements Serializable {
 
     public boolean isAdmin(UUID player)
     {
-        return members.get(player) == Rank.ADMIN || player == guildMaster;
+        return members.get(player) == Rank.ADMIN || player.equals(guildMaster);
     }
 
     public void addInvitee(UUID player)

@@ -264,7 +264,7 @@ public class CommandGuild extends CommandBase {
         UUID player = (sender.getCommandSenderEntity()).getUniqueID();
         Guild guild = GuildCache.getPlayerGuild(player);
         if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
-        else if(guild.getGuildMaster().equals(player)) sender.sendMessage(new TextComponentString("Only the Guild Master may disband the guild!"));
+        else if(!guild.getGuildMaster().equals(player)) sender.sendMessage(new TextComponentString("Only the Guild Master may disband the guild!"));
         else
         {
             GuildCache.removeGuild(guild);
