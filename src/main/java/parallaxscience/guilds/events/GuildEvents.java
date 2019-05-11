@@ -23,7 +23,7 @@ public class GuildEvents {
         Guild guild = GuildCache.getPlayerGuild(playerID);
         if(guild != null)
         {
-            event.setComponent(new TextComponentString("<" + guild + ">").appendSibling(event.getComponent()));
+            event.setComponent(new TextComponentString("<" + guild.getGuildName() + ">").appendSibling(event.getComponent()));
         }
     }
 }
