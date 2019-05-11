@@ -290,18 +290,22 @@ public class CommandGuild extends CommandBase {
         else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to claim land!"));
         else
         {
-            ChunkPos chunkPos = new ChunkPos(sender.getPosition());
-            String owner = ChunkCache.getChunkOwner(chunkPos);
-            if(owner != null) sender.sendMessage(new TextComponentString("This chunk is already claimed by " + owner + "!"));
-            else if(guild.hasMaxClaim()) sender.sendMessage(new TextComponentString("Your guild has reached its max claim limit!"));
-            else if(!ChunkCache.isConnected(chunkPos, guild)) sender.sendMessage(new TextComponentString("You cannot claim this chunk because it is not adjacent to your existing territory!"));
+            if(sender.getEntityWorld().provider.getDimension() != 0) sender.sendMessage(new TextComponentString("You can only claim land in the over world!"));
             else
             {
-                ChunkCache.setChunkOwner(chunkPos, guild.getGuildName());
-                guild.incrementTerritoryCount();
-                GuildCache.save();
-                ChunkCache.save();
-                sender.sendMessage(new TextComponentString("Chunk successfully claimed!"));
+                ChunkPos chunkPos = new ChunkPos(sender.getPosition());
+                String owner = ChunkCache.getChunkOwner(chunkPos);
+                if(owner != null) sender.sendMessage(new TextComponentString("This chunk is already claimed by " + owner + "!"));
+                else if(guild.hasMaxClaim()) sender.sendMessage(new TextComponentString("Your guild has reached its max claim limit!"));
+                else if(!ChunkCache.isConnected(chunkPos, guild)) sender.sendMessage(new TextComponentString("You cannot claim this chunk because it is not adjacent to your existing territory!"));
+                else
+                {
+                    ChunkCache.setChunkOwner(chunkPos, guild.getGuildName());
+                    guild.incrementTerritoryCount();
+                    GuildCache.save();
+                    ChunkCache.save();
+                    sender.sendMessage(new TextComponentString("Chunk successfully claimed!"));
+                }
             }
         }
     }
