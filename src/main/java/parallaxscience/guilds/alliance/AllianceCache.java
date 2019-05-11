@@ -1,15 +1,13 @@
-package parallaxscience.guilds.guild;
+package parallaxscience.guilds.alliance;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
-public final class GuildCache {
+public class AllianceCache {
 
-    private final static String fileName = "world/Guilds_GuildCache.dat";
+    private final static String fileName = "world/Guilds_AllianceCache.dat";
 
-    private static HashMap<String, Guild> guilds;
+    private static HashMap<String, Alliance> alliances;
 
     public static void initialize()
     {
@@ -17,42 +15,34 @@ public final class GuildCache {
         {
             FileInputStream fileInputStream = new FileInputStream(fileName);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            guilds = (HashMap<String, Guild>) objectInputStream.readObject();
+            alliances = (HashMap<String, Alliance>) objectInputStream.readObject();
             objectInputStream.close();
             fileInputStream.close();
         }
         catch(Exception e)
         {
-            guilds = new HashMap<>();
+            alliances = new HashMap<>();
         }
     }
 
-    public static Guild getPlayerGuild(UUID player)
+    public static void createAlliance(String alliance, String guildName)
     {
-        for(Map.Entry<String, Guild> g : guilds.entrySet()) if(g.getValue().isMember(player)) return g.getValue();
-        return null;
+        alliances.put(alliance, new Alliance(guildName));
     }
 
-    public static Guild getGuild(String guildName)
+    public static void removeAlliance(String alliance)
     {
-        return guilds.get(guildName);
+        alliances.remove(alliance);
     }
 
-    public static boolean addGuild(String guildName, UUID guildMaster)
+    public static Alliance getAlliance(String allianceName)
     {
-        if(guilds.containsKey(guildName)) return false;
-        guilds.put(guildName, new Guild(guildName, guildMaster));
-        return true;
-    }
-
-    public static void removeGuild(Guild guild)
-    {
-        ChunkCache.removeAllClaimed(guild.getGuildName());
-        guilds.remove(guild.getGuildName());
+        return alliances.get(allianceName);
     }
 
     public static void save()
     {
+
         File file = new File(fileName);
         if(!file.exists())
         {
@@ -70,7 +60,7 @@ public final class GuildCache {
         {
             FileOutputStream fileOutputStream = new FileOutputStream(fileName);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(guilds);
+            objectOutputStream.writeObject(alliances);
             objectOutputStream.close();
             fileOutputStream.close();
         }

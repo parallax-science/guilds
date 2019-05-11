@@ -1,43 +1,43 @@
 package parallaxscience.guilds.alliance;
 
-import parallaxscience.guilds.guild.Guild;
-
 import java.util.ArrayList;
 
 public class Alliance {
 
-    private String allianceName;
-    private ArrayList<Guild> guilds;
+    private ArrayList<String> guilds;
+    private ArrayList<String> invitees;
 
-    public Alliance(String allianceName)
+    Alliance(String guildName)
     {
-        this.allianceName = allianceName;
+        guilds = new ArrayList<>();
+        invitees = new ArrayList<>();
+        guilds.add(guildName);
     }
 
-    public String getAllianceName() {
-        return allianceName;
-    }
-
-    public ArrayList<Guild> getGuilds() {
+    public ArrayList<String> getGuilds() {
         return guilds;
     }
 
-    public boolean addClan(Guild guild)
+    public void removeGuild(String guild)
     {
-        return guilds.add(guild);
+        guilds.remove(guild);
     }
 
-    public boolean removeClan(Guild guild)
+    public void addInvitee(String guild)
     {
-        if(guilds.size() == 2)
-        {
-            return false;
-        }
-        return guilds.remove(guild);
+        invitees.add(guild);
     }
 
-    public boolean isClanInAlliance(Guild guild)
+    public boolean acceptInvite(String guild)
     {
-        return guilds.contains(guild);
+        if(!invitees.contains(guild)) return false;
+        guilds.add(guild);
+        invitees.remove(guild);
+        return true;
+    }
+
+    public int getGuildCount()
+    {
+        return guilds.size();
     }
 }

@@ -1,8 +1,6 @@
 package parallaxscience.guilds.guild;
 
 import parallaxscience.guilds.Guilds;
-import parallaxscience.guilds.alliance.Alliance;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,16 +15,13 @@ public class Guild implements Serializable {
     }
 
     private String guildName;
-    private String guildDescription = "";
     private HashMap<UUID, Rank> members;
     private ArrayList<UUID> invitees;
     private UUID guildMaster;
     private int territoryCount = 0;
-    private int wins = 0;
-    private int losses = 0;
-    private Alliance alliance;
+    private String alliance;
 
-    public Guild(String guildName, UUID guildMaster){
+    Guild(String guildName, UUID guildMaster){
         this.guildName = guildName;
         this.guildMaster = guildMaster;
         members = new HashMap<>();
@@ -45,38 +40,8 @@ public class Guild implements Serializable {
         return guildMaster;
     }
 
-    public void setGuildName(String guildName) {
-        this.guildName = guildName;
-    }
-
-    public void setGuildDescription(String guildDescription) {
-        this.guildDescription = guildDescription;
-    }
-
     public String getGuildName() {
         return guildName;
-    }
-
-    public String getGuildDescription() {
-        return guildDescription;
-    }
-
-    public void incrementWins()
-    {
-        wins += 1;
-    }
-
-    public void incrementLosses()
-    {
-        losses += 1;
-    }
-
-    public int getLosses() {
-        return losses;
-    }
-
-    public int getWins() {
-        return wins;
     }
 
     public void removeMember(UUID member)
@@ -89,30 +54,27 @@ public class Guild implements Serializable {
         return members.containsKey(member) || getGuildMaster().equals(member);
     }
 
-    public boolean promote(UUID member)
+    public void promote(UUID member)
     {
         Rank currentRank = members.get(member);
-        if(currentRank == Rank.ADMIN) return true;
-
-        return members.replace(member, members.get(member), Rank.ADMIN);
+        if(currentRank == Rank.ADMIN) return;
+        members.replace(member, members.get(member), Rank.ADMIN);
     }
 
-    public boolean demote(UUID member)
+    public void demote(UUID member)
     {
         Rank currentRank = members.get(member);
-        if(currentRank == Rank.MEMBER) return true;
-
-        return members.replace(member, members.get(member), Rank.MEMBER);
+        if(currentRank == Rank.MEMBER) return;
+        members.replace(member, members.get(member), Rank.MEMBER);
     }
 
-    public boolean acceptInvite(UUID player)
+    public void acceptInvite(UUID player)
     {
-        if(!invitees.remove(player)) return false;
+        if(!invitees.remove(player)) return;
         members.put(player, Rank.MEMBER);
-        return true;
     }
 
-    public int getTerritoryCount() {
+    int getTerritoryCount() {
         return territoryCount;
     }
 
@@ -131,11 +93,6 @@ public class Guild implements Serializable {
         territoryCount -= 1;
     }
 
-    public Rank getRank(UUID member)
-    {
-        return members.get(member);
-    }
-
     public boolean isAdmin(UUID player)
     {
         return members.get(player) == Rank.ADMIN || player.equals(guildMaster);
@@ -144,5 +101,15 @@ public class Guild implements Serializable {
     public void addInvitee(UUID player)
     {
         invitees.add(player);
+    }
+
+    public String getAlliance()
+    {
+        return alliance;
+    }
+
+    public void setAlliance(String alliance)
+    {
+        this.alliance = alliance;
     }
 }
