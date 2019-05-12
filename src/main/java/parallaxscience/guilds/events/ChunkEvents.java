@@ -4,10 +4,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
@@ -18,6 +21,7 @@ import parallaxscience.guilds.guild.Guild;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ChunkEvents {
 
@@ -65,15 +69,32 @@ public class ChunkEvents {
     }
 
     @SubscribeEvent
-    public void onFluidBlockPlaced(BlockEvent.FluidPlaceBlockEvent event)
+    public void onBucketUse(FillBucketEvent event)
     {
         if(event.getWorld().isRemote) return;
-        String owner = ChunkCache.getChunkOwner(event.getPos());
-        if(owner != null)
+
+        RayTraceResult result = event.getTarget();
+        if(result == null) return;
+
+        Entity entity = event.getEntity();
+        if(entity instanceof EntityPlayerMP)
         {
-            String sourceOwner = ChunkCache.getChunkOwner(event.getLiquidPos());
-            if(sourceOwner != null) if(!owner.equals(sourceOwner)) event.setCanceled(true);
+            Guild owner = GuildCache.getGuild(ChunkCache.getChunkOwner(result.getBlockPos().offset(result.sideHit)));
+            if(owner == null) return;
+
+            EntityPlayerMP player = (EntityPlayerMP) entity;
+            if(!owner.isMember((player.getUniqueID())))
+            {
+                event.setCanceled(true);
+                player.sendMessage(new TextComponentString("You cannot place fluids in another clans territory!"));
+            }
         }
+    }
+
+    @SubscribeEvent
+    public void onBucketFill(FillBucketEvent event)
+    {
+
     }
 
     @SubscribeEvent
