@@ -355,12 +355,12 @@ public class CommandGuild extends CommandBase {
                 UUID member = entityPlayer.getUniqueID();
                 Guild memberGuild = GuildCache.getPlayerGuild(member);
                 if(memberGuild == null) sender.sendMessage(new TextComponentString(playerName + " is not in a guild!"));
-                else if(memberGuild.equals(guild)) sender.sendMessage(new TextComponentString(playerName + " is not in your guild!"));
+                else if(!memberGuild.equals(guild)) sender.sendMessage(new TextComponentString(playerName + " is not in your guild!"));
                 else
                 {
                     guild.removeMember(member);
                     GuildCache.save();
-                    sender.sendMessage(new TextComponentString("Successfully kicked " + playerName + " !"));
+                    sender.sendMessage(new TextComponentString("Successfully kicked " + playerName + "!"));
                 }
             }
         }
