@@ -111,7 +111,7 @@ public class CommandAlliance extends CommandBase {
     private void displayHelp(ICommandSender sender, Guild guild)
     {
         sender.sendMessage(new TextComponentString("/alliance help - Lists all available commands"));
-        if(guild.getAlliance().isEmpty())
+        if(guild.getAlliance() == null)
         {
             sender.sendMessage(new TextComponentString("/alliance form <alliance> - Creates a new alliance"));
             sender.sendMessage(new TextComponentString("/alliance accept <alliance> - Accept invite to join alliance"));
