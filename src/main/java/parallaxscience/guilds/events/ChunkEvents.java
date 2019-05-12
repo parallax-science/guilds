@@ -130,7 +130,8 @@ public class ChunkEvents {
             if(entity instanceof EntityPlayerMP)
             {
                 BlockPos entityPos = entity.getPosition();
-                if(GuildCache.getGuild(ChunkCache.getChunkOwner(entityPos)).isMember(entity.getUniqueID()))
+                String ownerName = ChunkCache.getChunkOwner(entityPos);
+                if(ownerName != null) if(GuildCache.getGuild(ownerName).isMember(entity.getUniqueID()))
                    removeEntities.add(entity);
             }
         }
