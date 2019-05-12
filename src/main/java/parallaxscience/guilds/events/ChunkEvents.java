@@ -93,14 +93,6 @@ public class ChunkEvents {
     }
 
     @SubscribeEvent
-    public void onCropDrop(BlockEvent.HarvestDropsEvent event)
-    {
-        if(event.getWorld().isRemote) return;
-        Entity entity = event.getHarvester();
-        chunkProtection(event, (EntityPlayerMP) entity, "You cannot harvest crops in another guilds territory!");
-    }
-
-    @SubscribeEvent
     public void onRightClick(PlayerInteractEvent.RightClickBlock event)
     {
         if(event.getWorld().isRemote) return;
