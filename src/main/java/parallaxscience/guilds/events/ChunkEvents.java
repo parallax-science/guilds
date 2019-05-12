@@ -72,7 +72,7 @@ public class ChunkEvents {
         if(owner != null)
         {
             String sourceOwner = ChunkCache.getChunkOwner(event.getLiquidPos());
-            if(sourceOwner != null) if(owner.equals(sourceOwner)) event.setCanceled(true);
+            if(sourceOwner != null) if(!owner.equals(sourceOwner)) event.setCanceled(true);
         }
     }
 
@@ -153,17 +153,22 @@ public class ChunkEvents {
         {
             if(owner.isMember(entity.getUniqueID())) event.setCanceled(true);
         }
-        else if(entity instanceof EntityTameable)
+        else
         {
-            EntityTameable pet = (EntityTameable) entity;
-            if(pet.isTamed())
+            Entity damageSource = event.getSource().getTrueSource();
+            if(damageSource == null) event.setCanceled(true);
+            else if(entity instanceof EntityTameable)
             {
-                if(owner.isMember(pet.getOwnerId()) && !owner.isMember(event.getSource().getTrueSource().getUniqueID())) event.setCanceled(true);
+                EntityTameable pet = (EntityTameable) entity;
+                if(pet.isTamed())
+                {
+                    if(owner.isMember(pet.getOwnerId()) && !owner.isMember(damageSource.getUniqueID())) event.setCanceled(true);
+                }
             }
-        }
-        else if(entity instanceof EntityAnimal)
-        {
-            if(!owner.isMember(event.getSource().getTrueSource().getUniqueID())) event.setCanceled(true);
+            else if(entity instanceof EntityAnimal)
+            {
+                if(!owner.isMember(event.getSource().getTrueSource().getUniqueID())) event.setCanceled(true);
+            }
         }
     }
 }
