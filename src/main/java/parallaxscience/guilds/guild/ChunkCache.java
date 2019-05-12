@@ -100,13 +100,11 @@ public final class ChunkCache
 
     public static void removeAllClaimed(String guildName)
     {
-        for(Map.Entry<Integer, HashMap<Integer, String>> entry: chunkMap.entrySet())
+        for(Map.Entry<Integer, HashMap<Integer, String>> entry : chunkMap.entrySet())
         {
-            int x = entry.getKey();
             for(Map.Entry<Integer, String> subEntry : entry.getValue().entrySet())
             {
-                int z = entry.getKey();
-                if(subEntry.getValue().equals(guildName)) chunkMap.get(x).remove(z);
+                if(subEntry.getValue().equals(guildName)) chunkMap.get(entry.getKey()).remove(subEntry.getKey());
             }
         }
     }
