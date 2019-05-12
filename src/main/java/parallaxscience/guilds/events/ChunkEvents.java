@@ -15,6 +15,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import parallaxscience.guilds.guild.ChunkCache;
 import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.guild.Guild;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChunkEvents {
@@ -119,20 +121,30 @@ public class ChunkEvents {
         if(event.getWorld().isRemote) return;
 
         List<BlockPos> blocks = event.getAffectedBlocks();
+        ArrayList<BlockPos> removeBlocks = new ArrayList<>();
         for(BlockPos blockPos : blocks)
         {
-            if(ChunkCache.getChunkOwner(blockPos) != null) blocks.remove(blockPos);
+            if(ChunkCache.getChunkOwner(blockPos) != null) removeBlocks.add(blockPos);
+        }
+        for(BlockPos blockPos : removeBlocks)
+        {
+            blocks.remove(blockPos);
         }
 
         List<Entity> entities = event.getAffectedEntities();
+        ArrayList<Entity> removeEntities = new ArrayList<>();
         for(Entity entity : entities)
         {
             if(entity instanceof EntityPlayerMP)
             {
                 BlockPos entityPos = entity.getPosition();
                 if(GuildCache.getGuild(ChunkCache.getChunkOwner(entityPos)).isMember(entity.getUniqueID()))
-                   entities.remove(entity);
+                   removeEntities.add(entity);
             }
+        }
+        for(Entity entity : removeEntities)
+        {
+            entities.remove(entity);
         }
     }
 
