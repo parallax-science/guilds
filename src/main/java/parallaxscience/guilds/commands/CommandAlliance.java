@@ -134,7 +134,7 @@ public class CommandAlliance extends CommandBase {
             AllianceCache.createAlliance(alliance, guild.getGuildName());
             GuildCache.save();
             AllianceCache.save();
-            sender.sendMessage(new TextComponentString("New alliance: " + alliance + "has been formed!"));
+            sender.sendMessage(new TextComponentString("New alliance: " + alliance + " has been formed!"));
         }
     }
 
@@ -145,7 +145,7 @@ public class CommandAlliance extends CommandBase {
         {
             Alliance alliance = AllianceCache.getAlliance(allianceName);
             if(alliance == null) sender.sendMessage(new TextComponentString("That alliance does not exist!"));
-            else if(!alliance.acceptInvite(guild.getGuildName())) sender.sendMessage(new TextComponentString("Your guild has not been invited to " + alliance));
+            else if(!alliance.acceptInvite(guild.getGuildName())) sender.sendMessage(new TextComponentString("Your guild has not been invited to " + allianceName));
             else
             {
                 guild.setAlliance(allianceName);
