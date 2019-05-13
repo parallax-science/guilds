@@ -1,5 +1,7 @@
 package parallaxscience.guilds.alliance;
 
+import parallaxscience.guilds.guild.Guild;
+
 import java.io.*;
 import java.util.HashMap;
 
@@ -33,6 +35,15 @@ public class AllianceCache {
     public static void removeAlliance(String alliance)
     {
         alliances.remove(alliance);
+    }
+
+    public static void leavelAlliance(Guild guild)
+    {
+        String guildName = guild.getGuildName();
+        Alliance alliance = getAlliance(guildName);
+        alliance.removeGuild(guild.getGuildName());
+        if(alliance.getGuildCount() == 0) removeAlliance(guildName);
+        guild.setAlliance(null);
     }
 
     public static Alliance getAlliance(String allianceName)

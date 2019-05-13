@@ -10,6 +10,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TextComponentString;
 import parallaxscience.guilds.Guilds;
+import parallaxscience.guilds.alliance.Alliance;
+import parallaxscience.guilds.alliance.AllianceCache;
 import parallaxscience.guilds.guild.ChunkCache;
 import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.guild.Guild;
@@ -248,6 +250,7 @@ public class CommandGuild extends CommandBase {
         else if(!guild.getGuildMaster().equals(player)) sender.sendMessage(new TextComponentString("Only the Guild Master may disband the guild!"));
         else
         {
+            AllianceCache.leavelAlliance(guild);
             GuildCache.removeGuild(guild);
             GuildCache.save();
             sender.sendMessage(new TextComponentString("Successfully disbanded " + guild.getGuildName() + "!"));

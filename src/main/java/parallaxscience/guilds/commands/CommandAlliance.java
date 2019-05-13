@@ -162,10 +162,7 @@ public class CommandAlliance extends CommandBase {
         if(allianceName == null) sender.sendMessage(new TextComponentString("Your guild is not part of an alliance!"));
         else
         {
-            guild.setAlliance(null);
-            Alliance alliance = AllianceCache.getAlliance(allianceName);
-            alliance.removeGuild(guild.getGuildName());
-            if(alliance.getGuildCount() == 0) AllianceCache.removeAlliance(allianceName);
+            AllianceCache.leavelAlliance(guild);
             GuildCache.save();
             AllianceCache.save();
             sender.sendMessage(new TextComponentString("Successfully left alliance!"));
