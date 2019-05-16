@@ -4,7 +4,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentString;
@@ -18,10 +17,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import parallaxscience.guilds.guild.ChunkCache;
 import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.guild.Guild;
-
+import parallaxscience.guilds.raid.Raid;
+import parallaxscience.guilds.raid.RaidCache;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class ChunkEvents {
 
@@ -92,12 +91,6 @@ public class ChunkEvents {
     }
 
     @SubscribeEvent
-    public void onBucketFill(FillBucketEvent event)
-    {
-
-    }
-
-    @SubscribeEvent
     public void onBlockPlaced(BlockEvent.EntityPlaceEvent event)
     {
         if(event.getWorld().isRemote) return;
@@ -152,8 +145,20 @@ public class ChunkEvents {
             {
                 BlockPos entityPos = entity.getPosition();
                 String ownerName = ChunkCache.getChunkOwner(entityPos);
-                if(ownerName != null) if(GuildCache.getGuild(ownerName).isMember(entity.getUniqueID()))
-                   removeEntities.add(entity);
+                if(ownerName != null)
+                {
+                    Guild guild = GuildCache.getGuild(ownerName);
+                    if(guild.isMember(entity.getUniqueID()))
+                    {
+                        Raid raid = RaidCache.getRaid(guild.getGuildName());
+                        if(raid != null)
+                        {
+                            if(!raid.isActive()) removeEntities.add(entity);
+                        }
+                        else removeEntities.add(entity);
+                    }
+                }
+
             }
         }
         for(Entity entity : removeEntities)
@@ -173,7 +178,15 @@ public class ChunkEvents {
 
         if(entity instanceof EntityPlayerMP)
         {
-            if(owner.isMember(entity.getUniqueID())) event.setCanceled(true);
+            if(owner.isMember(entity.getUniqueID()))
+            {
+                Raid raid = RaidCache.getRaid(owner.getGuildName());
+                if(raid != null)
+                {
+                    if(!raid.isActive()) event.setCanceled(true);
+                }
+                else event.setCanceled(true);
+            }
         }
         else
         {
