@@ -55,4 +55,8 @@ public class Raid {
     {
         phase = raidPhase.ACTIVE;
     }
+
+    public String getDefendingGuild() {
+        return defendingGuild;
+    }
 }

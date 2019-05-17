@@ -1,5 +1,6 @@
 package parallaxscience.guilds.events;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityTameable;
@@ -40,23 +41,36 @@ public class ChunkEvents {
         }
     }
 
-    private void chunkProtection(BlockEvent event, EntityPlayerMP player, String cancelMessage)
-    {
-        Guild owner = GuildCache.getGuild(ChunkCache.getChunkOwner(event.getPos()));
-        if(owner == null) return;
-
-        if(!owner.isMember((player.getUniqueID())))
-        {
-            event.setCanceled(true);
-            player.sendMessage(new TextComponentString(cancelMessage));
-        }
-    }
-
     @SubscribeEvent
     public void onBlockBreak(BlockEvent.BreakEvent event)
     {
+        //Add to restore
         if(event.getWorld().isRemote) return;
-        chunkProtection(event, (EntityPlayerMP) event.getPlayer(), "You cannot break blocks in another guilds territory!");
+        EntityPlayerMP player = (EntityPlayerMP) event.getPlayer();
+        Guild owner = GuildCache.getGuild(ChunkCache.getChunkOwner(event.getPos()));
+        if(owner == null) return;
+
+        if(owner.isMember((player.getUniqueID())))
+        {
+            Raid raid = RaidCache.getRaid(owner.getGuildName());
+            if(raid != null)
+            {
+                if(raid.isActive())
+                {
+                    IBlockState iBlockState = event.getWorld().getBlockState(event.getPos());
+                    if(iBlockState.getBlock().hasTileEntity(iBlockState))
+                    {
+                        event.setCanceled(true);
+                        player.sendMessage(new TextComponentString("You cannot break this block during a raid!"));
+                    }
+                }
+            }
+        }
+        else
+        {
+            event.setCanceled(true);
+            player.sendMessage(new TextComponentString("You cannot break blocks in another guilds territory!"));
+        }
     }
 
     @SubscribeEvent
@@ -64,7 +78,21 @@ public class ChunkEvents {
     {
         if(event.getWorld().isRemote) return;
         Entity entity = event.getEntity();
-        if(entity instanceof EntityPlayerMP) chunkProtection(event, (EntityPlayerMP) entity, "You cannot trample crops in another guilds territory!");
+        if(entity instanceof EntityPlayerMP)
+        {
+            EntityPlayerMP player = (EntityPlayerMP) entity;
+            Guild owner = GuildCache.getGuild(ChunkCache.getChunkOwner(event.getPos()));
+            if(owner == null) return;
+
+            if(!owner.isMember((player.getUniqueID())))
+            {
+                if(RaidCache.getRaid(owner.getGuildName()) != null)
+                {
+                    event.setCanceled(true);
+                    player.sendMessage(new TextComponentString("You cannot trample crops in another guilds territory!"));
+                }
+            }
+        }
     }
 
     @SubscribeEvent
@@ -82,7 +110,19 @@ public class ChunkEvents {
             if(owner == null) return;
 
             EntityPlayerMP player = (EntityPlayerMP) entity;
-            if(!owner.isMember((player.getUniqueID())))
+            if(owner.isMember((player.getUniqueID())))
+            {
+                Raid raid = RaidCache.getRaid(owner.getGuildName());
+                if(raid != null)
+                {
+                    if(raid.isActive())
+                    {
+                        event.setCanceled(true);
+                        player.sendMessage(new TextComponentString("You cannot use fluids during a raid!"));
+                    }
+                }
+            }
+            else
             {
                 event.setCanceled(true);
                 player.sendMessage(new TextComponentString("You cannot place fluids in another clans territory!"));
@@ -93,17 +133,55 @@ public class ChunkEvents {
     @SubscribeEvent
     public void onBlockPlaced(BlockEvent.EntityPlaceEvent event)
     {
+        //Add to restore
         if(event.getWorld().isRemote) return;
         Entity entity = event.getEntity();
-        if(entity instanceof EntityPlayerMP) chunkProtection(event, (EntityPlayerMP) entity, "You cannot place blocks in another guilds territory!");
+        if(entity instanceof EntityPlayerMP)
+        {
+            EntityPlayerMP player = (EntityPlayerMP) entity;
+            Guild owner = GuildCache.getGuild(ChunkCache.getChunkOwner(event.getPos()));
+            if(owner == null) return;
+
+            if(!owner.isMember((player.getUniqueID())))
+            {
+                Raid raid = RaidCache.getRaid(owner.getGuildName());
+                if(raid != null)
+                {
+                    if(!raid.isActive())
+                    {
+                        event.setCanceled(true);
+                        player.sendMessage(new TextComponentString("You cannot place blocks in another guilds territory!"));
+                    }
+                }
+            }
+        }
     }
 
     @SubscribeEvent
     public void onMultiBlockPlaced(BlockEvent.EntityMultiPlaceEvent event)
     {
+        //Add to restore
         if(event.getWorld().isRemote) return;
         Entity entity = event.getEntity();
-        if(entity instanceof EntityPlayerMP) chunkProtection(event, (EntityPlayerMP) entity, "You cannot place blocks in another guilds territory!");
+        if(entity instanceof EntityPlayerMP)
+        {
+            EntityPlayerMP player = (EntityPlayerMP) entity;
+            Guild owner = GuildCache.getGuild(ChunkCache.getChunkOwner(event.getPos()));
+            if(owner == null) return;
+
+            if(!owner.isMember((player.getUniqueID())))
+            {
+                Raid raid = RaidCache.getRaid(owner.getGuildName());
+                if(raid != null)
+                {
+                    if(!raid.isActive())
+                    {
+                        event.setCanceled(true);
+                        player.sendMessage(new TextComponentString("You cannot place blocks in another guilds territory!"));
+                    }
+                }
+            }
+        }
     }
 
     @SubscribeEvent
@@ -114,7 +192,23 @@ public class ChunkEvents {
         Guild owner = GuildCache.getGuild(ChunkCache.getChunkOwner(event.getPos()));
         if(owner == null) return;
 
-        if(!owner.isMember((player.getUniqueID())))
+        if(owner.isMember((player.getUniqueID())))
+        {
+            Raid raid = RaidCache.getRaid(owner.getGuildName());
+            if(raid != null)
+            {
+                if(raid.isActive())
+                {
+                    IBlockState iBlockState = event.getWorld().getBlockState(event.getPos());
+                    if(iBlockState.getBlock().hasTileEntity(iBlockState))
+                    {
+                        event.setCanceled(true);
+                        player.sendMessage(new TextComponentString("You cannot use this block during a raid!"));
+                    }
+                }
+            }
+        }
+        else
         {
             event.setCanceled(true);
             player.sendMessage(new TextComponentString("You cannot interact with blocks in another guilds territory!"));
@@ -124,13 +218,28 @@ public class ChunkEvents {
     @SubscribeEvent
     public void onDetonate(ExplosionEvent.Detonate event)
     {
+        //Add to restore
         if(event.getWorld().isRemote) return;
 
         List<BlockPos> blocks = event.getAffectedBlocks();
         ArrayList<BlockPos> removeBlocks = new ArrayList<>();
         for(BlockPos blockPos : blocks)
         {
-            if(ChunkCache.getChunkOwner(blockPos) != null) removeBlocks.add(blockPos);
+            String ownerName = ChunkCache.getChunkOwner(blockPos);
+            if(ownerName != null)
+            {
+                Raid raid = RaidCache.getRaid(ownerName);
+                if(raid == null) removeBlocks.add(blockPos);
+                else
+                {
+                    if(raid.isActive())
+                    {
+                        IBlockState iBlockState = event.getWorld().getBlockState(blockPos);
+                        if(iBlockState.getBlock().hasTileEntity(iBlockState)) removeBlocks.add(blockPos);
+                    }
+                    else removeBlocks.add(blockPos);
+                }
+            }
         }
         for(BlockPos blockPos : removeBlocks)
         {

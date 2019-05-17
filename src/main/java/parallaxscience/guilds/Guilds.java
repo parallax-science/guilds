@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import parallaxscience.guilds.alliance.AllianceCache;
 import parallaxscience.guilds.commands.CommandAlliance;
 import parallaxscience.guilds.commands.CommandGuild;
+import parallaxscience.guilds.commands.CommandRaid;
 import parallaxscience.guilds.events.ChunkEvents;
 import parallaxscience.guilds.events.GuildEvents;
 import parallaxscience.guilds.guild.ChunkCache;
@@ -47,5 +48,6 @@ public class Guilds
     {
         event.registerServerCommand(new CommandGuild());
         event.registerServerCommand(new CommandAlliance());
+        event.registerServerCommand(new CommandRaid());
     }
 }
