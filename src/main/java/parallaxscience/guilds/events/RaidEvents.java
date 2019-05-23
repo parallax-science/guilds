@@ -9,7 +9,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import parallaxscience.guilds.guild.ChunkCache;
 import parallaxscience.guilds.guild.Guild;
 import parallaxscience.guilds.guild.GuildCache;
@@ -21,6 +20,7 @@ import java.util.UUID;
 public class RaidEvents {
 
     @SubscribeEvent
+    @SuppressWarnings("unused")
     public void onPlayerDeath(LivingDeathEvent event)
     {
         EntityLivingBase entityLiving = event.getEntityLiving();
@@ -45,6 +45,7 @@ public class RaidEvents {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("unused")
     public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event)
     {
         EntityPlayer entityPlayer = event.player;
@@ -64,6 +65,7 @@ public class RaidEvents {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("unused")
     public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event)
     {
         EntityPlayer entityPlayer = event.player;
@@ -83,6 +85,7 @@ public class RaidEvents {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("unused")
     public void onBlockDrop(BlockEvent.HarvestDropsEvent event)
     {
         if(event.getWorld().isRemote) return;

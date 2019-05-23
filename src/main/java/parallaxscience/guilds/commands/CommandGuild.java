@@ -10,7 +10,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TextComponentString;
 import parallaxscience.guilds.Guilds;
-import parallaxscience.guilds.alliance.Alliance;
 import parallaxscience.guilds.alliance.AllianceCache;
 import parallaxscience.guilds.guild.ChunkCache;
 import parallaxscience.guilds.guild.GuildCache;

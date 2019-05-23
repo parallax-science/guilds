@@ -26,6 +26,7 @@ import java.util.List;
 public class ChunkEvents {
 
     @SubscribeEvent
+    @SuppressWarnings("unused")
     public void onEnterChunk(EntityEvent.EnteringChunk event)
     {
         Entity entity = event.getEntity();
@@ -42,6 +43,7 @@ public class ChunkEvents {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("unused")
     public void onBlockBreak(BlockEvent.BreakEvent event)
     {
         //Add to restore
@@ -78,6 +80,7 @@ public class ChunkEvents {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("unused")
     public void onCropTrample(BlockEvent.FarmlandTrampleEvent event)
     {
         if(event.getWorld().isRemote) return;
@@ -100,6 +103,7 @@ public class ChunkEvents {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("unused")
     public void onBucketUse(FillBucketEvent event)
     {
         if(event.getWorld().isRemote) return;
@@ -135,6 +139,7 @@ public class ChunkEvents {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("unused")
     public void onBlockPlaced(BlockEvent.EntityPlaceEvent event)
     {
         //Add to restore
@@ -166,6 +171,7 @@ public class ChunkEvents {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("unused")
     public void onMultiBlockPlaced(BlockEvent.EntityMultiPlaceEvent event)
     {
         //Add to restore
@@ -197,6 +203,7 @@ public class ChunkEvents {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("unused")
     public void onRightClick(PlayerInteractEvent.RightClickBlock event)
     {
         if(event.getWorld().isRemote) return;
@@ -228,6 +235,7 @@ public class ChunkEvents {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("unused")
     public void onDetonate(ExplosionEvent.Detonate event)
     {
         //Add to restore
@@ -293,6 +301,7 @@ public class ChunkEvents {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("unused")
     public void onLivingDamage(LivingDamageEvent event)
     {
         Entity entity = event.getEntityLiving();

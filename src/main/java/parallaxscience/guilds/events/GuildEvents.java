@@ -17,6 +17,7 @@ public class GuildEvents {
      * @param event
      */
     @SubscribeEvent
+    @SuppressWarnings("unused")
     public void onServerChat(ServerChatEvent event)
     {
         UUID playerID = event.getPlayer().getUniqueID();

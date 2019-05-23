@@ -2,6 +2,7 @@ package parallaxscience.guilds.raid;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import parallaxscience.guilds.Guilds;
 
 public class RaidTimer {
 
@@ -10,19 +11,16 @@ public class RaidTimer {
     private int counter;
     private int countTo;
 
-    //Temporary, fill in for config file
-    private final int prepSeconds = 300;
-    private final int raidSeconds = 300;
-
     RaidTimer(Raid raid)
     {
         this.raid = raid;
         isActive = false;
         counter = 0;
-        countTo = prepSeconds*20;
+        countTo = Guilds.prepSeconds*20;
     }
 
     @SubscribeEvent
+    @SuppressWarnings("unused")
     public void onServerTick(TickEvent.ServerTickEvent event)
     {
         if(counter < countTo)
@@ -34,7 +32,7 @@ public class RaidTimer {
             else
             {
                 raid.setActive();
-                countTo = raidSeconds*20;
+                countTo = Guilds.raidSeconds*20;
                 counter = 0;
             }
         }
