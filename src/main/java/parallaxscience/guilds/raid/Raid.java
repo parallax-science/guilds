@@ -17,6 +17,8 @@ public class Raid {
     private ArrayList<UUID> defenders;
     private ArrayList<UUID> attackers;
 
+    private RaidTimer raidTimer;
+
     private raidPhase phase;
 
     //To be implemented
@@ -34,6 +36,11 @@ public class Raid {
         return attackers.contains(player) || defenders.contains(player);
     }
 
+    public boolean isAttacker(UUID player)
+    {
+        return attackers.contains(player);
+    }
+
     public boolean isActive()
     {
         return phase == raidPhase.ACTIVE;
@@ -42,13 +49,23 @@ public class Raid {
     public void startRaid()
     {
         phase = raidPhase.PREP;
+        raidTimer = new RaidTimer(this);
     }
 
     public void removePlayer(UUID player)
     {
         attackers.remove(player);
         defenders.remove(player);
-        //Last player, declare
+        if(attackers.isEmpty())
+        {
+            if(isActive()) RaidCache.stopRaid(defendingGuild, true);
+            else RaidCache.cancelRaid(defendingGuild);
+        }
+        else if(defenders.isEmpty())
+        {
+            if(isActive()) RaidCache.stopRaid(defendingGuild, false);
+            else RaidCache.cancelRaid(defendingGuild);
+        }
     }
 
     public void setActive()

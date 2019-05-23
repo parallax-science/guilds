@@ -9,6 +9,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import parallaxscience.guilds.guild.ChunkCache;
 import parallaxscience.guilds.guild.Guild;
 import parallaxscience.guilds.guild.GuildCache;
@@ -75,10 +76,7 @@ public class RaidEvents {
                 Raid raid = RaidCache.getPlayerRaid(playerID);
                 if(raid != null)
                 {
-                    if(raid.isActive())
-                    {
-                        raid.removePlayer(playerID);
-                    }
+                    raid.removePlayer(playerID);
                 }
             }
         }

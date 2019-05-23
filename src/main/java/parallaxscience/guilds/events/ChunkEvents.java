@@ -63,6 +63,10 @@ public class ChunkEvents {
                         event.setCanceled(true);
                         player.sendMessage(new TextComponentString("You cannot break this block during a raid!"));
                     }
+                    else
+                    {
+                        //Add to restore save
+                    }
                 }
             }
         }
@@ -152,6 +156,10 @@ public class ChunkEvents {
                         event.setCanceled(true);
                         player.sendMessage(new TextComponentString("You cannot place blocks in another guilds territory!"));
                     }
+                    else
+                    {
+                        //Add to chunk restore
+                    }
                 }
             }
         }
@@ -178,6 +186,10 @@ public class ChunkEvents {
                     {
                         event.setCanceled(true);
                         player.sendMessage(new TextComponentString("You cannot place blocks in another guilds territory!"));
+                    }
+                    else
+                    {
+                        //Add to chunk restore
                     }
                 }
             }
@@ -236,6 +248,10 @@ public class ChunkEvents {
                     {
                         IBlockState iBlockState = event.getWorld().getBlockState(blockPos);
                         if(iBlockState.getBlock().hasTileEntity(iBlockState)) removeBlocks.add(blockPos);
+                        else
+                        {
+                            //Add to chunk restore
+                        }
                     }
                     else removeBlocks.add(blockPos);
                 }

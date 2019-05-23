@@ -1,11 +1,10 @@
 package parallaxscience.guilds.guild;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import parallaxscience.guilds.Guilds;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class Guild implements Serializable {
 
@@ -88,6 +87,18 @@ public class Guild implements Serializable {
             membersList.add(rankEntry.getKey());
         }
         return membersList;
+    }
+
+    public ArrayList<UUID> getOnlineMembers()
+    {
+        final List<EntityPlayer> playerList = Minecraft.getMinecraft().world.playerEntities;
+        ArrayList<UUID> onlineMembers = new ArrayList<>();
+        for(EntityPlayer entityPlayer : playerList)
+        {
+            UUID player = entityPlayer.getUniqueID();
+            if(members.containsKey(player)) onlineMembers.add(player);
+        }
+        return onlineMembers;
     }
 
     int getTerritoryCount() {
