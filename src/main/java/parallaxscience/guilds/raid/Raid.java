@@ -54,6 +54,11 @@ public class Raid {
         raidTimer = new RaidTimer(this);
     }
 
+    public boolean canAttackerJoin()
+    {
+        return attackers.size() < defenders.size();
+    }
+
     public void removePlayer(UUID player)
     {
         attackers.remove(player);
@@ -77,5 +82,15 @@ public class Raid {
 
     public String getDefendingGuild() {
         return defendingGuild;
+    }
+
+    public void addAttacker(UUID player)
+    {
+        attackers.add(player);
+    }
+
+    public void addDefender(UUID player)
+    {
+        defenders.add(player);
     }
 }
