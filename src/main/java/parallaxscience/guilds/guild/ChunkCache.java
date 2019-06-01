@@ -2,7 +2,6 @@ package parallaxscience.guilds.guild;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,20 +49,22 @@ public final class ChunkCache
     {
         if(guild.getTerritoryCount() == 0) return true;
 
+        String guildName = guild.getGuildName();
+
         int x = chunkPos.x;
         int z = chunkPos.z;
         if(chunkMap.containsKey(x))
         {
-            if(guild.equals(chunkMap.get(x).get(z + 1))) return true;
-            else if(guild.equals(chunkMap.get(x).get(z - 1))) return true;
+            if(guildName.equals(chunkMap.get(x).get(z + 1))) return true;
+            else if(guildName.equals(chunkMap.get(x).get(z - 1))) return true;
         }
         if(chunkMap.containsKey(x + 1))
         {
-            if(guild.equals(chunkMap.get(x + 1).get(z))) return true;
+            if(guildName.equals(chunkMap.get(x + 1).get(z))) return true;
         }
         if(chunkMap.containsKey(x - 1))
         {
-            if(guild.equals(chunkMap.get(x - 1).get(z))) return true;
+            if(guildName.equals(chunkMap.get(x - 1).get(z))) return true;
         }
         return false;
     }
@@ -98,7 +99,7 @@ public final class ChunkCache
         if(chunkMap.get(x).get(z) != null) chunkMap.get(x).remove(z);
     }
 
-    public static void removeAllClaimed(String guildName)
+    static void removeAllClaimed(String guildName)
     {
         for(Map.Entry<Integer, HashMap<Integer, String>> entry : chunkMap.entrySet())
         {
@@ -120,7 +121,7 @@ public final class ChunkCache
             }
             catch(Exception e)
             {
-
+                System.out.println("ERROR: Could not create a new chunk cache file!");
             }
         }
 
@@ -134,7 +135,7 @@ public final class ChunkCache
         }
         catch(Exception e)
         {
-
+            System.out.println("ERROR: Could not save chunk cache!");
         }
     }
 }

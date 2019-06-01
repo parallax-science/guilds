@@ -7,10 +7,12 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import parallaxscience.guilds.alliance.AllianceCache;
 import parallaxscience.guilds.commands.CommandAlliance;
 import parallaxscience.guilds.commands.CommandGuild;
+import parallaxscience.guilds.commands.CommandRaid;
 import parallaxscience.guilds.events.ChunkEvents;
 import parallaxscience.guilds.events.GuildEvents;
 import parallaxscience.guilds.guild.ChunkCache;
 import parallaxscience.guilds.guild.GuildCache;
+import parallaxscience.guilds.raid.RaidCache;
 
 @Mod(modid = Guilds.MODID, name = Guilds.NAME, version = Guilds.VERSION, acceptedMinecraftVersions = Guilds.MC_VERSION, acceptableRemoteVersions = "*")
 public class Guilds
@@ -20,9 +22,11 @@ public class Guilds
     static final String VERSION = "ALPHA 1.0";
     static final String MC_VERSION = "[1.12.2]";
 
+    //Temporary, fill in for config file
     public static final int claimPerPlayer = 50;
-
     public static final int maxCharLength = 20;
+    public static final int prepSeconds = 300;
+    public static final int raidSeconds = 300;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -35,6 +39,7 @@ public class Guilds
         GuildCache.initialize();
         AllianceCache.initialize();
         ChunkCache.initialize();
+        RaidCache.initialize();
     }
 
     @EventHandler
@@ -47,5 +52,8 @@ public class Guilds
     {
         event.registerServerCommand(new CommandGuild());
         event.registerServerCommand(new CommandAlliance());
+        event.registerServerCommand(new CommandRaid());
+
+        RaidCache.massRestore(event);
     }
 }

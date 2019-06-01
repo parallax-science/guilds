@@ -1,17 +1,18 @@
 package parallaxscience.guilds.guild;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import parallaxscience.guilds.Guilds;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class Guild implements Serializable {
 
     enum Rank
     {
         MEMBER,
-        ADMIN
+        ADMIN,
+        MASTER
     }
 
     private String guildName;
@@ -26,11 +27,13 @@ public class Guild implements Serializable {
         this.guildMaster = guildMaster;
         members = new HashMap<>();
         invitees = new ArrayList<>();
+        members.put(guildMaster, Rank.MASTER);
     }
 
     public void transferOwnership(UUID newMaster)
     {
-        members.put(guildMaster, Rank.MEMBER);
+        members.replace(guildMaster, Rank.MEMBER);
+        members.replace(newMaster, Rank.MASTER);
         guildMaster = newMaster;
         members.remove(newMaster);
     }
@@ -74,6 +77,28 @@ public class Guild implements Serializable {
         invitees.remove(player);
         members.put(player, Rank.MEMBER);
         return true;
+    }
+
+    public ArrayList<UUID> getMembers()
+    {
+        ArrayList<UUID> membersList = new ArrayList<>();
+        for(Map.Entry<UUID, Rank> rankEntry : members.entrySet())
+        {
+            membersList.add(rankEntry.getKey());
+        }
+        return membersList;
+    }
+
+    public ArrayList<UUID> getOnlineMembers()
+    {
+        final List<EntityPlayer> playerList = Minecraft.getMinecraft().world.playerEntities;
+        ArrayList<UUID> onlineMembers = new ArrayList<>();
+        for(EntityPlayer entityPlayer : playerList)
+        {
+            UUID player = entityPlayer.getUniqueID();
+            if(members.containsKey(player)) onlineMembers.add(player);
+        }
+        return onlineMembers;
     }
 
     int getTerritoryCount() {
