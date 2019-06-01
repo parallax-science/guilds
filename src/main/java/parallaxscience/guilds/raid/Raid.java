@@ -18,10 +18,8 @@ public class Raid {
     private ArrayList<UUID> attackers;
 
     private RaidTimer raidTimer;
-
     private raidPhase phase;
 
-    //To be implemented
     public Raid(String defendingGuild, UUID primaryAttacker)
     {
         this.defendingGuild = defendingGuild;
@@ -44,6 +42,10 @@ public class Raid {
     public boolean isActive()
     {
         return phase == raidPhase.ACTIVE;
+    }
+
+    public boolean isStarted() {
+        return phase == raidPhase.PREP;
     }
 
     public void startRaid()

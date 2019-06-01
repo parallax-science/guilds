@@ -59,7 +59,8 @@ public class ChunkEvents {
             {
                 if(raid.isActive())
                 {
-                    IBlockState iBlockState = event.getWorld().getBlockState(event.getPos());
+                    BlockPos blockPos = event.getPos();
+                    IBlockState iBlockState = event.getWorld().getBlockState(blockPos);
                     if(iBlockState.getBlock().hasTileEntity(iBlockState))
                     {
                         event.setCanceled(true);
@@ -67,7 +68,7 @@ public class ChunkEvents {
                     }
                     else
                     {
-                        //Add to restore save
+                        RaidCache.addRestoreBlock(raid.getDefendingGuild(), blockPos, iBlockState);
                     }
                 }
             }
@@ -163,7 +164,9 @@ public class ChunkEvents {
                     }
                     else
                     {
-                        //Add to chunk restore
+                        BlockPos blockPos = event.getPos();
+                        IBlockState iBlockState = event.getWorld().getBlockState(blockPos);
+                        RaidCache.addRestoreBlock(raid.getDefendingGuild(), blockPos, iBlockState);
                     }
                 }
             }
@@ -195,7 +198,9 @@ public class ChunkEvents {
                     }
                     else
                     {
-                        //Add to chunk restore
+                        BlockPos blockPos = event.getPos();
+                        IBlockState iBlockState = event.getWorld().getBlockState(blockPos);
+                        RaidCache.addRestoreBlock(raid.getDefendingGuild(), blockPos, iBlockState);
                     }
                 }
             }
@@ -258,7 +263,7 @@ public class ChunkEvents {
                         if(iBlockState.getBlock().hasTileEntity(iBlockState)) removeBlocks.add(blockPos);
                         else
                         {
-                            //Add to chunk restore
+                            RaidCache.addRestoreBlock(raid.getDefendingGuild(), blockPos, iBlockState);
                         }
                     }
                     else removeBlocks.add(blockPos);

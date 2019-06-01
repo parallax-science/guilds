@@ -53,5 +53,7 @@ public class Guilds
         event.registerServerCommand(new CommandGuild());
         event.registerServerCommand(new CommandAlliance());
         event.registerServerCommand(new CommandRaid());
+
+        RaidCache.massRestore(event);
     }
 }

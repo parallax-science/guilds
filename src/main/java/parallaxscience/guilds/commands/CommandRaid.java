@@ -106,11 +106,9 @@ public class CommandRaid extends CommandBase {
             else if(raid.isAttacker(player) && !raid.isActive()) sender.sendMessage(new TextComponentString("/raid invite"));
             else
             {
-                //DO STUFF
+
             }
         }
-        //Is not in raid
-        //Is attacker
     }
 
     private void joinRaid(ICommandSender sender, UUID player, Guild guild, String raidName)
