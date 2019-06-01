@@ -125,6 +125,7 @@ public class CommandRaid extends CommandBase {
         else
         {
             if(playerRaid != null) sender.sendMessage(new TextComponentString("You are already part of a raid!"));
+            else if(newRaidName.equals(guild.getGuildName())) sender.sendMessage(new TextComponentString("You cannot join a raid on your own guild!"));
             else
             {
                 Raid raid = RaidCache.getRaid(newRaidName);
