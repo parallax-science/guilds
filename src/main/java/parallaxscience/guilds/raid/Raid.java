@@ -1,5 +1,6 @@
 package parallaxscience.guilds.raid;
 
+import net.minecraftforge.common.MinecraftForge;
 import parallaxscience.guilds.guild.GuildCache;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -52,6 +53,7 @@ public class Raid {
     {
         phase = raidPhase.PREP;
         raidTimer = new RaidTimer(this);
+        MinecraftForge.EVENT_BUS.register(raidTimer);
     }
 
     public boolean canAttackerJoin()
@@ -92,5 +94,10 @@ public class Raid {
     public void addDefender(UUID player)
     {
         defenders.add(player);
+    }
+
+    public void stopTimer()
+    {
+        MinecraftForge.EVENT_BUS.unregister(raidTimer);
     }
 }

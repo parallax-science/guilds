@@ -9,7 +9,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import parallaxscience.guilds.events.RaidEvents;
-
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,6 +57,7 @@ public class RaidCache {
 
     static void stopRaid(String raid, boolean defenseWon)
     {
+        getRaid(raid).stopTimer();
         PlayerList players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
         players.sendMessage(new TextComponentString("The raid on " + raid + " is now over!"));
         if(defenseWon) players.sendMessage(new TextComponentString(raid + " has successfully held off the attackers!"));
@@ -65,7 +65,7 @@ public class RaidCache {
 
         for(Map.Entry<BlockPos, IBlockState> blocks : blockRestore.get(raid).entrySet())
         {
-            if(!world.isRemote) world.setBlockState(blocks.getKey(), blocks.getValue());
+            restoreBlock(blocks.getKey(), blocks.getValue());
         }
         blockRestore.remove(raid);
 
@@ -91,7 +91,8 @@ public class RaidCache {
 
     public static void addRestoreBlock(String raid, BlockPos blockPos, IBlockState blockState)
     {
-        blockRestore.get(raid).put(blockPos, blockState);
+        HashMap<BlockPos, IBlockState> guildBlockRestore = blockRestore.get(raid);
+        if(!guildBlockRestore.containsKey(blockPos)) guildBlockRestore.put(blockPos, blockState);
         saveRaid();
     }
 
@@ -139,13 +140,21 @@ public class RaidCache {
             {
                 for(Map.Entry<BlockPos, IBlockState> blocks : raids.getValue().entrySet())
                 {
-                    if(!world.isRemote) world.setBlockState(blocks.getKey(), blocks.getValue());
+                    restoreBlock(blocks.getKey(), blocks.getValue());
                 }
             }
         }
         catch(Exception e)
         {
             System.out.println("No chunks to restore!");
+        }
+    }
+
+    private static void restoreBlock(BlockPos blockPos, IBlockState iBlockState)
+    {
+        if(!world.isRemote)
+        {
+            world.setBlockState(blockPos, iBlockState);
         }
     }
 }

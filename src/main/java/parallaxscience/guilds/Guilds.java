@@ -25,8 +25,8 @@ public class Guilds
     //Temporary, fill in for config file
     public static final int claimPerPlayer = 50;
     public static final int maxCharLength = 20;
-    public static final int prepSeconds = 300;
-    public static final int raidSeconds = 300;
+    public static final int prepSeconds = 10;
+    public static final int raidSeconds = 60;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {

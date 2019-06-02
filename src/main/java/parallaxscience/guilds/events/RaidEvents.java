@@ -37,7 +37,7 @@ public class RaidEvents {
                     if(raid.isActive())
                     {
                         raid.removePlayer(playerID);
-                        if(raid.getDefendingGuild().equals(guild.getGuildName())) player.connection.disconnect(new TextComponentString("Your guild is currently being raided!"));
+                        player.connection.disconnect(new TextComponentString("You have been slain and are out of the fight!"));
                     }
                 }
             }
@@ -99,9 +99,8 @@ public class RaidEvents {
             {
                 if(raid.isActive())
                 {
-                    //event.getDrops().clear();
-                    //event.setDropChance(0.0f);
-                    event.setCanceled(true);
+                    event.getDrops().clear();
+                    event.setDropChance(0.0f);
                 }
             }
         }
