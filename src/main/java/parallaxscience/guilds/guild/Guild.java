@@ -54,7 +54,7 @@ public class Guild implements Serializable {
 
     public boolean isMember(UUID member)
     {
-        return members.containsKey(member) || getGuildMaster().equals(member);
+        return members.containsKey(member);
     }
 
     public void promote(UUID member)

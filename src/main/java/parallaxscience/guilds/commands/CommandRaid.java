@@ -129,7 +129,11 @@ public class CommandRaid extends CommandBase {
             else
             {
                 Raid raid = RaidCache.getRaid(newRaidName);
-                if(raid == null) RaidCache.createRaid(newRaidName, player);
+                if(raid == null)
+                {
+                    sender.sendMessage(new TextComponentString("Successfully joined the raid on " + newRaidName + "!"));
+                    RaidCache.createRaid(newRaidName, player);
+                }
                 else if(raid.isActive()) sender.sendMessage(new TextComponentString("The raid on " + newRaidName + " has already begun!"));
                 else
                 {
@@ -177,7 +181,7 @@ public class CommandRaid extends CommandBase {
         {
             raid.startRaid();
             PlayerList players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
-            players.sendMessage(new TextComponentString("The raid on " + raid + " will begin in " + Guilds.prepSeconds + "seconds!"));
+            players.sendMessage(new TextComponentString("The raid on " + raid.getDefendingGuild() + " will begin in " + Guilds.prepSeconds + " seconds!"));
         }
     }
 }
