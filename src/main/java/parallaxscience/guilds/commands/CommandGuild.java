@@ -14,6 +14,8 @@ import parallaxscience.guilds.alliance.AllianceCache;
 import parallaxscience.guilds.guild.ChunkCache;
 import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.guild.Guild;
+import parallaxscience.guilds.raid.RaidCache;
+
 import java.util.UUID;
 
 /**
@@ -247,9 +249,10 @@ public class CommandGuild extends CommandBase {
     {
         if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
         else if(!guild.getGuildMaster().equals(player)) sender.sendMessage(new TextComponentString("Only the Guild Master may disband the guild!"));
+        else if(RaidCache.getRaid(guild.getGuildName()) != null) sender.sendMessage(new TextComponentString("You cannot disband a guild during a raid!"));
         else
         {
-            AllianceCache.leavelAlliance(guild);
+            if(guild.getAlliance() != null) AllianceCache.leaveAlliance(guild);
             GuildCache.removeGuild(guild);
             GuildCache.save();
             sender.sendMessage(new TextComponentString("Successfully disbanded " + guild.getGuildName() + "!"));
@@ -286,6 +289,7 @@ public class CommandGuild extends CommandBase {
     {
         if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
         else if(guild.getGuildMaster().equals(player)) sender.sendMessage(new TextComponentString("A Guild Master cannot leave, only disband!"));
+        else if(RaidCache.getRaid(guild.getGuildName()) != null) sender.sendMessage(new TextComponentString("You cannot leave a guild during a raid!"));
         else
         {
             guild.removeMember(player);
@@ -433,7 +437,7 @@ public class CommandGuild extends CommandBase {
                 UUID member = entityPlayer.getUniqueID();
                 Guild memberGuild = GuildCache.getPlayerGuild(member);
                 if(memberGuild == null) sender.sendMessage(new TextComponentString(playerName + " is not in a guild!"));
-                else if(memberGuild.equals(guild)) sender.sendMessage(new TextComponentString(playerName + " is not in your guild!"));
+                else if(!memberGuild.equals(guild)) sender.sendMessage(new TextComponentString(playerName + " is not in your guild!"));
                 else
                 {
                     guild.transferOwnership(member);
