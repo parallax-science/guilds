@@ -37,7 +37,7 @@ public class AllianceCache {
         alliances.remove(alliance);
     }
 
-    public static void leavelAlliance(Guild guild)
+    public static void leaveAlliance(Guild guild)
     {
         String guildName = guild.getGuildName();
         Alliance alliance = getAlliance(guildName);

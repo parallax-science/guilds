@@ -91,7 +91,7 @@ public class CommandRaid extends CommandBase {
                 } break;
                 case "leave":
                 {
-                    leaveRaid(sender, player, raid);
+                    leaveRaid(sender, player, guild, raid);
                 } break;
                 case "start":
                 {
@@ -162,9 +162,11 @@ public class CommandRaid extends CommandBase {
         }
     }
 
-    private void leaveRaid(ICommandSender sender, UUID player, Raid raid)
+    private void leaveRaid(ICommandSender sender, UUID player, Guild guild, Raid raid)
     {
-        if(raid == null) sender.sendMessage(new TextComponentString("You are not currently a part of a raid!"));
+        if(guild == null) sender.sendMessage(new TextComponentString("You are not part of a guild!"));
+        else if(raid == null) sender.sendMessage(new TextComponentString("You are not currently a part of a raid!"));
+        else if(raid.getDefendingGuild().equals(guild.getGuildName())) sender.sendMessage(new TextComponentString("You are not currently a part of a raid!")); //To hide a potential raid
         else if(raid.isStarted()) sender.sendMessage(new TextComponentString("The raid preparation has already begun!"));
         else
         {
