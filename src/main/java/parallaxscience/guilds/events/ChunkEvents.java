@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -167,7 +168,7 @@ public class ChunkEvents {
                     player.sendMessage(new TextComponentString("You cannot place blocks in another guilds territory!"));
                 }
             }
-            else if(!owner.isMember((player.getUniqueID())))
+            else if(!owner.isMember(player.getUniqueID()))
             {
                 event.setCanceled(true);
                 player.sendMessage(new TextComponentString("You cannot place blocks in another guilds territory!"));
@@ -195,13 +196,13 @@ public class ChunkEvents {
                     BlockPos blockPos = event.getPos();
                     RaidCache.addRestoreBlock(raid.getDefendingGuild(), blockPos, Blocks.AIR.getDefaultState());
                 }
-                else if(!owner.isMember((player.getUniqueID())))
+                else if(!owner.isMember(player.getUniqueID()))
                 {
                     event.setCanceled(true);
                     player.sendMessage(new TextComponentString("You cannot place blocks in another guilds territory!"));
                 }
             }
-            if(!owner.isMember((player.getUniqueID())))
+            if(!owner.isMember(player.getUniqueID()))
             {
                 event.setCanceled(true);
                 player.sendMessage(new TextComponentString("You cannot place blocks in another guilds territory!"));
@@ -239,16 +240,44 @@ public class ChunkEvents {
                     player.sendMessage(new TextComponentString("You cannot use this during a raid!"));
                 }
             }
-            else if(!owner.isMember((player.getUniqueID())))
+            else if(!owner.isMember(player.getUniqueID()))
             {
                 event.setCanceled(true);
                 player.sendMessage(new TextComponentString("You cannot interact with blocks in another guilds territory!"));
             }
         }
-        else if(!owner.isMember((player.getUniqueID())))
+        else if(!owner.isMember(player.getUniqueID()))
         {
             event.setCanceled(true);
             player.sendMessage(new TextComponentString("You cannot interact with blocks in another guilds territory!"));
+        }
+    }
+
+    @SubscribeEvent
+    @SuppressWarnings("unused")
+    public void onTeleport(EnderTeleportEvent event)
+    {
+        Entity entity = event.getEntity();
+        if(entity instanceof EntityPlayerMP)
+        {
+            EntityPlayerMP player = (EntityPlayerMP) entity;
+            Guild owner = GuildCache.getGuild(ChunkCache.getChunkOwner(new BlockPos(event.getTargetX(), event.getTargetY(), event.getTargetZ())));
+            if(owner == null) return;
+
+            Raid raid = RaidCache.getRaid(owner.getGuildName());
+            if(raid == null)
+            {
+                if(!owner.isMember((player.getUniqueID())))
+                {
+                    event.setCanceled(true);
+                    player.sendMessage(new TextComponentString("You cannot teleport in another guilds territory!"));
+                }
+            }
+            else if(!raid.isActive() || !owner.isMember(player.getUniqueID()))
+            {
+                event.setCanceled(true);
+                player.sendMessage(new TextComponentString("You cannot teleport in another guilds territory!"));
+            }
         }
     }
 
