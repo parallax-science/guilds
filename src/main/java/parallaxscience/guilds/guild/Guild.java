@@ -81,12 +81,32 @@ public class Guild implements Serializable {
         return true;
     }
 
-    public ArrayList<UUID> getMembers()
+    public ArrayList<UUID> getAllMembers()
     {
         ArrayList<UUID> membersList = new ArrayList<>();
         for(Map.Entry<UUID, Rank> rankEntry : members.entrySet())
         {
             membersList.add(rankEntry.getKey());
+        }
+        return membersList;
+    }
+
+    public ArrayList<UUID> getAdmins()
+    {
+        ArrayList<UUID> adminList = new ArrayList<>();
+        for(Map.Entry<UUID, Rank> rankEntry : members.entrySet())
+        {
+            if(rankEntry.getValue() == Rank.ADMIN) adminList.add(rankEntry.getKey());
+        }
+        return adminList;
+    }
+
+    public ArrayList<UUID> getMembers()
+    {
+        ArrayList<UUID> membersList = new ArrayList<>();
+        for(Map.Entry<UUID, Rank> rankEntry : members.entrySet())
+        {
+            if(rankEntry.getValue() == Rank.MEMBER) membersList.add(rankEntry.getKey());
         }
         return membersList;
     }

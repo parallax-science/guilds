@@ -7,9 +7,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TextComponentString;
-import parallaxscience.guilds.Guilds;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import parallaxscience.guilds.alliance.AllianceCache;
 import parallaxscience.guilds.config.GeneralConfig;
 import parallaxscience.guilds.guild.ChunkCache;
@@ -38,6 +39,7 @@ public class CommandGuild extends CommandBase {
             "accept",
             //Guild members:
             "leave",
+            "members",
             //Guild admins:
             "invite",
             "claim",
@@ -121,6 +123,10 @@ public class CommandGuild extends CommandBase {
                 {
                     leaveGuild(sender, player, guild);
                 } break;
+                case "members":
+                {
+                    listMembers(sender, guild);
+                } break;
                 case "invite":
                 {
                     if(args.length == 2) invite(sender, player, guild, args[1]);
@@ -191,6 +197,7 @@ public class CommandGuild extends CommandBase {
         }
         else
         {
+            sender.sendMessage(new TextComponentString("/guild members - Lists all guild members and ranks"));
             if(guild.isAdmin(player))
             {
                 sender.sendMessage(new TextComponentString("/guild invite <player> - Invites a player to your guild"));
@@ -205,7 +212,7 @@ public class CommandGuild extends CommandBase {
                     sender.sendMessage(new TextComponentString("/guild transfer <player> - Transfers ownership of the guild to another"));
                 }
                 else sender.sendMessage(new TextComponentString("/guild leave - Leave the guild you are currently in"));
-            }
+            } else sender.sendMessage(new TextComponentString("/guild leave - Leave the guild you are currently in"));
         }
     }
 
@@ -296,6 +303,27 @@ public class CommandGuild extends CommandBase {
             guild.removeMember(player);
             GuildCache.save();
             sender.sendMessage(new TextComponentString("Successfully left " + guild.getGuildName() + "!"));
+        }
+    }
+
+    private void listMembers(ICommandSender sender, Guild guild)
+    {
+        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
+        else
+        {
+            PlayerList players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
+            sender.sendMessage(new TextComponentString("*Guild Master: " + guild.getGuildMaster()));
+            sender.sendMessage(new TextComponentString("*Admins:"));
+            for(UUID player : guild.getAdmins())
+            {
+                sender.sendMessage(new TextComponentString(" - " + players.getPlayerByUUID(player)));
+            }
+
+            sender.sendMessage(new TextComponentString("*Members:"));
+            for(UUID player : guild.getMembers())
+            {
+                sender.sendMessage(new TextComponentString(" - " + players.getPlayerByUUID(player)));
+            }
         }
     }
 

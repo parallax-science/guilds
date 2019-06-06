@@ -25,7 +25,7 @@ public class Raid {
     {
         this.defendingGuild = defendingGuild;
         attackers = new ArrayList<>();
-        defenders = GuildCache.getGuild(defendingGuild).getMembers();
+        defenders = GuildCache.getGuild(defendingGuild).getAllMembers();
         attackers.add(primaryAttacker);
         phase = raidPhase.SETUP;
     }

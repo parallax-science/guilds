@@ -10,6 +10,7 @@ import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import parallaxscience.guilds.Guilds;
+import parallaxscience.guilds.config.RaidConfig;
 import parallaxscience.guilds.guild.Guild;
 import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.raid.Raid;
@@ -183,7 +184,7 @@ public class CommandRaid extends CommandBase {
         {
             raid.startRaid();
             PlayerList players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
-            players.sendMessage(new TextComponentString("The raid on " + raid.getDefendingGuild() + " will begin in " + Guilds.prepSeconds + " seconds!"));
+            players.sendMessage(new TextComponentString("The raid on " + raid.getDefendingGuild() + " will begin in " + RaidConfig.prepSeconds + " seconds!"));
         }
     }
 }
