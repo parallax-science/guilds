@@ -23,12 +23,14 @@ public class Guilds
     static final String MC_VERSION = "[1.12.2]";
 
     @EventHandler
+    @SuppressWarnings("unused")
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(new GuildEvents());
         MinecraftForge.EVENT_BUS.register(new ChunkEvents());
     }
 
     @EventHandler
+    @SuppressWarnings("unused")
     public void init(FMLInitializationEvent event) {
         GuildCache.initialize();
         AllianceCache.initialize();
@@ -37,10 +39,12 @@ public class Guilds
     }
 
     @EventHandler
+    @SuppressWarnings("unused")
     public void postInit(FMLPostInitializationEvent event) {
     }
 
     @Mod.EventHandler
+    @SuppressWarnings("unused")
     public void onServerStart(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new CommandGuild());
