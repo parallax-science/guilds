@@ -1,13 +1,13 @@
 package parallaxscience.guilds.commands;
 
+import com.sun.istack.internal.Nullable;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -18,7 +18,11 @@ import parallaxscience.guilds.guild.ChunkCache;
 import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.guild.Guild;
 import parallaxscience.guilds.raid.RaidCache;
-
+import scala.actors.threadpool.Arrays;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -32,7 +36,7 @@ public class CommandGuild extends CommandBase {
     /**
      * String array of sub-commands uses by the auto tab-completion
      */
-    public static final String[] commands = new String[]{
+    private static final String[] commands = new String[]{
             //For all:
             "help",
             //Not in guild:
@@ -54,15 +58,16 @@ public class CommandGuild extends CommandBase {
             "setcolor"
     };
 
-
     @Override
+    @Nonnull
     public String getName()
     {
         return "guild";
     }
 
-
     @Override
+    @Nonnull
+    @ParametersAreNonnullByDefault
     public String getUsage(ICommandSender sender)
     {
         return "/guild <action> [arguments]";
@@ -78,24 +83,80 @@ public class CommandGuild extends CommandBase {
         return sender instanceof EntityPlayerMP;
     }
 
-    /*
-    /**
-     *
-     * @param server
-     * @param sender
-     * @param args
-     * @param targetPos
-     * @return
-
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        //Needs to be completed!
-        return null;
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
+    {
+        if(args.length == 1) return getLastMatchingStrings(args, Arrays.asList(commands));
+        else if(args.length == 2)
+        {
+            Entity entity = sender.getCommandSenderEntity();
+            if(entity == null) return new ArrayList<>();
+            UUID player = entity.getUniqueID();
+            Guild guild = GuildCache.getPlayerGuild(player);
+
+            switch(args[0])
+            {
+                case "accept":
+                    return getLastMatchingStrings(args, GuildCache.getGuildList());
+                case "invite":
+                    if(guild != null)
+                    {
+                        List<String> names = new ArrayList<>();
+                        for(EntityPlayer entityPlayer : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers())
+                        {
+                            if(GuildCache.getPlayerGuild(entityPlayer.getUniqueID()) == null) names.add(entity.getDisplayName().getUnformattedText());
+                        }
+                        return getLastMatchingStrings(args, names);
+                    }
+                    break;
+                case "kick":
+                    if(guild != null) if(guild.isAdmin(player))
+                    {
+                        List<String> members = guild.getMembers();
+                        members.addAll(guild.getAdmins());
+                        return getLastMatchingStrings(args, members);
+                    }
+                    break;
+                case "promote":
+                    if(guild != null) if(guild.isAdmin(player)) return getLastMatchingStrings(args, guild.getMembers());
+                    break;
+                case "demote":
+                    if(guild != null) if(guild.isAdmin(player)) return getLastMatchingStrings(args, guild.getAdmins());
+                    break;
+                case "transfer":
+                    if(guild != null) if(guild.getGuildMaster().equals(player))
+                    {
+                        List<String> members = guild.getMembers();
+                        members.addAll(guild.getAdmins());
+                        return getLastMatchingStrings(args, members);
+                    }
+                    break;
+                case "setcolor":
+                    if(guild != null) if(guild.getGuildMaster().equals(player)) return getLastMatchingStrings(args, new ArrayList<>(TextFormatting.getValidValues(false, false)));
+                    break;
+            }
+        }
+        return new ArrayList<>();
     }
-*/
+
+    private List<String> getLastMatchingStrings(String[] args, List<String> list)
+    {
+        List<String> matching = new ArrayList<>();
+        String string = args[args.length - 1];
+        int length = string.length();
+        for(String item : list)
+        {
+            if(string.equals(item.substring(0, length))) matching.add(item);
+        }
+        return matching;
+    }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    @ParametersAreNonnullByDefault
+    @SuppressWarnings("ThrowableInstanceNeverThrown")
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
         if(args.length == 0)
         {
             sender.sendMessage(new TextComponentString("Type \"/guild help\" for help"));
@@ -322,18 +383,17 @@ public class CommandGuild extends CommandBase {
         if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
         else
         {
-            PlayerList players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
             sender.sendMessage(new TextComponentString("*Guild Master: " + guild.getGuildMaster()));
             sender.sendMessage(new TextComponentString("*Admins:"));
-            for(UUID player : guild.getAdmins())
+            for(String player : guild.getAdmins())
             {
-                sender.sendMessage(new TextComponentString(" - " + players.getPlayerByUUID(player)));
+                sender.sendMessage(new TextComponentString(" - " + player));
             }
 
             sender.sendMessage(new TextComponentString("*Members:"));
-            for(UUID player : guild.getMembers())
+            for(String player : guild.getMembers())
             {
-                sender.sendMessage(new TextComponentString(" - " + players.getPlayerByUUID(player)));
+                sender.sendMessage(new TextComponentString(" - " + player));
             }
         }
     }
@@ -391,6 +451,7 @@ public class CommandGuild extends CommandBase {
     private void kick(ICommandSender sender, UUID player, Guild guild, String playerName)
     {
         if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
+        //Other fix here
         else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to kick a member!"));
         else
         {
@@ -472,6 +533,7 @@ public class CommandGuild extends CommandBase {
         {
             EntityPlayer entityPlayer = sender.getEntityWorld().getPlayerEntityByName(playerName);
             if(entityPlayer == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
+            //Other fix here
             else
             {
                 UUID member = entityPlayer.getUniqueID();

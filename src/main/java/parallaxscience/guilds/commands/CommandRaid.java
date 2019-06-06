@@ -1,21 +1,26 @@
 package parallaxscience.guilds.commands;
 
+import com.sun.istack.internal.Nullable;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.config.RaidConfig;
 import parallaxscience.guilds.guild.Guild;
 import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.raid.Raid;
 import parallaxscience.guilds.raid.RaidCache;
+import scala.actors.threadpool.Arrays;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class CommandRaid extends CommandBase {
@@ -23,7 +28,7 @@ public class CommandRaid extends CommandBase {
     /**
      * String array of sub-commands uses by the auto tab-completion
      */
-    public static final String[] commands = new String[]{
+    private static final String[] commands = new String[]{
             //For all in a guild:
             "help",
             //Not in raid:
@@ -37,16 +42,15 @@ public class CommandRaid extends CommandBase {
      * Gets the name of the command
      */
     @Override
+    @Nonnull
     public String getName() {
         return "raid";
     }
 
-    /**
-     * Gets the usage string for the command.
-     *
-     * @param sender
-     */
+
     @Override
+    @Nonnull
+    @ParametersAreNonnullByDefault
     public String getUsage(ICommandSender sender) {
         return "/raid <action> [arguments]";
     }
@@ -61,15 +65,45 @@ public class CommandRaid extends CommandBase {
         return sender instanceof EntityPlayerMP;
     }
 
-    /**
-     * Callback for when the command is executed
-     *
-     * @param server
-     * @param sender
-     * @param args
-     */
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    @Nonnull
+    @SuppressWarnings({"unchecked", "SwitchStatementWithTooFewBranches"})
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
+    {
+        if(args.length == 1) return getLastMatchingStrings(args, Arrays.asList(commands));
+        else if(args.length == 2)
+        {
+            Entity entity = sender.getCommandSenderEntity();
+            if(entity == null) return new ArrayList<>();
+            UUID player = entity.getUniqueID();
+            Guild guild = GuildCache.getPlayerGuild(player);
+
+            switch(args[0])
+            {
+                case "join":
+                    if(guild != null) getLastMatchingStrings(args, GuildCache.getGuildList());
+                    break;
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    private List<String> getLastMatchingStrings(String[] args, List<String> list)
+    {
+        List<String> matching = new ArrayList<>();
+        String string = args[args.length - 1];
+        int length = string.length();
+        for(String item : list)
+        {
+            if(string.equals(item.substring(0, length))) matching.add(item);
+        }
+        return matching;
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args)
+    {
         if(args.length == 0)
         {
             sender.sendMessage(new TextComponentString("Type \"/raid help\" for help"));
@@ -84,7 +118,7 @@ public class CommandRaid extends CommandBase {
 
             switch (args[0].toLowerCase())
             {
-                case "help": displayHelp(sender, player, guild, raid);
+                case "help": displayHelp(sender, guild, raid);
                     break;
                 case "join":
                 {
@@ -105,7 +139,7 @@ public class CommandRaid extends CommandBase {
         }
     }
 
-    private void displayHelp(ICommandSender sender, UUID player, Guild guild, Raid raid)
+    private void displayHelp(ICommandSender sender, Guild guild, Raid raid)
     {
         if(guild == null) sender.sendMessage(new TextComponentString("Only those who are in a guild can use raid commands!"));
         else
@@ -139,7 +173,7 @@ public class CommandRaid extends CommandBase {
                 else
                 {
                     String alliance = guild.getAlliance();
-                    if(alliance == null);
+                    if(alliance == null) sender.sendMessage(new TextComponentString("Your guild is not a part of an alliance!"));
                     else if(alliance.equals(GuildCache.getGuild(newRaidName).getAlliance()))
                     {
                         if(raid.isStarted())

@@ -1,9 +1,7 @@
 package parallaxscience.guilds.guild;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public final class GuildCache {
 
@@ -36,6 +34,26 @@ public final class GuildCache {
     public static Guild getGuild(String guildName)
     {
         return guilds.get(guildName);
+    }
+
+    public static List<String> getGuildList()
+    {
+        List<String> list = new ArrayList<>();
+        for(Map.Entry<String, Guild> entry : guilds.entrySet())
+        {
+            list.add(entry.getKey());
+        }
+        return list;
+    }
+
+    public static List<String> getFreeGuilds()
+    {
+        List<String> list = new ArrayList<>();
+        for(Map.Entry<String, Guild> entry : guilds.entrySet())
+        {
+            if(entry.getValue().getAlliance() == null) list.add(entry.getKey());
+        }
+        return list;
     }
 
     public static boolean addGuild(String guildName, UUID guildMaster)

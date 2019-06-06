@@ -3,7 +3,10 @@ package parallaxscience.guilds.alliance;
 import parallaxscience.guilds.guild.Guild;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AllianceCache {
 
@@ -49,6 +52,16 @@ public class AllianceCache {
     public static Alliance getAlliance(String allianceName)
     {
         return alliances.get(allianceName);
+    }
+
+    public static List<String> getAllianceList()
+    {
+        List<String> list = new ArrayList<>();
+        for(Map.Entry<String, Alliance> entry : alliances.entrySet())
+        {
+            list.add(entry.getKey());
+        }
+        return list;
     }
 
     public static void save()

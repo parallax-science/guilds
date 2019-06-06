@@ -99,24 +99,26 @@ public class Guild implements Serializable {
         return membersList;
     }
 
-    public ArrayList<UUID> getAdmins()
+    public List<String> getAdmins()
     {
-        ArrayList<UUID> adminList = new ArrayList<>();
+        PlayerList playerList = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
+        List<String> adminList = new ArrayList<>();
         for(Map.Entry<UUID, Rank> rankEntry : members.entrySet())
         {
-            if(rankEntry.getValue() == Rank.ADMIN) adminList.add(rankEntry.getKey());
+            if(rankEntry.getValue() == Rank.ADMIN) adminList.add(playerList.getPlayerByUUID(rankEntry.getKey()).getDisplayNameString());
         }
         return adminList;
     }
 
-    public ArrayList<UUID> getMembers()
+    public List<String> getMembers()
     {
-        ArrayList<UUID> membersList = new ArrayList<>();
+        PlayerList playerList = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
+        List<String> adminList = new ArrayList<>();
         for(Map.Entry<UUID, Rank> rankEntry : members.entrySet())
         {
-            if(rankEntry.getValue() == Rank.MEMBER) membersList.add(rankEntry.getKey());
+            if(rankEntry.getValue() == Rank.MEMBER) adminList.add(playerList.getPlayerByUUID(rankEntry.getKey()).getDisplayNameString());
         }
-        return membersList;
+        return adminList;
     }
 
     public ArrayList<UUID> getOnlineMembers()

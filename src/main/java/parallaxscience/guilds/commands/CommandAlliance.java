@@ -1,19 +1,25 @@
 package parallaxscience.guilds.commands;
 
+import com.sun.istack.internal.Nullable;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.alliance.Alliance;
 import parallaxscience.guilds.alliance.AllianceCache;
 import parallaxscience.guilds.config.GeneralConfig;
 import parallaxscience.guilds.guild.Guild;
 import parallaxscience.guilds.guild.GuildCache;
+import scala.actors.threadpool.Arrays;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class CommandAlliance extends CommandBase {
@@ -21,7 +27,7 @@ public class CommandAlliance extends CommandBase {
     /**
      * String array of sub-commands uses by the auto tab-completion
      */
-    public static final String[] commands = new String[]{
+    private static final String[] commands = new String[]{
             //For all guild masters:
             "help",
             //Not in alliance:
@@ -36,16 +42,14 @@ public class CommandAlliance extends CommandBase {
      * Gets the name of the command
      */
     @Override
+    @Nonnull
     public String getName() {
         return "alliance";
     }
 
-    /**
-     * Gets the usage string for the command.
-     *
-     * @param sender
-     */
     @Override
+    @Nonnull
+    @ParametersAreNonnullByDefault
     public String getUsage(ICommandSender sender)
     {
         return "/alliance <action> [arguments]";
@@ -61,15 +65,47 @@ public class CommandAlliance extends CommandBase {
         return sender instanceof EntityPlayerMP;
     }
 
-    /**
-     * Callback for when the command is executed
-     *
-     * @param server
-     * @param sender
-     * @param args
-     */
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
+    {
+        if(args.length == 1) return getLastMatchingStrings(args, Arrays.asList(commands));
+        else if(args.length == 2)
+        {
+            Entity entity = sender.getCommandSenderEntity();
+            if(entity == null) return new ArrayList<>();
+            UUID player = entity.getUniqueID();
+            Guild guild = GuildCache.getPlayerGuild(player);
+
+            switch(args[0])
+            {
+                case "accept":
+                    if(guild != null) if(guild.getGuildMaster().equals(player)) return getLastMatchingStrings(args, AllianceCache.getAllianceList());
+                    break;
+                case "invite":
+                    if(guild != null) if(guild.getGuildMaster().equals(player)) return getLastMatchingStrings(args, GuildCache.getFreeGuilds());
+                    break;
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    private List<String> getLastMatchingStrings(String[] args, List<String> list)
+    {
+        List<String> matching = new ArrayList<>();
+        String string = args[args.length - 1];
+        int length = string.length();
+        for(String item : list)
+        {
+            if(string.equals(item.substring(0, length))) matching.add(item);
+        }
+        return matching;
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args)
     {
         Entity entity = sender.getCommandSenderEntity();
         if(entity == null) return;
@@ -183,7 +219,8 @@ public class CommandAlliance extends CommandBase {
                 AllianceCache.getAlliance(allianceName).addInvitee(invitee);
                 AllianceCache.save();
                 sender.sendMessage(new TextComponentString("Successfully invited " + invitee + " to alliance!"));
-                sender.getEntityWorld().getPlayerEntityByUUID(inviteeGuild.getGuildMaster()).sendMessage(new TextComponentString("Your guild has been invited to join " + allianceName + "!"));
+                EntityPlayer guildMaster = sender.getEntityWorld().getPlayerEntityByUUID(inviteeGuild.getGuildMaster());
+                if(guildMaster != null) guildMaster.sendMessage(new TextComponentString("Your guild has been invited to join " + allianceName + "!"));
             }
         }
     }
