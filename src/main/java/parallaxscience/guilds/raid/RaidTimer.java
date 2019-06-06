@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import parallaxscience.guilds.Guilds;
+import parallaxscience.guilds.config.RaidConfig;
 
 public class RaidTimer {
 
@@ -17,8 +18,8 @@ public class RaidTimer {
     RaidTimer(Raid raid)
     {
         this.raid = raid;
-        startAt = System.currentTimeMillis() + Guilds.prepSeconds*1000;
-        endAt = startAt + Guilds.raidSeconds*1000;
+        startAt = System.currentTimeMillis() + RaidConfig.prepSeconds*1000;
+        endAt = startAt + RaidConfig.raidSeconds*1000;
     }
 
     @SubscribeEvent

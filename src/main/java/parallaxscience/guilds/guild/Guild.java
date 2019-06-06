@@ -3,6 +3,8 @@ package parallaxscience.guilds.guild;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import parallaxscience.guilds.Guilds;
+import parallaxscience.guilds.config.GuildConfig;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -107,7 +109,7 @@ public class Guild implements Serializable {
 
     public boolean hasMaxClaim()
     {
-        return (members.size() + 1)* Guilds.claimPerPlayer - territoryCount == 0;
+        return (members.size() + 1)* GuildConfig.claimPerPlayer - territoryCount == 0;
     }
 
     public void incrementTerritoryCount()
