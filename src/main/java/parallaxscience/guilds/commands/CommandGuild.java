@@ -451,7 +451,6 @@ public class CommandGuild extends CommandBase {
     private void kick(ICommandSender sender, UUID player, Guild guild, String playerName)
     {
         if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
-        //Other fix here
         else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to kick a member!"));
         else
         {
@@ -460,14 +459,18 @@ public class CommandGuild extends CommandBase {
             else
             {
                 UUID member = entityPlayer.getUniqueID();
-                Guild memberGuild = GuildCache.getPlayerGuild(member);
-                if(memberGuild == null) sender.sendMessage(new TextComponentString(playerName + " is not in a guild!"));
-                else if(!memberGuild.equals(guild)) sender.sendMessage(new TextComponentString(playerName + " is not in your guild!"));
+                if(member.equals(player)) sender.sendMessage(new TextComponentString("You cannot kick yourself, that would hurt!"));
                 else
                 {
-                    guild.removeMember(member);
-                    GuildCache.save();
-                    sender.sendMessage(new TextComponentString("Successfully kicked " + playerName + "!"));
+                    Guild memberGuild = GuildCache.getPlayerGuild(member);
+                    if(memberGuild == null) sender.sendMessage(new TextComponentString(playerName + " is not in a guild!"));
+                    else if(!memberGuild.equals(guild)) sender.sendMessage(new TextComponentString(playerName + " is not in your guild!"));
+                    else
+                    {
+                        guild.removeMember(member);
+                        GuildCache.save();
+                        sender.sendMessage(new TextComponentString("Successfully kicked " + playerName + "!"));
+                    }
                 }
             }
         }
@@ -533,18 +536,21 @@ public class CommandGuild extends CommandBase {
         {
             EntityPlayer entityPlayer = sender.getEntityWorld().getPlayerEntityByName(playerName);
             if(entityPlayer == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
-            //Other fix here
             else
             {
                 UUID member = entityPlayer.getUniqueID();
-                Guild memberGuild = GuildCache.getPlayerGuild(member);
-                if(memberGuild == null) sender.sendMessage(new TextComponentString(playerName + " is not in a guild!"));
-                else if(!memberGuild.equals(guild)) sender.sendMessage(new TextComponentString(playerName + " is not in your guild!"));
+                if(member.equals(player)) sender.sendMessage(new TextComponentString("You are already the Guild Master!"));
                 else
                 {
-                    guild.transferOwnership(member);
-                    GuildCache.save();
-                    sender.sendMessage(new TextComponentString("Successfully transferred ownership to " + playerName + " !"));
+                    Guild memberGuild = GuildCache.getPlayerGuild(member);
+                    if(memberGuild == null) sender.sendMessage(new TextComponentString(playerName + " is not in a guild!"));
+                    else if(!memberGuild.equals(guild)) sender.sendMessage(new TextComponentString(playerName + " is not in your guild!"));
+                    else
+                    {
+                        guild.transferOwnership(member);
+                        GuildCache.save();
+                        sender.sendMessage(new TextComponentString("Successfully transferred ownership to " + playerName + " !"));
+                    }
                 }
             }
         }
