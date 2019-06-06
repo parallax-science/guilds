@@ -11,6 +11,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 
+
 version = "0.1"
 group = "parallaxscience" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "guilds"
@@ -33,9 +34,18 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
-dependencies {
-    //compile 'com.google.code.gson:2.8.5'
+repositories {
+    maven {
+        name = "Curseforge"
+        url = "https://minecraft.curseforge.com/api/maven/"
+    }
+    // along with any other repositories you need
+}
 
+// and later on..
+dependencies {
+    //compileOnly "thaumcraft:Thaumcraft:1.12.2:6.1.BETA26"
+    // along with any other dependencies
 }
 
 processResources {

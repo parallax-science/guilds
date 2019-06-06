@@ -11,7 +11,6 @@ import net.minecraft.item.ItemSpade;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
@@ -162,7 +161,6 @@ public class ChunkEvents {
                 if(raid.isActive())
                 {
                     BlockPos blockPos = event.getPos();
-                    //IBlockState iBlockState = event.getWorld().getBlockState(blockPos);
                     RaidCache.addRestoreBlock(raid.getDefendingGuild(), blockPos, Blocks.AIR.getDefaultState());
                 }
                 else
@@ -198,7 +196,6 @@ public class ChunkEvents {
                 if(raid.isActive())
                 {
                     BlockPos blockPos = event.getPos();
-                    //IBlockState iBlockState = event.getWorld().getBlockState(blockPos);
                     RaidCache.addRestoreBlock(raid.getDefendingGuild(), blockPos, Blocks.AIR.getDefaultState());
                 }
                 else if(!owner.isMember((player.getUniqueID())))

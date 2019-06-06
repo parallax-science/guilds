@@ -44,7 +44,6 @@ public class Guilds
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-
     }
 
     @Mod.EventHandler

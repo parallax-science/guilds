@@ -11,35 +11,30 @@ import parallaxscience.guilds.Guilds;
 public class RaidTimer {
 
     private Raid raid;
-    private int counter;
-    private int countTo;
+    private long startAt;
+    private long endAt;
 
     RaidTimer(Raid raid)
     {
         this.raid = raid;
-        counter = 0;
-        countTo = Guilds.prepSeconds*20;
+        startAt = System.currentTimeMillis() + Guilds.prepSeconds*1000;
+        endAt = startAt + Guilds.raidSeconds*1000;
     }
 
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onServerTick(TickEvent.ServerTickEvent event)
     {
-        if(counter > countTo)
+        long currentTime = System.currentTimeMillis();
+        if(currentTime > endAt)
         {
-            if(raid.isActive())
-            {
-                RaidCache.stopRaid(raid.getDefendingGuild(), true);
-            }
-            else
-            {
-                raid.setActive();
-                PlayerList players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
-                players.sendMessage(new TextComponentString("The raid on " + raid.getDefendingGuild() + " has begun!"));
-                countTo = Guilds.raidSeconds*20;
-                counter = 0;
-            }
+            RaidCache.stopRaid(raid.getDefendingGuild(), true);
         }
-        else counter++;
+        else if(currentTime > startAt)
+        {
+            raid.setActive();
+            PlayerList players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
+            players.sendMessage(new TextComponentString("The raid on " + raid.getDefendingGuild() + " has begun!"));
+        }
     }
 }
