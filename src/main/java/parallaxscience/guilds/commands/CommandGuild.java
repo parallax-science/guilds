@@ -1,6 +1,5 @@
 package parallaxscience.guilds.commands;
 
-import com.sun.istack.internal.Nullable;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
@@ -95,7 +94,7 @@ public class CommandGuild extends CommandBase {
     @Override
     @Nonnull
     @SuppressWarnings("unchecked")
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos)
     {
         if(args.length == 1) return getLastMatchingStrings(args, Arrays.asList(commands));
         else if(args.length == 2)
