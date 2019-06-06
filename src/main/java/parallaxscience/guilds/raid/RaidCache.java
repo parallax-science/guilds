@@ -55,6 +55,7 @@ public class RaidCache {
         if(!isActive) MinecraftForge.EVENT_BUS.register(raidEvents);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     static void stopRaid(String raid, boolean defenseWon)
     {
         getRaid(raid).stopTimer();
@@ -96,23 +97,13 @@ public class RaidCache {
         saveRaid();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void saveRaid()
     {
         File file = new File(fileName);
-        if(!file.exists())
-        {
-            try
-            {
-                file.createNewFile();
-            }
-            catch(Exception e)
-            {
-
-            }
-        }
-
         try
         {
+            file.createNewFile();
             FileOutputStream fileOutputStream = new FileOutputStream(fileName);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(blockRestore);
@@ -121,10 +112,11 @@ public class RaidCache {
         }
         catch(Exception e)
         {
-
+            System.out.println("ERROR: IOException on raid cache file save");
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static void massRestore(FMLServerStartingEvent event)
     {
         world = event.getServer().getWorld(0);

@@ -9,6 +9,7 @@ public final class GuildCache {
 
     private static HashMap<String, Guild> guilds;
 
+    @SuppressWarnings("unchecked")
     public static void initialize()
     {
         try
@@ -69,23 +70,13 @@ public final class GuildCache {
         guilds.remove(guild.getGuildName());
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void save()
     {
         File file = new File(fileName);
-        if(!file.exists())
-        {
-            try
-            {
-                file.createNewFile();
-            }
-            catch(Exception e)
-            {
-
-            }
-        }
-
         try
         {
+            file.createNewFile();
             FileOutputStream fileOutputStream = new FileOutputStream(fileName);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(guilds);
@@ -94,7 +85,7 @@ public final class GuildCache {
         }
         catch(Exception e)
         {
-
+            System.out.println("ERROR: IOException on guild cache file save");
         }
     }
 }

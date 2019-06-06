@@ -12,6 +12,7 @@ public final class ChunkCache
 
     private static HashMap<Integer, HashMap<Integer, String>> chunkMap;
 
+    @SuppressWarnings("unchecked")
     public static void initialize()
     {
         try
@@ -64,7 +65,7 @@ public final class ChunkCache
         }
         if(chunkMap.containsKey(x - 1))
         {
-            if(guildName.equals(chunkMap.get(x - 1).get(z))) return true;
+            return guildName.equals(chunkMap.get(x - 1).get(z));
         }
         return false;
     }
@@ -110,23 +111,13 @@ public final class ChunkCache
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void save()
     {
         File file = new File(fileName);
-        if(!file.exists())
-        {
-            try
-            {
-                file.createNewFile();
-            }
-            catch(Exception e)
-            {
-                System.out.println("ERROR: Could not create a new chunk cache file!");
-            }
-        }
-
         try
         {
+            file.createNewFile();
             FileOutputStream fileOutputStream = new FileOutputStream(fileName);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(chunkMap);
@@ -135,7 +126,7 @@ public final class ChunkCache
         }
         catch(Exception e)
         {
-            System.out.println("ERROR: Could not save chunk cache!");
+            System.out.println("ERROR: IOException on chunk cache file save");
         }
     }
 }

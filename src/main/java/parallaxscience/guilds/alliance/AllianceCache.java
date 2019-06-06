@@ -1,7 +1,6 @@
 package parallaxscience.guilds.alliance;
 
 import parallaxscience.guilds.guild.Guild;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +13,7 @@ public class AllianceCache {
 
     private static HashMap<String, Alliance> alliances;
 
+    @SuppressWarnings("unchecked")
     public static void initialize()
     {
         try
@@ -35,17 +35,12 @@ public class AllianceCache {
         alliances.put(alliance, new Alliance(guildName));
     }
 
-    public static void removeAlliance(String alliance)
-    {
-        alliances.remove(alliance);
-    }
-
     public static void leaveAlliance(Guild guild)
     {
         String guildName = guild.getGuildName();
         Alliance alliance = getAlliance(guildName);
         alliance.removeGuild(guild.getGuildName());
-        if(alliance.getGuildCount() == 0) removeAlliance(guildName);
+        if(alliance.getGuildCount() == 0) alliances.remove(guildName);
         guild.setAlliance(null);
     }
 
@@ -64,24 +59,13 @@ public class AllianceCache {
         return list;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void save()
     {
-
         File file = new File(fileName);
-        if(!file.exists())
-        {
-            try
-            {
-                file.createNewFile();
-            }
-            catch(Exception e)
-            {
-
-            }
-        }
-
         try
         {
+            file.createNewFile();
             FileOutputStream fileOutputStream = new FileOutputStream(fileName);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(alliances);
@@ -90,7 +74,7 @@ public class AllianceCache {
         }
         catch(Exception e)
         {
-
+            System.out.println("ERROR: IOException on alliance cache file save");
         }
     }
 }

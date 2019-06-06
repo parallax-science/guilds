@@ -2,11 +2,9 @@ package parallaxscience.guilds.raid;
 
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.config.RaidConfig;
 
 public class RaidTimer {

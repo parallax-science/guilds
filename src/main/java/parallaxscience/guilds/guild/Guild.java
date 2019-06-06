@@ -1,16 +1,10 @@
 package parallaxscience.guilds.guild;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.config.GuildConfig;
-import parallaxscience.guilds.config.RaidConfig;
-
 import java.io.Serializable;
 import java.util.*;
 
@@ -119,18 +113,6 @@ public class Guild implements Serializable {
             if(rankEntry.getValue() == Rank.MEMBER) adminList.add(playerList.getPlayerByUUID(rankEntry.getKey()).getDisplayNameString());
         }
         return adminList;
-    }
-
-    public ArrayList<UUID> getOnlineMembers()
-    {
-        final List<EntityPlayer> playerList = Minecraft.getMinecraft().world.playerEntities;
-        ArrayList<UUID> onlineMembers = new ArrayList<>();
-        for(EntityPlayer entityPlayer : playerList)
-        {
-            UUID player = entityPlayer.getUniqueID();
-            if(members.containsKey(player)) onlineMembers.add(player);
-        }
-        return onlineMembers;
     }
 
     public void setColor(TextFormatting textFormatting)

@@ -17,11 +17,10 @@ public class Raid {
     private String defendingGuild;
     private ArrayList<UUID> defenders;
     private ArrayList<UUID> attackers;
-
     private RaidTimer raidTimer;
     private raidPhase phase;
 
-    public Raid(String defendingGuild, UUID primaryAttacker)
+    Raid(String defendingGuild, UUID primaryAttacker)
     {
         this.defendingGuild = defendingGuild;
         attackers = new ArrayList<>();
@@ -30,14 +29,9 @@ public class Raid {
         phase = raidPhase.SETUP;
     }
 
-    public boolean isRaider(UUID player)
+    boolean isRaider(UUID player)
     {
         return attackers.contains(player) || defenders.contains(player);
-    }
-
-    public boolean isAttacker(UUID player)
-    {
-        return attackers.contains(player);
     }
 
     public boolean isActive()
@@ -77,7 +71,7 @@ public class Raid {
         }
     }
 
-    public void setActive()
+    void setActive()
     {
         phase = raidPhase.ACTIVE;
     }
@@ -96,7 +90,7 @@ public class Raid {
         defenders.add(player);
     }
 
-    public void stopTimer()
+    void stopTimer()
     {
         MinecraftForge.EVENT_BUS.unregister(raidTimer);
     }

@@ -18,7 +18,7 @@ public class Alliance {
         return guilds;
     }
 
-    public void removeGuild(String guild)
+    void removeGuild(String guild)
     {
         guilds.remove(guild);
     }
@@ -36,7 +36,7 @@ public class Alliance {
         return true;
     }
 
-    public int getGuildCount()
+    int getGuildCount()
     {
         return guilds.size();
     }
