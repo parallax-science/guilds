@@ -10,6 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import parallaxscience.guilds.alliance.AllianceCache;
 import parallaxscience.guilds.config.GeneralConfig;
@@ -49,7 +50,8 @@ public class CommandGuild extends CommandBase {
             "disband",
             "promote",
             "demote",
-            "transfer"
+            "transfer",
+            "setcolor"
     };
 
 
@@ -176,6 +178,14 @@ public class CommandGuild extends CommandBase {
                     }
                     else notEnoughArguments(sender);
                 } break;
+                case "setcolor":
+                {
+                    if(args.length == 2)
+                    {
+                        setColor(sender, player, guild, args[1]);
+                    }
+                    else notEnoughArguments(sender);
+                } break;
 
                 default: sender.sendMessage(new TextComponentString("Invalid command! Type /guild help for valid commands!"));
                     break;
@@ -210,6 +220,7 @@ public class CommandGuild extends CommandBase {
                     sender.sendMessage(new TextComponentString("/guild promote <player> - Promotes a regular member to an admin"));
                     sender.sendMessage(new TextComponentString("/guild demote <player> - Demotes an admin to a regular member"));
                     sender.sendMessage(new TextComponentString("/guild transfer <player> - Transfers ownership of the guild to another"));
+                    sender.sendMessage(new TextComponentString("/guild setcolor <color> - Sets the color of the guild"));
                 }
                 else sender.sendMessage(new TextComponentString("/guild leave - Leave the guild you are currently in"));
             } else sender.sendMessage(new TextComponentString("/guild leave - Leave the guild you are currently in"));
@@ -473,6 +484,22 @@ public class CommandGuild extends CommandBase {
                     GuildCache.save();
                     sender.sendMessage(new TextComponentString("Successfully transferred ownership to " + playerName + " !"));
                 }
+            }
+        }
+    }
+
+    private void setColor(ICommandSender sender, UUID player, Guild guild, String color)
+    {
+        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
+        else if(!guild.getGuildMaster().equals(player)) sender.sendMessage(new TextComponentString("Only the Guild Master may do this!"));
+        else
+        {
+            TextFormatting textFormatting = TextFormatting.getValueByName(color);
+            if(textFormatting == null) sender.sendMessage(new TextComponentString("That is not a valid color name!"));
+            else
+            {
+                guild.setColor(textFormatting);
+                sender.sendMessage(new TextComponentString("Successfully set color to " + color + "!"));
             }
         }
     }

@@ -2,8 +2,14 @@ package parallaxscience.guilds.guild;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.config.GuildConfig;
+import parallaxscience.guilds.config.RaidConfig;
 
 import java.io.Serializable;
 import java.util.*;
@@ -23,6 +29,7 @@ public class Guild implements Serializable {
     private UUID guildMaster;
     private int territoryCount = 0;
     private String alliance;
+    private Style color;
 
     Guild(String guildName, UUID guildMaster){
         this.guildName = guildName;
@@ -30,6 +37,7 @@ public class Guild implements Serializable {
         members = new HashMap<>();
         invitees = new ArrayList<>();
         members.put(guildMaster, Rank.MASTER);
+        color = new Style();
     }
 
     public void transferOwnership(UUID newMaster)
@@ -121,6 +129,16 @@ public class Guild implements Serializable {
             if(members.containsKey(player)) onlineMembers.add(player);
         }
         return onlineMembers;
+    }
+
+    public void setColor(TextFormatting textFormatting)
+    {
+        color.setColor(textFormatting);
+    }
+
+    public Style getColor()
+    {
+        return color;
     }
 
     int getTerritoryCount() {
