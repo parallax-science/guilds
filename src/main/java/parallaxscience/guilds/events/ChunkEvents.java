@@ -50,7 +50,6 @@ public class ChunkEvents {
     @SuppressWarnings("unused")
     public void onBlockBreak(BlockEvent.BreakEvent event)
     {
-        //Add to restore
         if(event.getWorld().isRemote) return;
         EntityPlayerMP player = (EntityPlayerMP) event.getPlayer();
         Guild owner = GuildCache.getGuild(ChunkCache.getChunkOwner(event.getPos()));
@@ -146,7 +145,6 @@ public class ChunkEvents {
     @SuppressWarnings("unused")
     public void onBlockPlaced(BlockEvent.EntityPlaceEvent event)
     {
-        //Add to restore
         if(event.getWorld().isRemote) return;
         Entity entity = event.getEntity();
         if(entity instanceof EntityPlayerMP)
@@ -181,7 +179,6 @@ public class ChunkEvents {
     @SuppressWarnings("unused")
     public void onMultiBlockPlaced(BlockEvent.EntityMultiPlaceEvent event)
     {
-        //Add to restore
         if(event.getWorld().isRemote) return;
         Entity entity = event.getEntity();
         if(entity instanceof EntityPlayerMP)
@@ -210,6 +207,14 @@ public class ChunkEvents {
                 player.sendMessage(new TextComponentString("You cannot place blocks in another guilds territory!"));
             }
         }
+    }
+
+    @SubscribeEvent
+    @SuppressWarnings("unused")
+    public void onPortalSpawn(BlockEvent.PortalSpawnEvent event)
+    {
+        if(event.getWorld().isRemote) return;
+        if(ChunkCache.getChunkOwner(event.getPos()) != null) event.setCanceled(true);
     }
 
     @SubscribeEvent
@@ -281,7 +286,6 @@ public class ChunkEvents {
     @SuppressWarnings("unused")
     public void onDetonate(ExplosionEvent.Detonate event)
     {
-        //Add to restore
         if(event.getWorld().isRemote) return;
 
         List<BlockPos> blocks = event.getAffectedBlocks();
