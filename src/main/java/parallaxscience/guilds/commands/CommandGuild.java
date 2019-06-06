@@ -471,6 +471,7 @@ public class CommandGuild extends CommandBase {
                         guild.removeMember(member);
                         GuildCache.save();
                         guildMessage(sender, "Successfully kicked " + playerName + "!");
+                        guildMessage(entityPlayer, "You have been kicked out of your guild!");
                     }
                 }
             }
