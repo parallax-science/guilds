@@ -10,6 +10,7 @@ import net.minecraft.util.text.TextComponentString;
 import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.alliance.Alliance;
 import parallaxscience.guilds.alliance.AllianceCache;
+import parallaxscience.guilds.config.GeneralConfig;
 import parallaxscience.guilds.guild.Guild;
 import parallaxscience.guilds.guild.GuildCache;
 
@@ -126,7 +127,7 @@ public class CommandAlliance extends CommandBase {
     {
         if(guild.getAlliance() != null) sender.sendMessage(new TextComponentString("Your guild is already part of an alliance!"));
         else if(AllianceCache.getAlliance(alliance) != null) sender.sendMessage(new TextComponentString("Alliance " + alliance + " already exists!"));
-        else if(alliance.length() > Guilds.maxCharLength) sender.sendMessage(new TextComponentString("Alliance name is too long!"));
+        else if(alliance.length() > GeneralConfig.maxCharLength) sender.sendMessage(new TextComponentString("Alliance name is too long!"));
         else
         {
             guild.setAlliance(alliance);

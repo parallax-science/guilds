@@ -17,16 +17,10 @@ import parallaxscience.guilds.raid.RaidCache;
 @Mod(modid = Guilds.MODID, name = Guilds.NAME, version = Guilds.VERSION, acceptedMinecraftVersions = Guilds.MC_VERSION, acceptableRemoteVersions = "*")
 public class Guilds
 {
-    static final String MODID = "guilds";
+    public static final String MODID = "guilds";
     static final String NAME = "The Guilds Mod";
     static final String VERSION = "ALPHA 1.0";
     static final String MC_VERSION = "[1.12.2]";
-
-    //Temporary, fill in for config file
-    public static final int claimPerPlayer = 50;
-    public static final int maxCharLength = 20;
-    public static final int prepSeconds = 10;
-    public static final int raidSeconds = 60;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
