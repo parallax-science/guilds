@@ -8,7 +8,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import parallaxscience.guilds.config.RaidConfig;
 import parallaxscience.guilds.guild.Guild;
@@ -16,7 +19,6 @@ import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.raid.Raid;
 import parallaxscience.guilds.raid.RaidCache;
 import scala.actors.threadpool.Arrays;
-
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
@@ -37,6 +39,13 @@ public class CommandRaid extends CommandBase {
             "leave",
             "start"
     };
+
+    private static final Style style = new Style();
+
+    public CommandRaid()
+    {
+        style.setColor(TextFormatting.RED);
+    }
 
     /**
      * Gets the name of the command
@@ -106,7 +115,7 @@ public class CommandRaid extends CommandBase {
     {
         if(args.length == 0)
         {
-            sender.sendMessage(new TextComponentString("Type \"/raid help\" for help"));
+            raidMessage(sender, "Type \"/raid help\" for help");
         }
         else
         {
@@ -121,76 +130,85 @@ public class CommandRaid extends CommandBase {
                 case "help": displayHelp(sender, guild, raid);
                     break;
                 case "join":
-                {
-                    joinRaid(sender, player, guild, raid, args[1]);
-                } break;
+                    if(args.length == 2)
+                    {
+                        joinRaid(sender, player, guild, raid, args[1]);
+                    }
+                    else notEnoughArguments(sender);
+                    break;
                 case "leave":
-                {
                     leaveRaid(sender, player, guild, raid);
-                } break;
+                    break;
                 case "start":
-                {
                     startRaid(sender, raid);
-                } break;
-
-                default: sender.sendMessage(new TextComponentString("Invalid command! Type /raid help for valid commands!"));
+                    break;
+                default: raidMessage(sender, "Invalid command! Type /raid help for valid commands!");
                     break;
             }
         }
     }
 
+    private void notEnoughArguments(ICommandSender sender) { raidMessage(sender, "Error: Not enough arguments!"); }
+
+    private void raidMessage(ICommandSender sender, String message)
+    {
+        ITextComponent textComponent = new TextComponentString(message);
+        textComponent.setStyle(style);
+        sender.sendMessage(textComponent);
+    }
+
     private void displayHelp(ICommandSender sender, Guild guild, Raid raid)
     {
-        if(guild == null) sender.sendMessage(new TextComponentString("Only those who are in a guild can use raid commands!"));
+        if(guild == null) raidMessage(sender, "Only those who are in a guild can use raid commands!");
         else
         {
-            sender.sendMessage(new TextComponentString("/raid help - Displays raid commands."));
-            if(raid == null) sender.sendMessage(new TextComponentString("/raid join <guild> - Join a raid on a guild"));
+            raidMessage(sender, "/raid help - Displays raid commands.");
+            if(raid == null) raidMessage(sender, "/raid join <guild> - Join a raid on a guild");
             else if(!raid.isStarted())
             {
-                sender.sendMessage(new TextComponentString("/raid start - Start the raid."));
-                sender.sendMessage(new TextComponentString("/raid leave - Leave the current raiding party."));
+                raidMessage(sender, "/raid start - Start the raid.");
+                raidMessage(sender, "/raid leave - Leave the current raiding party.");
             }
         }
     }
 
     private void joinRaid(ICommandSender sender, UUID player, Guild guild, Raid playerRaid, String newRaidName)
     {
-        if(guild == null) sender.sendMessage(new TextComponentString("Only those who are in a guild may join a raid!"));
+        if(guild == null) raidMessage(sender, "Only those who are in a guild may join a raid!");
         else
         {
-            if(playerRaid != null) sender.sendMessage(new TextComponentString("You are already part of a raid!"));
-            else if(newRaidName.equals(guild.getGuildName())) sender.sendMessage(new TextComponentString("You cannot join a raid on your own guild!"));
+            if(playerRaid != null) raidMessage(sender, "You are already part of a raid!");
+            else if(newRaidName.equals(guild.getGuildName())) raidMessage(sender, "You cannot join a raid on your own guild!");
             else
             {
                 Raid raid = RaidCache.getRaid(newRaidName);
                 if(raid == null)
                 {
-                    sender.sendMessage(new TextComponentString("Successfully joined the raid on " + newRaidName + "!"));
+                    raidMessage(sender, "Successfully joined the raid on " + newRaidName + "!");
                     RaidCache.createRaid(newRaidName, player);
                 }
-                else if(raid.isActive()) sender.sendMessage(new TextComponentString("The raid on " + newRaidName + " has already begun!"));
+                else if(raid.isActive()) raidMessage(sender, "The raid on " + newRaidName + " has already begun!");
                 else
                 {
                     String alliance = guild.getAlliance();
-                    if(alliance == null) sender.sendMessage(new TextComponentString("Your guild is not a part of an alliance!"));
+                    if(alliance == null) raidMessage(sender, "Your guild is not a part of an alliance!");
                     else if(alliance.equals(GuildCache.getGuild(newRaidName).getAlliance()))
                     {
                         if(raid.isStarted())
                         {
                             raid.addDefender(player);
-                            sender.sendMessage(new TextComponentString("Successfully joined the raid on " + newRaidName + " as a defender!"));
+                            raidMessage(sender, "Successfully joined the raid on " + newRaidName + " as a defender!");
                         }
-                        else sender.sendMessage(new TextComponentString("A raid has not been started for that guild!"));
+                        else raidMessage(sender, "A raid has not been started for that guild!");
                     }
                     else
                     {
                         if(raid.canAttackerJoin())
                         {
                             raid.addAttacker(player);
-                            sender.sendMessage(new TextComponentString("Successfully joined the raid on " + newRaidName + "!"));
+                            raidMessage(sender, "Successfully joined the raid on " + newRaidName + "!");
                         }
-                        else sender.sendMessage(new TextComponentString("No more attackers can join the raid at the moment!"));
+                        else raidMessage(sender, "No more attackers can join the raid at the moment!");
                     }
                 }
             }
@@ -199,21 +217,21 @@ public class CommandRaid extends CommandBase {
 
     private void leaveRaid(ICommandSender sender, UUID player, Guild guild, Raid raid)
     {
-        if(guild == null) sender.sendMessage(new TextComponentString("You are not part of a guild!"));
-        else if(raid == null) sender.sendMessage(new TextComponentString("You are not currently a part of a raid!"));
-        else if(raid.getDefendingGuild().equals(guild.getGuildName())) sender.sendMessage(new TextComponentString("You are not currently a part of a raid!")); //To hide a potential raid
-        else if(raid.isStarted()) sender.sendMessage(new TextComponentString("The raid preparation has already begun!"));
+        if(guild == null) raidMessage(sender, "You are not part of a guild!");
+        else if(raid == null) raidMessage(sender, "You are not currently a part of a raid!");
+        else if(raid.getDefendingGuild().equals(guild.getGuildName())) raidMessage(sender, "You are not currently a part of a raid!"); //To hide a potential raid
+        else if(raid.isStarted()) raidMessage(sender, "The raid preparation has already begun!");
         else
         {
             raid.removePlayer(player);
-            sender.sendMessage(new TextComponentString("You have successfully left the raid."));
+            raidMessage(sender, "You have successfully left the raid.");
         }
     }
 
     private void startRaid(ICommandSender sender, Raid raid)
     {
-        if(raid == null) sender.sendMessage(new TextComponentString("You are not currently a part of a raid!"));
-        else if(raid.isStarted()) sender.sendMessage(new TextComponentString("Raid is already started!"));
+        if(raid == null) raidMessage(sender, "You are not currently a part of a raid!");
+        else if(raid.isStarted()) raidMessage(sender, "Raid is already started!");
         else
         {
             raid.startRaid();

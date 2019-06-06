@@ -9,6 +9,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -57,6 +59,13 @@ public class CommandGuild extends CommandBase {
             "transfer",
             "setcolor"
     };
+
+    private static final Style style = new Style();
+
+    public CommandGuild()
+    {
+        style.setColor(TextFormatting.GREEN);
+    }
 
     @Override
     @Nonnull
@@ -159,7 +168,7 @@ public class CommandGuild extends CommandBase {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
         if(args.length == 0)
         {
-            sender.sendMessage(new TextComponentString("Type \"/guild help\" for help"));
+            guildMessage(sender, "Type \"/guild help\" for help");
         }
         else
         {
@@ -173,153 +182,145 @@ public class CommandGuild extends CommandBase {
                 case "help": displayHelp(sender, player, guild);
                     break;
                 case "form":
-                {
                     if(args.length == 2) formGuild(sender, player, guild, args[1]);
                     else notEnoughArguments(sender);
-                } break;
+                    break;
                 case "accept":
-                {
                     if(args.length == 2) joinGuild(sender, player, guild, args[1]);
                     else notEnoughArguments(sender);
-                } break;
+                    break;
                 case "leave":
-                {
                     leaveGuild(sender, player, guild);
-                } break;
+                    break;
                 case "members":
-                {
                     listMembers(sender, guild);
-                } break;
+                    break;
                 case "invite":
-                {
                     if(args.length == 2) invite(sender, player, guild, args[1]);
                     else notEnoughArguments(sender);
-                } break;
+                    break;
                 case "claim":
-                {
                     claim(sender, player, guild);
-                } break;
+                    break;
                 case "abandon":
-                {
                     abandon(sender, player, guild);
-                } break;
+                    break;
                 case "kick":
-                {
                     if(args.length == 2)
                     {
                         kick(sender, player, guild, args[1]);
                     }
                     else notEnoughArguments(sender);
-                } break;
+                    break;
                 case "disband":
-                {
                     disbandGuild(sender, player, guild);
-                } break;
+                    break;
                 case "promote":
-                {
                     if(args.length == 2)
                     {
                         promote(sender, player, guild, args[1]);
                     }
                     else notEnoughArguments(sender);
-                } break;
+                    break;
                 case "demote":
-                {
                     if(args.length == 2)
                     {
                         demote(sender, player, guild, args[1]);
                     }
                     else notEnoughArguments(sender);
-                } break;
+                    break;
                 case "transfer":
-                {
                     if(args.length == 2)
                     {
                         transfer(sender, player, guild, args[1]);
                     }
                     else notEnoughArguments(sender);
-                } break;
+                    break;
                 case "setcolor":
-                {
                     if(args.length == 2)
                     {
                         setColor(sender, player, guild, args[1]);
                     }
                     else notEnoughArguments(sender);
-                } break;
-
-                default: sender.sendMessage(new TextComponentString("Invalid command! Type /guild help for valid commands!"));
+                    break;
+                default: guildMessage(sender, "Invalid command! Type /guild help for valid commands!");
                     break;
             }
         }
     }
 
 
-    private void notEnoughArguments(ICommandSender sender) { sender.sendMessage(new TextComponentString("Error: Not enough arguments!")); }
+    private void notEnoughArguments(ICommandSender sender) { guildMessage(sender, "Error: Not enough arguments!"); }
 
+    private void guildMessage(ICommandSender sender, String message)
+    {
+        ITextComponent textComponent = new TextComponentString(message);
+        textComponent.setStyle(style);
+        sender.sendMessage(textComponent);
+    }
 
     private void displayHelp(ICommandSender sender, UUID player, Guild guild)
     {
-        sender.sendMessage(new TextComponentString("/guild help - Lists all available commands"));
+        guildMessage(sender, "/guild help - Lists all available commands");
         if(guild == null)
         {
-            sender.sendMessage(new TextComponentString("/guild form <guild> - Creates a new guild"));
-            sender.sendMessage(new TextComponentString("/guild accept <guild> - Accept invite to join guild"));
+            guildMessage(sender, "/guild form <guild> - Creates a new guild");
+            guildMessage(sender, "/guild accept <guild> - Accept invite to join guild");
         }
         else
         {
-            sender.sendMessage(new TextComponentString("/guild members - Lists all guild members and ranks"));
+            guildMessage(sender, "/guild members - Lists all guild members and ranks");
             if(guild.isAdmin(player))
             {
-                sender.sendMessage(new TextComponentString("/guild invite <player> - Invites a player to your guild"));
-                sender.sendMessage(new TextComponentString("/guild claim - Claims a chunk as guild territory"));
-                sender.sendMessage(new TextComponentString("/guild abandon - Removes a chunk from guild territory"));
-                sender.sendMessage(new TextComponentString("/guild kick <player> - Kick player from guild"));
+                guildMessage(sender, "/guild invite <player> - Invites a player to your guild");
+                guildMessage(sender, "/guild claim - Claims a chunk as guild territory");
+                guildMessage(sender, "/guild abandon - Removes a chunk from guild territory");
+                guildMessage(sender, "/guild kick <player> - Kick player from guild");
                 if(guild.getGuildMaster().equals(player))
                 {
-                    sender.sendMessage(new TextComponentString("/guild disband - Disbands the guild you have created"));
-                    sender.sendMessage(new TextComponentString("/guild promote <player> - Promotes a regular member to an admin"));
-                    sender.sendMessage(new TextComponentString("/guild demote <player> - Demotes an admin to a regular member"));
-                    sender.sendMessage(new TextComponentString("/guild transfer <player> - Transfers ownership of the guild to another"));
-                    sender.sendMessage(new TextComponentString("/guild setcolor <color> - Sets the color of the guild"));
+                    guildMessage(sender, "/guild disband - Disbands the guild you have created");
+                    guildMessage(sender, "/guild promote <player> - Promotes a regular member to an admin");
+                    guildMessage(sender, "/guild demote <player> - Demotes an admin to a regular member");
+                    guildMessage(sender, "/guild transfer <player> - Transfers ownership of the guild to another");
+                    guildMessage(sender, "/guild setcolor <color> - Sets the color of the guild");
                 }
-                else sender.sendMessage(new TextComponentString("/guild leave - Leave the guild you are currently in"));
-            } else sender.sendMessage(new TextComponentString("/guild leave - Leave the guild you are currently in"));
+                else guildMessage(sender, "/guild leave - Leave the guild you are currently in");
+            } else guildMessage(sender, "/guild leave - Leave the guild you are currently in");
         }
     }
 
 
     private void formGuild(ICommandSender sender, UUID player, Guild guild, String guildName)
     {
-        if(guild != null) sender.sendMessage(new TextComponentString("You are already in a guild!"));
+        if(guild != null) guildMessage(sender, "You are already in a guild!");
         else
         {
-            if(guildName.length() > GeneralConfig.maxCharLength) sender.sendMessage(new TextComponentString("Guild name is too long!"));
+            if(guildName.length() > GeneralConfig.maxCharLength) guildMessage(sender, "Guild name is too long!");
             else if(GuildCache.addGuild(guildName, player))
             {
                 GuildCache.save();
-                sender.sendMessage(new TextComponentString("Successfully created guild: " + guildName + "!"));
+                guildMessage(sender, "Successfully created guild: " + guildName + "!");
             }
-            else sender.sendMessage(new TextComponentString("A guild with that name has already been formed!"));
+            else guildMessage(sender, "A guild with that name has already been formed!");
         }
     }
 
 
     private void joinGuild(ICommandSender sender, UUID player, Guild guild, String guildName)
     {
-        if(guild != null) sender.sendMessage(new TextComponentString("You are already in a guild!"));
+        if(guild != null) guildMessage(sender, "You are already in a guild!");
         else
         {
             Guild newGuild = GuildCache.getGuild(guildName);
-            if(newGuild == null) sender.sendMessage(new TextComponentString("Guild does not exist!"));
+            if(newGuild == null) guildMessage(sender, "Guild does not exist!");
             else
             {
                 if(newGuild.acceptInvite(player))
                 {
                     GuildCache.save();
-                    sender.sendMessage(new TextComponentString("Successfully joined " + guildName + "!"));
+                    guildMessage(sender, "Successfully joined " + guildName + "!");
                 }
-                else sender.sendMessage(new TextComponentString("You have not received an invitation from " + guildName + "!"));
+                else guildMessage(sender, "You have not received an invitation from " + guildName + "!");
             }
         }
     }
@@ -327,36 +328,36 @@ public class CommandGuild extends CommandBase {
 
     private void disbandGuild(ICommandSender sender, UUID player, Guild guild)
     {
-        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
-        else if(!guild.getGuildMaster().equals(player)) sender.sendMessage(new TextComponentString("Only the Guild Master may disband the guild!"));
-        else if(RaidCache.getRaid(guild.getGuildName()) != null) sender.sendMessage(new TextComponentString("You cannot disband a guild during a raid!"));
+        if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
+        else if(!guild.getGuildMaster().equals(player)) guildMessage(sender, "Only the Guild Master may disband the guild!");
+        else if(RaidCache.getRaid(guild.getGuildName()) != null) guildMessage(sender, "You cannot disband a guild during a raid!");
         else
         {
             if(guild.getAlliance() != null) AllianceCache.leaveAlliance(guild);
             GuildCache.removeGuild(guild);
             GuildCache.save();
-            sender.sendMessage(new TextComponentString("Successfully disbanded " + guild.getGuildName() + "!"));
+            guildMessage(sender, "Successfully disbanded " + guild.getGuildName() + "!");
         }
     }
 
 
     private void invite(ICommandSender sender, UUID player, Guild guild, String playerName)
     {
-        if(guild == null)sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
-        else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You are not an admin!"));
+        if(guild == null)guildMessage(sender, "You are not currently a part of a guild!");
+        else if(!guild.isAdmin(player)) guildMessage(sender, "You are not an admin!");
         else
         {
             EntityPlayer entityPlayer = sender.getEntityWorld().getPlayerEntityByName(playerName);
-            if(entityPlayer == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
+            if(entityPlayer == null) guildMessage(sender, "Player: " + playerName + " does not exist in this world!");
             else
             {
                 UUID invitee = entityPlayer.getUniqueID();
-                if(GuildCache.getPlayerGuild(invitee) != null) sender.sendMessage(new TextComponentString(playerName + " is already in a guild!"));
+                if(GuildCache.getPlayerGuild(invitee) != null) guildMessage(sender, playerName + " is already in a guild!");
                 else
                 {
                     guild.addInvitee(invitee);
                     GuildCache.save();
-                    sender.sendMessage(new TextComponentString("Successfully invited " + playerName + "!"));
+                    guildMessage(sender, "Successfully invited " + playerName + "!");
                     entityPlayer.sendMessage(new TextComponentString("You have been invited to join " + guild.getGuildName() + "!"));
                 }
             }
@@ -367,33 +368,33 @@ public class CommandGuild extends CommandBase {
 
     private void leaveGuild(ICommandSender sender, UUID player, Guild guild)
     {
-        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
-        else if(guild.getGuildMaster().equals(player)) sender.sendMessage(new TextComponentString("A Guild Master cannot leave, only disband!"));
-        else if(RaidCache.getRaid(guild.getGuildName()) != null) sender.sendMessage(new TextComponentString("You cannot leave a guild during a raid!"));
+        if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
+        else if(guild.getGuildMaster().equals(player)) guildMessage(sender, "A Guild Master cannot leave, only disband!");
+        else if(RaidCache.getRaid(guild.getGuildName()) != null) guildMessage(sender, "You cannot leave a guild during a raid!");
         else
         {
             guild.removeMember(player);
             GuildCache.save();
-            sender.sendMessage(new TextComponentString("Successfully left " + guild.getGuildName() + "!"));
+            guildMessage(sender, "Successfully left " + guild.getGuildName() + "!");
         }
     }
 
     private void listMembers(ICommandSender sender, Guild guild)
     {
-        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
+        if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
         else
         {
-            sender.sendMessage(new TextComponentString("*Guild Master: " + guild.getGuildMaster()));
-            sender.sendMessage(new TextComponentString("*Admins:"));
+            guildMessage(sender, "*Guild Master: " + guild.getGuildMaster());
+            guildMessage(sender, "*Admins:");
             for(String player : guild.getAdmins())
             {
-                sender.sendMessage(new TextComponentString(" - " + player));
+                guildMessage(sender, " - " + player);
             }
 
-            sender.sendMessage(new TextComponentString("*Members:"));
+            guildMessage(sender, "*Members:");
             for(String player : guild.getMembers())
             {
-                sender.sendMessage(new TextComponentString(" - " + player));
+                guildMessage(sender, " - " + player);
             }
         }
     }
@@ -401,25 +402,25 @@ public class CommandGuild extends CommandBase {
 
     private void claim(ICommandSender sender, UUID player, Guild guild)
     {
-        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
-        else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to claim land!"));
+        if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
+        else if(!guild.isAdmin(player)) guildMessage(sender, "You do not have permission to claim land!");
         else
         {
-            if(sender.getEntityWorld().provider.getDimension() != 0) sender.sendMessage(new TextComponentString("You can only claim land in the over world!"));
+            if(sender.getEntityWorld().provider.getDimension() != 0) guildMessage(sender, "You can only claim land in the over world!");
             else
             {
                 ChunkPos chunkPos = new ChunkPos(sender.getPosition());
                 String owner = ChunkCache.getChunkOwner(chunkPos);
-                if(owner != null) sender.sendMessage(new TextComponentString("This chunk is already claimed by " + owner + "!"));
-                else if(guild.hasMaxClaim()) sender.sendMessage(new TextComponentString("Your guild has reached its max claim limit!"));
-                else if(!ChunkCache.isConnected(chunkPos, guild)) sender.sendMessage(new TextComponentString("You cannot claim this chunk because it is not adjacent to your existing territory!"));
+                if(owner != null) guildMessage(sender, "This chunk is already claimed by " + owner + "!");
+                else if(guild.hasMaxClaim()) guildMessage(sender, "Your guild has reached its max claim limit!");
+                else if(!ChunkCache.isConnected(chunkPos, guild)) guildMessage(sender, "You cannot claim this chunk because it is not adjacent to your existing territory!");
                 else
                 {
                     ChunkCache.setChunkOwner(chunkPos, guild.getGuildName());
                     guild.incrementTerritoryCount();
                     GuildCache.save();
                     ChunkCache.save();
-                    sender.sendMessage(new TextComponentString("Chunk successfully claimed!"));
+                    guildMessage(sender, "Chunk successfully claimed!");
                 }
             }
         }
@@ -428,21 +429,21 @@ public class CommandGuild extends CommandBase {
 
     private void abandon(ICommandSender sender, UUID player, Guild guild)
     {
-        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
-        else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to abandon land!"));
+        if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
+        else if(!guild.isAdmin(player)) guildMessage(sender, "You do not have permission to abandon land!");
         else
         {
             ChunkPos chunkPos = new ChunkPos(sender.getPosition());
             String owner = ChunkCache.getChunkOwner(chunkPos);
-            if(owner == null) sender.sendMessage(new TextComponentString("This chunk is not claimed!"));
-            else if(!owner.equals(guild.getGuildName())) sender.sendMessage(new TextComponentString("This chunk belongs to " + owner + "!"));
+            if(owner == null) guildMessage(sender, "This chunk is not claimed!");
+            else if(!owner.equals(guild.getGuildName())) guildMessage(sender, "This chunk belongs to " + owner + "!");
             else
             {
                 ChunkCache.removeChunkOwner(chunkPos);
                 guild.decrementTerritoryCount();
                 GuildCache.save();
                 ChunkCache.save();
-                sender.sendMessage(new TextComponentString("Chunk successfully abandoned!"));
+                guildMessage(sender, "Chunk successfully abandoned!");
             }
         }
     }
@@ -450,26 +451,26 @@ public class CommandGuild extends CommandBase {
 
     private void kick(ICommandSender sender, UUID player, Guild guild, String playerName)
     {
-        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
-        else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to kick a member!"));
+        if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
+        else if(!guild.isAdmin(player)) guildMessage(sender, "You do not have permission to kick a member!");
         else
         {
             EntityPlayer entityPlayer = sender.getEntityWorld().getPlayerEntityByName(playerName);
-            if(entityPlayer == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
+            if(entityPlayer == null) guildMessage(sender, "Player: " + playerName + " does not exist in this world!");
             else
             {
                 UUID member = entityPlayer.getUniqueID();
-                if(member.equals(player)) sender.sendMessage(new TextComponentString("You cannot kick yourself, that would hurt!"));
+                if(member.equals(player)) guildMessage(sender, "You cannot kick yourself, that would hurt!");
                 else
                 {
                     Guild memberGuild = GuildCache.getPlayerGuild(member);
-                    if(memberGuild == null) sender.sendMessage(new TextComponentString(playerName + " is not in a guild!"));
-                    else if(!memberGuild.equals(guild)) sender.sendMessage(new TextComponentString(playerName + " is not in your guild!"));
+                    if(memberGuild == null) guildMessage(sender, playerName + " is not in a guild!");
+                    else if(!memberGuild.equals(guild)) guildMessage(sender, playerName + " is not in your guild!");
                     else
                     {
                         guild.removeMember(member);
                         GuildCache.save();
-                        sender.sendMessage(new TextComponentString("Successfully kicked " + playerName + "!"));
+                        guildMessage(sender, "Successfully kicked " + playerName + "!");
                     }
                 }
             }
@@ -479,24 +480,24 @@ public class CommandGuild extends CommandBase {
 
     private void promote(ICommandSender sender, UUID player, Guild guild, String playerName)
     {
-        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
-        else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to promote a member!"));
+        if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
+        else if(!guild.isAdmin(player)) guildMessage(sender, "You do not have permission to promote a member!");
         else
         {
             EntityPlayer entityPlayer = sender.getEntityWorld().getPlayerEntityByName(playerName);
-            if(entityPlayer == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
+            if(entityPlayer == null) guildMessage(sender, "Player: " + playerName + " does not exist in this world!");
             else
             {
                 UUID member = entityPlayer.getUniqueID();
                 Guild memberGuild = GuildCache.getPlayerGuild(member);
-                if(memberGuild == null) sender.sendMessage(new TextComponentString(playerName + " is not in a guild!"));
-                else if(memberGuild.equals(guild)) sender.sendMessage(new TextComponentString(playerName + " is not in your guild!"));
-                else if(guild.isAdmin(member)) sender.sendMessage(new TextComponentString(playerName + " is already an admin!"));
+                if(memberGuild == null) guildMessage(sender, playerName + " is not in a guild!");
+                else if(memberGuild.equals(guild)) guildMessage(sender, playerName + " is not in your guild!");
+                else if(guild.isAdmin(member)) guildMessage(sender, playerName + " is already an admin!");
                 else
                 {
                     guild.promote(member);
                     GuildCache.save();
-                    sender.sendMessage(new TextComponentString("Successfully promoted " + playerName + " !"));
+                    guildMessage(sender, "Successfully promoted " + playerName + " !");
                 }
             }
         }
@@ -505,24 +506,24 @@ public class CommandGuild extends CommandBase {
 
     private void demote(ICommandSender sender, UUID player, Guild guild, String playerName)
     {
-        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
-        else if(!guild.isAdmin(player)) sender.sendMessage(new TextComponentString("You do not have permission to demote a member!"));
+        if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
+        else if(!guild.isAdmin(player)) guildMessage(sender, "You do not have permission to demote a member!");
         else
         {
             EntityPlayer entityPlayer = sender.getEntityWorld().getPlayerEntityByName(playerName);
-            if(entityPlayer == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
+            if(entityPlayer == null) guildMessage(sender, "Player: " + playerName + " does not exist in this world!");
             else
             {
                 UUID member = entityPlayer.getUniqueID();
                 Guild memberGuild = GuildCache.getPlayerGuild(member);
-                if(memberGuild == null) sender.sendMessage(new TextComponentString(playerName + " is not in a guild!"));
-                else if(memberGuild.equals(guild)) sender.sendMessage(new TextComponentString(playerName + " is not in your guild!"));
-                else if(guild.isAdmin(member)) sender.sendMessage(new TextComponentString(playerName + " is already a regular member!"));
+                if(memberGuild == null) guildMessage(sender, playerName + " is not in a guild!");
+                else if(memberGuild.equals(guild)) guildMessage(sender, playerName + " is not in your guild!");
+                else if(guild.isAdmin(member)) guildMessage(sender, playerName + " is already a regular member!");
                 else
                 {
                     guild.demote(member);
                     GuildCache.save();
-                    sender.sendMessage(new TextComponentString("Successfully demoted " + playerName + " !"));
+                    guildMessage(sender, "Successfully demoted " + playerName + " !");
                 }
             }
         }
@@ -530,26 +531,26 @@ public class CommandGuild extends CommandBase {
 
     private void transfer(ICommandSender sender, UUID player, Guild guild, String playerName)
     {
-        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
-        else if(!guild.getGuildMaster().equals(player)) sender.sendMessage(new TextComponentString("You are not the Guild Master!"));
+        if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
+        else if(!guild.getGuildMaster().equals(player)) guildMessage(sender, "You are not the Guild Master!");
         else
         {
             EntityPlayer entityPlayer = sender.getEntityWorld().getPlayerEntityByName(playerName);
-            if(entityPlayer == null) sender.sendMessage(new TextComponentString("Player: " + playerName + " does not exist in this world!"));
+            if(entityPlayer == null) guildMessage(sender, "Player: " + playerName + " does not exist in this world!");
             else
             {
                 UUID member = entityPlayer.getUniqueID();
-                if(member.equals(player)) sender.sendMessage(new TextComponentString("You are already the Guild Master!"));
+                if(member.equals(player)) guildMessage(sender, "You are already the Guild Master!");
                 else
                 {
                     Guild memberGuild = GuildCache.getPlayerGuild(member);
-                    if(memberGuild == null) sender.sendMessage(new TextComponentString(playerName + " is not in a guild!"));
-                    else if(!memberGuild.equals(guild)) sender.sendMessage(new TextComponentString(playerName + " is not in your guild!"));
+                    if(memberGuild == null) guildMessage(sender, playerName + " is not in a guild!");
+                    else if(!memberGuild.equals(guild)) guildMessage(sender, playerName + " is not in your guild!");
                     else
                     {
                         guild.transferOwnership(member);
                         GuildCache.save();
-                        sender.sendMessage(new TextComponentString("Successfully transferred ownership to " + playerName + " !"));
+                        guildMessage(sender, "Successfully transferred ownership to " + playerName + " !");
                     }
                 }
             }
@@ -558,16 +559,16 @@ public class CommandGuild extends CommandBase {
 
     private void setColor(ICommandSender sender, UUID player, Guild guild, String color)
     {
-        if(guild == null) sender.sendMessage(new TextComponentString("You are not currently a part of a guild!"));
-        else if(!guild.getGuildMaster().equals(player)) sender.sendMessage(new TextComponentString("Only the Guild Master may do this!"));
+        if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
+        else if(!guild.getGuildMaster().equals(player)) guildMessage(sender, "Only the Guild Master may do this!");
         else
         {
             TextFormatting textFormatting = TextFormatting.getValueByName(color);
-            if(textFormatting == null) sender.sendMessage(new TextComponentString("That is not a valid color name!"));
+            if(textFormatting == null) guildMessage(sender, "That is not a valid color name!");
             else
             {
                 guild.setColor(textFormatting);
-                sender.sendMessage(new TextComponentString("Successfully set color to " + color + "!"));
+                guildMessage(sender, "Successfully set color to " + color + "!");
             }
         }
     }
