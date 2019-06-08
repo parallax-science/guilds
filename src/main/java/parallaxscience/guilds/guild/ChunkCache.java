@@ -6,12 +6,30 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class that is used to store and manage claimed chunk information
+ * Holds the master list of claimed chunks
+ * @author Tristan Jay
+ */
 public final class ChunkCache
 {
+    /**
+     * Filepath to the ChunkCache save file location
+     */
     private static final String fileName = "world/Guilds_ChunkCache.dat";
 
+    /**
+     * List of all of the claimed chunks and the owning guild
+     * Implements a double-HashMap for fast indexing
+     * @see HashMap
+     */
     private static HashMap<Integer, HashMap<Integer, String>> chunkMap;
 
+    /**
+     * Initialize function for the class
+     * Attempts to load the chunk data from file
+     * If no chunk data is found, create a new HashMap
+     */
     @SuppressWarnings("unchecked")
     public static void initialize()
     {
@@ -29,23 +47,45 @@ public final class ChunkCache
         }
     }
 
+    /**
+     * Returns the name of the owner of a chunk
+     * @param x X coordinate for the chunk
+     * @param z Z coordinate for the chunk
+     * @return String name of the owning guild
+     */
     public static String getChunkOwner(int x, int z)
     {
         if(!chunkMap.containsKey(x)) return null;
         return chunkMap.get(x).get(z);
     }
 
+    /**
+     * Returns the name of the owner of a block
+     * @param blockPos BlockPos of the block
+     * @return String name of the owning guild
+     */
     public static String getChunkOwner(BlockPos blockPos)
     {
         ChunkPos chunkPos = new ChunkPos(blockPos);
         return getChunkOwner(chunkPos.x, chunkPos.z);
     }
 
+    /**
+     * Returns the name of the owner of a chunk
+     * @param chunkPos ChunkPos of the chunk
+     * @return String name of the owning guild
+     */
     public static String getChunkOwner(ChunkPos chunkPos)
     {
         return getChunkOwner(chunkPos.x, chunkPos.z);
     }
 
+    /**
+     * Checks to see if the chunk is connected to the rest of the guild's territory
+     * @param chunkPos ChunkPos of the chunk
+     * @param guild Guild object reference
+     * @return true if the chunk is connected to the rest of the guild territory
+     */
     public static boolean isConnected(ChunkPos chunkPos, Guild guild)
     {
         if(guild.getTerritoryCount() == 0) return true;
@@ -70,6 +110,11 @@ public final class ChunkCache
         return false;
     }
 
+    /**
+     * Sets the owner of a chunk
+     * @param chunkPos ChunkPos of the chunk
+     * @param guildName String name of the guild
+     */
     public static void setChunkOwner(ChunkPos chunkPos, String guildName)
     {
         int x = chunkPos.x;
@@ -93,6 +138,11 @@ public final class ChunkCache
         }
     }
 
+    /**
+     * Removes a chunk from a guild's territory
+     * Removes the chunk from the chunk list
+     * @param chunkPos ChunkPos of the chunk
+     */
     public static void removeChunkOwner(ChunkPos chunkPos)
     {
         int x = chunkPos.x;
@@ -100,6 +150,10 @@ public final class ChunkCache
         if(chunkMap.get(x).get(z) != null) chunkMap.get(x).remove(z);
     }
 
+    /**
+     * Remove all of a guild's claimed chunks
+     * @param guildName String name of the guild
+     */
     static void removeAllClaimed(String guildName)
     {
         for(Map.Entry<Integer, HashMap<Integer, String>> entry : chunkMap.entrySet())
@@ -111,6 +165,9 @@ public final class ChunkCache
         }
     }
 
+    /**
+     * Saves the guild data to file
+     */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void save()
     {

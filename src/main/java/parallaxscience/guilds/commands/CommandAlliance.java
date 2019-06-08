@@ -23,6 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Class for handling alliance commands
+ * @see CommandBase
+ * @author Tristan Jay
+ */
 public class CommandAlliance extends CommandBase {
 
     /**
@@ -39,15 +44,24 @@ public class CommandAlliance extends CommandBase {
             "invite",
     };
 
+    /**
+     * Variable for storing the alliance command color style
+     * Called whenever an alliance command is used
+     * @see Style
+     */
     private static final Style style = new Style();
 
+    /**
+     * Constructor for the class
+     * Only used to set the alliance style color
+     */
     public CommandAlliance()
     {
         style.setColor(TextFormatting.BLUE);
     }
 
     /**
-     * Gets the name of the command
+     * Returns the name of the command
      */
     @Override
     @Nonnull
@@ -55,6 +69,11 @@ public class CommandAlliance extends CommandBase {
         return "alliance";
     }
 
+    /**
+     * Returns the usage of the command
+     * @param sender ICommandSender reference to the player
+     * @return String usage of the command
+     */
     @Override
     @Nonnull
     @ParametersAreNonnullByDefault
@@ -63,16 +82,36 @@ public class CommandAlliance extends CommandBase {
         return "/alliance <action> [arguments]";
     }
 
+    /**
+     * Returns the required permission level in order to use this command
+     * @return integer of required permission level
+     */
     @Override
     public int getRequiredPermissionLevel() {
         return 0;
     }
 
+    /**
+     * Returns whether or not the user has permission to use this command
+     * @param server MinecraftServer instance
+     * @param sender ICommandSender reference to the player
+     * @return true if the player has permission to use this command
+     */
     @Override
     public boolean checkPermission(final MinecraftServer server, final ICommandSender sender) {
         return sender instanceof EntityPlayerMP;
     }
 
+    /**
+     * Command tab completion function
+     * Returns a list of potential matching commands
+     * Called when tab is pressed while entering a command
+     * @param server MinecraftServer instance
+     * @param sender ICommandSender reference to the player
+     * @param args String array of arguments given from the player
+     * @param targetPos BlockPos of the player
+     * @return String List of potential tab completions
+     */
     @Override
     @Nonnull
     @SuppressWarnings("unchecked")
@@ -99,6 +138,12 @@ public class CommandAlliance extends CommandBase {
         return new ArrayList<>();
     }
 
+    /**
+     * Finds the matching strings in the list for the last given argument
+     * @param args String array of arguments given from the player
+     * @param list String list to match the last argument to
+     * @return String List of matching Strings
+     */
     private List<String> getLastMatchingStrings(String[] args, List<String> list)
     {
         List<String> matching = new ArrayList<>();
@@ -111,6 +156,13 @@ public class CommandAlliance extends CommandBase {
         return matching;
     }
 
+    /**
+     * Execution of the /alliance command
+     * Called whenever the player attempts to use the command (presses Enter)
+     * @param server MinecraftServer instance
+     * @param sender ICommandSender reference to the player
+     * @param args String array of arguments given from the player
+     */
     @Override
     @ParametersAreNonnullByDefault
     public void execute(MinecraftServer server, ICommandSender sender, String[] args)
@@ -164,8 +216,18 @@ public class CommandAlliance extends CommandBase {
         }
     }
 
+    /**
+     * Sends a "Not enough arguments" message back to the player
+     * @param sender ICommandSender reference to the player
+     */
     private void notEnoughArguments(ICommandSender sender) { allianceMessage(sender, "Error: Not enough arguments!"); }
 
+    /**
+     * Sends a message to the player
+     * Uses the alliance color style
+     * @param sender ICommandSender reference to the player
+     * @param message String to send to the player
+     */
     private void allianceMessage(ICommandSender sender, String message)
     {
         ITextComponent textComponent = new TextComponentString(message);
@@ -173,6 +235,11 @@ public class CommandAlliance extends CommandBase {
         sender.sendMessage(textComponent);
     }
 
+    /**
+     * Displays all of the available sub-commands and their uses to the player
+     * @param sender ICommandSender reference to the player
+     * @param guild Guild object reference to the player's guild
+     */
     private void displayHelp(ICommandSender sender, Guild guild)
     {
         allianceMessage(sender, "/alliance help - Lists all available commands");
@@ -188,6 +255,12 @@ public class CommandAlliance extends CommandBase {
         }
     }
 
+    /**
+     * Called whenever a guild master attempts to form a new alliance
+     * @param sender ICommandSender reference to the player
+     * @param guild Guild object reference to the player's guild
+     * @param alliance String name of the new alliance
+     */
     private void formAlliance(ICommandSender sender, Guild guild, String alliance)
     {
         if(guild.getAlliance() != null) allianceMessage(sender, "Your guild is already part of an alliance!");
@@ -203,6 +276,12 @@ public class CommandAlliance extends CommandBase {
         }
     }
 
+    /**
+     * Called whenever a guild master attempts to join a new alliance
+     * @param sender ICommandSender reference to the player
+     * @param guild Guild object reference to the player's guild
+     * @param allianceName String name of the new alliance
+     */
     private void acceptInvitation(ICommandSender sender, Guild guild, String allianceName)
     {
         if(guild.getAlliance() != null) allianceMessage(sender, "Your guild is already part of an alliance!");
@@ -221,6 +300,11 @@ public class CommandAlliance extends CommandBase {
         }
     }
 
+    /**
+     * Called whenever a guild master attempts to leave their current alliance
+     * @param sender ICommandSender reference to the player
+     * @param guild Guild object reference to the player's guild
+     */
     private void leaveAlliance(ICommandSender sender, Guild guild)
     {
         String allianceName = guild.getAlliance();
@@ -234,6 +318,12 @@ public class CommandAlliance extends CommandBase {
         }
     }
 
+    /**
+     * Called whenever a guild master attempts to invite a guild to their alliance
+     * @param sender ICommandSender reference to the player
+     * @param guild Guild object reference to the player's guild
+     * @param invitee String name of the player to invite
+     */
     private void inviteGuild(ICommandSender sender, Guild guild, String invitee)
     {
         String allianceName = guild.getAlliance();

@@ -14,11 +14,21 @@ import parallaxscience.guilds.guild.Guild;
 import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.raid.Raid;
 import parallaxscience.guilds.raid.RaidCache;
-
 import java.util.UUID;
 
+/**
+ * EventHandler class for raid events
+ * Only registered while a raid is active, otherwise unregistered
+ * @author Tristan Jay
+ */
 public class RaidEvents {
 
+    /**
+     * Called whenever a living entity dies during a raid
+     * Used to remove slain raiders from the fight
+     * @param event LivingDeathEvent
+     * @see LivingDeathEvent
+     */
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onPlayerDeath(LivingDeathEvent event)
@@ -44,6 +54,12 @@ public class RaidEvents {
         }
     }
 
+    /**
+     * Called every time a player attempts to join the server during a raid
+     * Used to keep slain raiders from rejoining
+     * @param event PlayerLoggedInEvent
+     * @see PlayerEvent.PlayerLoggedInEvent
+     */
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event)
@@ -64,6 +80,12 @@ public class RaidEvents {
         }
     }
 
+    /**
+     * Called whenever a player leaves the server during a raid
+     * Used to keep track of players and update the raider list
+     * @param event PlayerLoggedOutEvent
+     * @see PlayerEvent.PlayerLoggedOutEvent
+     */
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event)
@@ -84,6 +106,12 @@ public class RaidEvents {
         }
     }
 
+    /**
+     * Called whenever a block is harvested (dropped) during a raid
+     * Used to stop blocks from giving drops during a raid
+     * @param event HarvestDropsEvent
+     * @see BlockEvent.HarvestDropsEvent
+     */
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onBlockDrop(BlockEvent.HarvestDropsEvent event)

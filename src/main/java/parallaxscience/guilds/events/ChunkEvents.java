@@ -28,8 +28,18 @@ import parallaxscience.guilds.raid.RaidCache;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * EventHandler class for claimed chunk protection events
+ * @author Tristan Jay
+ */
 public class ChunkEvents {
 
+    /**
+     * Called whenever an entity enters a chunk
+     * Used to send messages to a player when they enter or exit claimed space
+     * @param event EnteringChunk
+     * @see EntityEvent.EnteringChunk
+     */
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onEnterChunk(EntityEvent.EnteringChunk event)
@@ -47,6 +57,12 @@ public class ChunkEvents {
         }
     }
 
+    /**
+     * Called whenever a block is broken
+     * Used to keep players from breaking blocks in another guilds territory, except during a raid
+     * @param event BreakEvent
+     * @see BlockEvent.BreakEvent
+     */
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onBlockBreak(BlockEvent.BreakEvent event)
@@ -86,6 +102,12 @@ public class ChunkEvents {
         }
     }
 
+    /**
+     * Called whenever farmland is trampled
+     * Used to keep players from trampling crops in another guilds territory
+     * @param event FarmlandTrampleEvent
+     * @see BlockEvent.FarmlandTrampleEvent
+     */
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onCropTrample(BlockEvent.FarmlandTrampleEvent event)
@@ -106,6 +128,12 @@ public class ChunkEvents {
         }
     }
 
+    /**
+     * Called whenever a bucked it used
+     * Used to keep players from using a bucket in another guilds territory, or during a raid
+     * @param event FillBucketEvent
+     * @see FillBucketEvent
+     */
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onBucketUse(FillBucketEvent event)
@@ -142,6 +170,12 @@ public class ChunkEvents {
         }
     }
 
+    /**
+     * Called whenever a block is placed
+     * Used to keep players from placing blocks in another guilds territory, except during a raid
+     * @param event EntityPlaceEvent
+     * @see BlockEvent.EntityPlaceEvent
+     */
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onBlockPlaced(BlockEvent.EntityPlaceEvent event)
@@ -176,6 +210,12 @@ public class ChunkEvents {
         }
     }
 
+    /**
+     * Called whenever a multi-block structure is placed
+     * Used to keep players from placing multi-blocks in another guilds territory, except during a raid
+     * @param event EntityMultiPlaceEvent
+     * @see BlockEvent.EntityMultiPlaceEvent
+     */
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onMultiBlockPlaced(BlockEvent.EntityMultiPlaceEvent event)
@@ -210,6 +250,12 @@ public class ChunkEvents {
         }
     }
 
+    /**
+     * Called whenever a portal attempts to spawn
+     * Used to keep nether portals from spawning in protected territory
+     * @param event PortalSpawnEvent
+     * @see BlockEvent.PortalSpawnEvent
+     */
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onPortalSpawn(BlockEvent.PortalSpawnEvent event)
@@ -218,6 +264,12 @@ public class ChunkEvents {
         if(ChunkCache.getChunkOwner(event.getPos()) != null) event.setCanceled(true);
     }
 
+    /**
+     * Called whenever a block is right clicked
+     * Used to keep players from interacting with blocks in another guilds territory, or during a raid
+     * @param event RightClickBlock
+     * @see PlayerInteractEvent.RightClickBlock
+     */
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onRightClick(PlayerInteractEvent.RightClickBlock event)
@@ -253,6 +305,13 @@ public class ChunkEvents {
         }
     }
 
+    /**
+     * Called whenever someone teleports using an ender pearl or some other mod item that calls EnderTeleportEvent
+     * Used to keep players from teleporting in another guilds territory
+     * Note: players are still allowed to teleport out
+     * @param event EnderTeleportEvent
+     * @see EnderTeleportEvent
+     */
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onTeleport(EnderTeleportEvent event)
@@ -281,9 +340,15 @@ public class ChunkEvents {
         }
     }
 
+    /**
+     * Called whenever someone uses a hoe
+     * Used to keep players from tilling ground in another guilds territory, or during a raid
+     * @param event UseHoeEvent
+     * @see UseHoeEvent
+     */
     @SubscribeEvent
     @SuppressWarnings("unused")
-    public void onUseJessica(UseHoeEvent event)
+    public void onUseHoe(UseHoeEvent event)
     {
         if(event.getWorld().isRemote) return;
         EntityPlayerMP player = (EntityPlayerMP) event.getEntityPlayer();
@@ -311,6 +376,12 @@ public class ChunkEvents {
         }
     }
 
+    /**
+     * Called whenever TNT or another explosive is detonated
+     * Used to keep players from blowing up blocks and entities in another guilds territory, except during a raid
+     * @param event Detonate
+     * @see ExplosionEvent.Detonate
+     */
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onDetonate(ExplosionEvent.Detonate event)
@@ -376,6 +447,12 @@ public class ChunkEvents {
         }
     }
 
+    /**
+     * Called whenever a living entity takes damage
+     * Used to keep players from damaging entities in another guilds territory, except during a raid
+     * @param event LivingDamageEvent
+     * @see LivingDamageEvent
+     */
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onLivingDamage(LivingDamageEvent event)

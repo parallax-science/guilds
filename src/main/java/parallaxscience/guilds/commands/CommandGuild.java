@@ -29,7 +29,7 @@ import java.util.UUID;
 /**
  * Main guild command registration and handler class.
  * Registers the /guild command and all of its sub-commands, and handles its events.
- * @see net.minecraft.command.CommandBase
+ * @see CommandBase
  * @author Tristan Jay
  */
 public class CommandGuild extends CommandBase {
@@ -59,13 +59,25 @@ public class CommandGuild extends CommandBase {
             "setcolor"
     };
 
+    /**
+     * Variable for storing the guild command color style
+     * Called whenever a guild command is used
+     * @see Style
+     */
     private static final Style style = new Style();
 
+    /**
+     * Constructor for the class
+     * Only used to set the guild style color
+     */
     public CommandGuild()
     {
         style.setColor(TextFormatting.GREEN);
     }
 
+    /**
+     * Returns the name of the command
+     */
     @Override
     @Nonnull
     public String getName()
@@ -73,6 +85,11 @@ public class CommandGuild extends CommandBase {
         return "guild";
     }
 
+    /**
+     * Returns the usage of the command
+     * @param sender ICommandSender reference to the player
+     * @return String usage of the command
+     */
     @Override
     @Nonnull
     @ParametersAreNonnullByDefault
@@ -81,16 +98,36 @@ public class CommandGuild extends CommandBase {
         return "/guild <action> [arguments]";
     }
 
+    /**
+     * Returns the required permission level in order to use this command
+     * @return integer of required permission level
+     */
     @Override
     public int getRequiredPermissionLevel() {
         return 0;
     }
 
+    /**
+     * Returns whether or not the user has permission to use this command
+     * @param server MinecraftServer instance
+     * @param sender ICommandSender reference to the player
+     * @return true if the player has permission to use this command
+     */
     @Override
     public boolean checkPermission(final MinecraftServer server, final ICommandSender sender) {
         return sender instanceof EntityPlayerMP;
     }
 
+    /**
+     * Command tab completion function
+     * Returns a list of potential matching commands
+     * Called when tab is pressed while entering a command
+     * @param server MinecraftServer instance
+     * @param sender ICommandSender reference to the player
+     * @param args String array of arguments given from the player
+     * @param targetPos BlockPos of the player
+     * @return String List of potential tab completions
+     */
     @Override
     @Nonnull
     @SuppressWarnings("unchecked")
@@ -149,6 +186,12 @@ public class CommandGuild extends CommandBase {
         return new ArrayList<>();
     }
 
+    /**
+     * Finds the matching strings in the list for the last given argument
+     * @param args String array of arguments given from the player
+     * @param list String list to match the last argument to
+     * @return String List of matching Strings
+     */
     private List<String> getLastMatchingStrings(String[] args, List<String> list)
     {
         List<String> matching = new ArrayList<>();
@@ -161,6 +204,13 @@ public class CommandGuild extends CommandBase {
         return matching;
     }
 
+    /**
+     * Execution of the /guild command
+     * Called whenever the player attempts to use the command (presses Enter)
+     * @param server MinecraftServer instance
+     * @param sender ICommandSender reference to the player
+     * @param args String array of arguments given from the player
+     */
     @Override
     @ParametersAreNonnullByDefault
     @SuppressWarnings("ThrowableInstanceNeverThrown")
@@ -248,9 +298,18 @@ public class CommandGuild extends CommandBase {
         }
     }
 
-
+    /**
+     * Sends a "Not enough arguments" message back to the player
+     * @param sender ICommandSender reference to the player
+     */
     private void notEnoughArguments(ICommandSender sender) { guildMessage(sender, "Error: Not enough arguments!"); }
 
+    /**
+     * Sends a message to the player
+     * Uses the guild color style
+     * @param sender ICommandSender reference to the player
+     * @param message String to send to the player
+     */
     private void guildMessage(ICommandSender sender, String message)
     {
         ITextComponent textComponent = new TextComponentString(message);
@@ -258,6 +317,12 @@ public class CommandGuild extends CommandBase {
         sender.sendMessage(textComponent);
     }
 
+    /**
+     * Displays all of the available sub-commands and their uses to the player
+     * @param sender ICommandSender reference to the player
+     * @param player UUID of player
+     * @param guild Guild object reference to the player's guild
+     */
     private void displayHelp(ICommandSender sender, UUID player, Guild guild)
     {
         guildMessage(sender, "/guild help - Lists all available commands");
@@ -288,7 +353,13 @@ public class CommandGuild extends CommandBase {
         }
     }
 
-
+    /**
+     * Called whenever a player attempts to form a new guild
+     * @param sender ICommandSender reference to the player
+     * @param player UUID of player
+     * @param guild Guild object reference to the player's guild
+     * @param guildName String name of the new guild
+     */
     private void formGuild(ICommandSender sender, UUID player, Guild guild, String guildName)
     {
         if(guild != null) guildMessage(sender, "You are already in a guild!");
@@ -304,7 +375,13 @@ public class CommandGuild extends CommandBase {
         }
     }
 
-
+    /**
+     * Called whenever a player attempts to join a guild
+     * @param sender ICommandSender reference to the player
+     * @param player UUID of player
+     * @param guild Guild object reference to the player's guild
+     * @param guildName String name of the new guild
+     */
     private void joinGuild(ICommandSender sender, UUID player, Guild guild, String guildName)
     {
         if(guild != null) guildMessage(sender, "You are already in a guild!");
@@ -324,7 +401,12 @@ public class CommandGuild extends CommandBase {
         }
     }
 
-
+    /**
+     * Called whenever a player attempts to disband their guild
+     * @param sender ICommandSender reference to the player
+     * @param player UUID of player
+     * @param guild Guild object reference to the player's guild
+     */
     private void disbandGuild(ICommandSender sender, UUID player, Guild guild)
     {
         if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
@@ -339,7 +421,13 @@ public class CommandGuild extends CommandBase {
         }
     }
 
-
+    /**
+     * Called whenever a player attempts to invite a player to their guild
+     * @param sender ICommandSender reference to the player
+     * @param player UUID of player
+     * @param guild Guild object reference to the player's guild
+     * @param playerName String name of the target player
+     */
     private void invite(ICommandSender sender, UUID player, Guild guild, String playerName)
     {
         if(guild == null)guildMessage(sender, "You are not currently a part of a guild!");
@@ -364,7 +452,12 @@ public class CommandGuild extends CommandBase {
         }
     }
 
-
+    /**
+     * Called whenever a player attempts to leave their guild
+     * @param sender ICommandSender reference to the player
+     * @param player UUID of player
+     * @param guild Guild object reference to the player's guild
+     */
     private void leaveGuild(ICommandSender sender, UUID player, Guild guild)
     {
         if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
@@ -378,6 +471,11 @@ public class CommandGuild extends CommandBase {
         }
     }
 
+    /**
+     * Called whenever a player attempts to get a list of their guild members
+     * @param sender ICommandSender reference to the player
+     * @param guild Guild object reference to the player's guild
+     */
     private void listMembers(ICommandSender sender, Guild guild)
     {
         if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
@@ -398,7 +496,12 @@ public class CommandGuild extends CommandBase {
         }
     }
 
-
+    /**
+     * Called whenever a player attempts to claim land
+     * @param sender ICommandSender reference to the player
+     * @param player UUID of player
+     * @param guild Guild object reference to the player's guild
+     */
     private void claim(ICommandSender sender, UUID player, Guild guild)
     {
         if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
@@ -425,7 +528,12 @@ public class CommandGuild extends CommandBase {
         }
     }
 
-
+    /**
+     * Called whenever a player attempts to abandon claimed land
+     * @param sender ICommandSender reference to the player
+     * @param player UUID of player
+     * @param guild Guild object reference to the player's guild
+     */
     private void abandon(ICommandSender sender, UUID player, Guild guild)
     {
         if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
@@ -447,7 +555,13 @@ public class CommandGuild extends CommandBase {
         }
     }
 
-
+    /**
+     * Called whenever a player attempts to kick another player from their guild
+     * @param sender ICommandSender reference to the player
+     * @param player UUID of player
+     * @param guild Guild object reference to the player's guild
+     * @param playerName String name of the target player
+     */
     private void kick(ICommandSender sender, UUID player, Guild guild, String playerName)
     {
         if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
@@ -477,7 +591,13 @@ public class CommandGuild extends CommandBase {
         }
     }
 
-
+    /**
+     * Called whenever a player attempts to promote another player to guild admin
+     * @param sender ICommandSender reference to the player
+     * @param player UUID of player
+     * @param guild Guild object reference to the player's guild
+     * @param playerName String name of the target player
+     */
     private void promote(ICommandSender sender, UUID player, Guild guild, String playerName)
     {
         if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
@@ -503,7 +623,13 @@ public class CommandGuild extends CommandBase {
         }
     }
 
-
+    /**
+     * Called whenever a player attempts to demote another player from guild admin
+     * @param sender ICommandSender reference to the player
+     * @param player UUID of player
+     * @param guild Guild object reference to the player's guild
+     * @param playerName String name of the target player
+     */
     private void demote(ICommandSender sender, UUID player, Guild guild, String playerName)
     {
         if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
@@ -529,6 +655,13 @@ public class CommandGuild extends CommandBase {
         }
     }
 
+    /**
+     * Called whenever a player attempts to transfer ownership of their guild
+     * @param sender ICommandSender reference to the player
+     * @param player UUID of player
+     * @param guild Guild object reference to the player's guild
+     * @param playerName String name of the target player
+     */
     private void transfer(ICommandSender sender, UUID player, Guild guild, String playerName)
     {
         if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
@@ -557,6 +690,13 @@ public class CommandGuild extends CommandBase {
         }
     }
 
+    /**
+     * Called whenever a player attempts to set their guild color
+     * @param sender ICommandSender reference to the player
+     * @param player UUID of player
+     * @param guild Guild object reference to the player's guild
+     * @param color String name of the new color
+     */
     private void setColor(ICommandSender sender, UUID player, Guild guild, String color)
     {
         if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");

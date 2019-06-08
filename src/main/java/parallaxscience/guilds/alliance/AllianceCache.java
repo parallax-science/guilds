@@ -7,12 +7,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class that is used to store and manage alliance information
+ * Holds the master list of alliances
+ * @author Tristan Jay
+ */
 public class AllianceCache {
 
+    /**
+     * Filepath to the AllianceCache save file location
+     */
     private final static String fileName = "world/Guilds_AllianceCache.dat";
 
+    /**
+     * List of all of the alliances
+     * @see HashMap
+     */
     private static HashMap<String, Alliance> alliances;
 
+    /**
+     * Initialize function for the class
+     * Attempts to load the alliance data from file
+     * If no alliance data is found, create a new HashMap
+     */
     @SuppressWarnings("unchecked")
     public static void initialize()
     {
@@ -30,11 +47,21 @@ public class AllianceCache {
         }
     }
 
+    /**
+     * Creates a new alliance
+     * @param alliance String name of the alliance
+     * @param guildName String name of the guild
+     */
     public static void createAlliance(String alliance, String guildName)
     {
         alliances.put(alliance, new Alliance(guildName));
     }
 
+    /**
+     * Removes a guild from an alliance
+     * If the guild is the last guild, removes the alliance from the alliance list
+     * @param guild Guild object reference
+     */
     public static void leaveAlliance(Guild guild)
     {
         String guildName = guild.getGuildName();
@@ -44,11 +71,20 @@ public class AllianceCache {
         guild.setAlliance(null);
     }
 
+    /**
+     * Returns the object reference of an alliance
+     * @param allianceName String name of the alliance
+     * @return Alliance object reference
+     */
     public static Alliance getAlliance(String allianceName)
     {
         return alliances.get(allianceName);
     }
 
+    /**
+     * Returns a list of alliances
+     * @return List String of all alliances
+     */
     public static List<String> getAllianceList()
     {
         List<String> list = new ArrayList<>();
@@ -59,6 +95,9 @@ public class AllianceCache {
         return list;
     }
 
+    /**
+     * Saves the guild data to file
+     */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void save()
     {

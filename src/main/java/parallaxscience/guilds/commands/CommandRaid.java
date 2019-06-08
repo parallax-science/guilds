@@ -24,6 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Class for handling raid commands
+ * @see CommandBase
+ * @author Tristan Jay
+ */
 public class CommandRaid extends CommandBase {
 
     /**
@@ -39,15 +44,24 @@ public class CommandRaid extends CommandBase {
             "start"
     };
 
+    /**
+     * Variable for storing the raid command color style
+     * Called whenever a raid command is used
+     * @see Style
+     */
     private static final Style style = new Style();
 
+    /**
+     * Constructor for the class
+     * Only used to set the raid style color
+     */
     public CommandRaid()
     {
         style.setColor(TextFormatting.RED);
     }
 
     /**
-     * Gets the name of the command
+     * Returns the name of the command
      */
     @Override
     @Nonnull
@@ -55,7 +69,11 @@ public class CommandRaid extends CommandBase {
         return "raid";
     }
 
-
+    /**
+     * Returns the usage of the command
+     * @param sender ICommandSender reference to the player
+     * @return String usage of the command
+     */
     @Override
     @Nonnull
     @ParametersAreNonnullByDefault
@@ -63,16 +81,36 @@ public class CommandRaid extends CommandBase {
         return "/raid <action> [arguments]";
     }
 
+    /**
+     * Returns the required permission level in order to use this command
+     * @return integer of required permission level
+     */
     @Override
     public int getRequiredPermissionLevel() {
         return 0;
     }
 
+    /**
+     * Returns whether or not the user has permission to use this command
+     * @param server MinecraftServer instance
+     * @param sender ICommandSender reference to the player
+     * @return true if the player has permission to use this command
+     */
     @Override
     public boolean checkPermission(final MinecraftServer server, final ICommandSender sender) {
         return sender instanceof EntityPlayerMP;
     }
 
+    /**
+     * Command tab completion function
+     * Returns a list of potential matching commands
+     * Called when tab is pressed while entering a command
+     * @param server MinecraftServer instance
+     * @param sender ICommandSender reference to the player
+     * @param args String array of arguments given from the player
+     * @param targetPos BlockPos of the player
+     * @return String List of potential tab completions
+     */
     @Override
     @Nonnull
     @SuppressWarnings({"unchecked", "SwitchStatementWithTooFewBranches"})
@@ -96,6 +134,12 @@ public class CommandRaid extends CommandBase {
         return new ArrayList<>();
     }
 
+    /**
+     * Finds the matching strings in the list for the last given argument
+     * @param args String array of arguments given from the player
+     * @param list String list to match the last argument to
+     * @return String List of matching Strings
+     */
     private List<String> getLastMatchingStrings(String[] args, List<String> list)
     {
         List<String> matching = new ArrayList<>();
@@ -108,6 +152,13 @@ public class CommandRaid extends CommandBase {
         return matching;
     }
 
+    /**
+     * Execution of the /raid command
+     * Called whenever the player attempts to use the command (presses Enter)
+     * @param server MinecraftServer instance
+     * @param sender ICommandSender reference to the player
+     * @param args String array of arguments given from the player
+     */
     @Override
     @ParametersAreNonnullByDefault
     public void execute(MinecraftServer server, ICommandSender sender, String[] args)
@@ -147,8 +198,18 @@ public class CommandRaid extends CommandBase {
         }
     }
 
+    /**
+     * Sends a "Not enough arguments" message back to the player
+     * @param sender ICommandSender reference to the player
+     */
     private void notEnoughArguments(ICommandSender sender) { raidMessage(sender, "Error: Not enough arguments!"); }
 
+    /**
+     * Sends a message to the player
+     * Uses the raid color style
+     * @param sender ICommandSender reference to the player
+     * @param message String to send to the player
+     */
     private void raidMessage(ICommandSender sender, String message)
     {
         ITextComponent textComponent = new TextComponentString(message);
@@ -156,6 +217,12 @@ public class CommandRaid extends CommandBase {
         sender.sendMessage(textComponent);
     }
 
+    /**
+     * Displays all of the available sub-commands and their uses to the player
+     * @param sender ICommandSender reference to the player
+     * @param guild Guild object reference to the player's guild
+     * @param raid Raid object reference of the player's current raid
+     */
     private void displayHelp(ICommandSender sender, Guild guild, Raid raid)
     {
         if(guild == null) raidMessage(sender, "Only those who are in a guild can use raid commands!");
@@ -171,6 +238,14 @@ public class CommandRaid extends CommandBase {
         }
     }
 
+    /**
+     * Called whenever a player attempts to join a new raid
+     * @param sender ICommandSender reference to the player
+     * @param player UUID of the player
+     * @param guild Guild object reference to the player's guild
+     * @param playerRaid Raid object reference of the player's current raid
+     * @param newRaidName String name of the new raid
+     */
     private void joinRaid(ICommandSender sender, UUID player, Guild guild, Raid playerRaid, String newRaidName)
     {
         if(guild == null) raidMessage(sender, "Only those who are in a guild may join a raid!");
@@ -214,6 +289,13 @@ public class CommandRaid extends CommandBase {
         }
     }
 
+    /**
+     * Called whenever a player attempts to leave a raid
+     * @param sender ICommandSender reference to the player
+     * @param player UUID of the player
+     * @param guild Guild object reference to the player's guild
+     * @param raid Raid object reference of the player's current raid
+     */
     private void leaveRaid(ICommandSender sender, UUID player, Guild guild, Raid raid)
     {
         if(guild == null) raidMessage(sender, "You are not part of a guild!");
@@ -227,6 +309,11 @@ public class CommandRaid extends CommandBase {
         }
     }
 
+    /**
+     * Called whenever a player attempts to start a raid
+     * @param sender ICommandSender reference to the player
+     * @param raid Raid object reference of the player's current raid
+     */
     private void startRaid(ICommandSender sender, Raid raid)
     {
         if(raid == null) raidMessage(sender, "You are not currently a part of a raid!");
@@ -234,6 +321,7 @@ public class CommandRaid extends CommandBase {
         else
         {
             raid.startRaid();
+            //FIX THIS
             PlayerList players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
             players.sendMessage(new TextComponentString("The raid on " + raid.getDefendingGuild() + " will begin in " + RaidConfig.prepSeconds + " seconds!"));
         }
