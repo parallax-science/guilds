@@ -199,7 +199,7 @@ public class CommandGuild extends CommandBase {
         int length = string.length();
         for(String item : list)
         {
-            if(string.equals(item.substring(0, length))) matching.add(item);
+            if(string.toLowerCase().equals(item.substring(0, length).toLowerCase())) matching.add(item);
         }
         return matching;
     }
