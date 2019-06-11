@@ -254,8 +254,7 @@ public class CommandRaid extends CommandBase {
             else if(newRaidName.equals(guild.getGuildName())) raidMessage(sender, "You cannot join a raid on your own guild!");
             else
             {
-                Guild raidGuild = GuildCache.getGuild(newRaidName);
-                if(raidGuild == null) raidMessage(sender, "That guild does not exist!");
+                if(GuildCache.getGuild(newRaidName) == null) raidMessage(sender, "That guild does not exist!");
                 else
                 {
                     Raid raid = RaidCache.getRaid(newRaidName);
