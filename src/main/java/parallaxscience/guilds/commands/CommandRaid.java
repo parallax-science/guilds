@@ -254,34 +254,39 @@ public class CommandRaid extends CommandBase {
             else if(newRaidName.equals(guild.getGuildName())) raidMessage(sender, "You cannot join a raid on your own guild!");
             else
             {
-                Raid raid = RaidCache.getRaid(newRaidName);
-                if(raid == null)
-                {
-                    raidMessage(sender, "Successfully joined the raid on " + newRaidName + "!");
-                    RaidCache.createRaid(server, newRaidName, player);
-                }
-                else if(raid.isActive()) raidMessage(sender, "The raid on " + newRaidName + " has already begun!");
+                Guild raidGuild = GuildCache.getGuild(newRaidName);
+                if(raidGuild == null) raidMessage(sender, "That guild does not exist!");
                 else
                 {
-                    String alliance = guild.getAlliance();
-                    if(alliance == null) raidMessage(sender, "Your guild is not a part of an alliance!");
-                    else if(alliance.equals(GuildCache.getGuild(newRaidName).getAlliance()))
+                    Raid raid = RaidCache.getRaid(newRaidName);
+                    if(raid == null)
                     {
-                        if(raid.isStarted())
-                        {
-                            raid.addDefender(player);
-                            raidMessage(sender, "Successfully joined the raid on " + newRaidName + " as a defender!");
-                        }
-                        else raidMessage(sender, "A raid has not been started for that guild!");
+                        raidMessage(sender, "Successfully joined the raid on " + newRaidName + "!");
+                        RaidCache.createRaid(server, newRaidName, player);
                     }
+                    else if(raid.isActive()) raidMessage(sender, "The raid on " + newRaidName + " has already begun!");
                     else
                     {
-                        if(raid.canAttackerJoin())
+                        String alliance = guild.getAlliance();
+                        if(alliance == null) raidMessage(sender, "Your guild is not a part of an alliance!");
+                        else if(alliance.equals(GuildCache.getGuild(newRaidName).getAlliance()))
                         {
-                            raid.addAttacker(player);
-                            raidMessage(sender, "Successfully joined the raid on " + newRaidName + "!");
+                            if(raid.isStarted())
+                            {
+                                raid.addDefender(player);
+                                raidMessage(sender, "Successfully joined the raid on " + newRaidName + " as a defender!");
+                            }
+                            else raidMessage(sender, "A raid has not been started for that guild!");
                         }
-                        else raidMessage(sender, "No more attackers can join the raid at the moment!");
+                        else
+                        {
+                            if(raid.canAttackerJoin())
+                            {
+                                raid.addAttacker(player);
+                                raidMessage(sender, "Successfully joined the raid on " + newRaidName + "!");
+                            }
+                            else raidMessage(sender, "No more attackers can join the raid at the moment!");
+                        }
                     }
                 }
             }
