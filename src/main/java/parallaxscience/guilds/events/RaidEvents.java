@@ -6,6 +6,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -132,5 +134,20 @@ public class RaidEvents {
                 }
             }
         }
+    }
+
+    /**
+     * Called whenever a player drops items on death during a raid
+     * Used to let raiders keep their inventory upon death
+     * @param event PlayerDropsEvent
+     * @see PlayerDropsEvent
+     */
+    @SubscribeEvent
+    @SuppressWarnings("unused")
+    public void onDeathDrop(PlayerDropsEvent event)
+    {
+        UUID playerID = event.getEntityPlayer().getUniqueID();
+        Raid raid = RaidCache.getPlayerRaid(playerID);
+        if(raid != null) if(raid.isActive()) event.setCanceled(true);
     }
 }
