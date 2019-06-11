@@ -52,13 +52,13 @@ public class RaidTimer {
     public void onServerTick(TickEvent.ServerTickEvent event)
     {
         long currentTime = System.currentTimeMillis();
-        if(currentTime > endAt)
+        if(raid.isStarted())
+        {
+            if(currentTime > startAt) raid.setActive();
+        }
+        else if(currentTime > endAt)
         {
             RaidCache.stopRaid(raid.getDefendingGuild(), true);
-        }
-        else if(currentTime > startAt)
-        {
-            raid.setActive();
         }
     }
 }
