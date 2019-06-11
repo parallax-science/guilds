@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
@@ -234,7 +235,7 @@ public class CommandGuild extends CommandBase {
                     else notEnoughArguments(sender);
                     break;
                 case "accept":
-                    if(args.length == 2) joinGuild(sender, player, guild, args[1]);
+                    if(args.length == 2) joinGuild(server, sender, player, guild, args[1]);
                     else notEnoughArguments(sender);
                     break;
                 case "leave":
@@ -261,7 +262,7 @@ public class CommandGuild extends CommandBase {
                     else notEnoughArguments(sender);
                     break;
                 case "disband":
-                    disbandGuild(sender, player, guild);
+                    disbandGuild(server, sender, player, guild);
                     break;
                 case "promote":
                     if(args.length == 2)
@@ -376,12 +377,13 @@ public class CommandGuild extends CommandBase {
 
     /**
      * Called whenever a player attempts to join a guild
+     * @param server MinecraftServer instance
      * @param sender ICommandSender reference to the player
      * @param player UUID of player
      * @param guild Guild object reference to the player's guild
      * @param guildName String name of the new guild
      */
-    private void joinGuild(ICommandSender sender, UUID player, Guild guild, String guildName)
+    private void joinGuild(MinecraftServer server, ICommandSender sender, UUID player, Guild guild, String guildName)
     {
         if(guild != null) guildMessage(sender, "You are already in a guild!");
         else
@@ -394,6 +396,11 @@ public class CommandGuild extends CommandBase {
                 {
                     GuildCache.save();
                     guildMessage(sender, "Successfully joined " + guildName + "!");
+
+                    //Notify members
+                    PlayerList playerList = server.getPlayerList();
+                    String playerName = playerList.getPlayerByUUID(player).getDisplayNameString();
+                    for(UUID playerID : newGuild.getAllMembers()) if(!playerID.equals(player)) guildMessage(playerList.getPlayerByUUID(playerID), playerName + " has joined the guild!");
                 }
                 else guildMessage(sender, "You have not received an invitation from " + guildName + "!");
             }
@@ -402,11 +409,12 @@ public class CommandGuild extends CommandBase {
 
     /**
      * Called whenever a player attempts to disband their guild
+     * @param server MinecraftServer instance
      * @param sender ICommandSender reference to the player
      * @param player UUID of player
      * @param guild Guild object reference to the player's guild
      */
-    private void disbandGuild(ICommandSender sender, UUID player, Guild guild)
+    private void disbandGuild(MinecraftServer server, ICommandSender sender, UUID player, Guild guild)
     {
         if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
         else if(!guild.getGuildMaster().equals(player)) guildMessage(sender, "Only the Guild Master may disband the guild!");
@@ -414,9 +422,15 @@ public class CommandGuild extends CommandBase {
         else
         {
             if(guild.getAlliance() != null) AllianceCache.leaveAlliance(guild);
+            List<UUID> members = guild.getAllMembers();
             GuildCache.removeGuild(guild);
             GuildCache.save();
             guildMessage(sender, "Successfully disbanded " + guild.getGuildName() + "!");
+
+            //Notify members
+            PlayerList playerList = server.getPlayerList();
+            for(UUID playerID : members) if(!playerID.equals(player)) guildMessage(playerList.getPlayerByUUID(playerID), "Your guild has been disbanded!");
+
         }
     }
 
