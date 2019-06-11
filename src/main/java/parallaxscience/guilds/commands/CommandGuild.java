@@ -495,7 +495,7 @@ public class CommandGuild extends CommandBase {
         if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
         else
         {
-            guildMessage(sender, "*Guild Master: " + guild.getGuildMaster());
+            guildMessage(sender, "*Guild Master: " + server.getPlayerList().getPlayerByUUID(guild.getGuildMaster()));
             guildMessage(sender, "*Admins:");
             for(String player : guild.getAdmins(server))
             {
