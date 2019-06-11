@@ -1,7 +1,9 @@
 package parallaxscience.guilds.events;
 
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import parallaxscience.guilds.guild.GuildCache;
@@ -29,7 +31,14 @@ public class GuildEvents {
         if(guild != null)
         {
             ITextComponent guildName = new TextComponentString(guild.getGuildName());
-            guildName.setStyle(guild.getColor());
+            TextFormatting formatting = guild.getColor();
+            if(formatting != null)
+            {
+                Style style = new Style();
+                style.setColor(formatting);
+
+                guildName.setStyle(style);
+            }
 
             ITextComponent message = new TextComponentString("<");
             message.appendSibling(guildName).appendText("> ").appendSibling(event.getComponent());

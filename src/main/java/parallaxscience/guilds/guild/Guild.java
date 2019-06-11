@@ -65,7 +65,7 @@ public class Guild implements Serializable {
      * Used for colorized chat messages
      * @see Style
      */
-    private Style color;
+    private TextFormatting color;
 
     /**
      * Constructor for the Guild class
@@ -79,7 +79,6 @@ public class Guild implements Serializable {
         members = new HashMap<>();
         invitees = new ArrayList<>();
         members.put(guildMaster, Rank.MASTER);
-        color = new Style();
     }
 
     /**
@@ -215,22 +214,22 @@ public class Guild implements Serializable {
     }
 
     /**
-     * Sets the guild's text style
+     * Sets the guild's text color
      * @param textFormatting a TextFormatting color
      * @see TextFormatting
      */
     public void setColor(TextFormatting textFormatting)
     {
-        color.setColor(textFormatting);
+        this.color = textFormatting;
     }
 
     /**
-     * Returns the guild's text style
+     * Returns the guild's text
      * Used for guild color text
-     * @return guild's text style
-     * @see Style
+     * @return guild's text color
+     * @see TextFormatting
      */
-    public Style getColor()
+    public TextFormatting getColor()
     {
         return color;
     }
