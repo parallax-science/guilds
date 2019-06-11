@@ -41,7 +41,7 @@ public class GuildEvents {
             }
 
             ITextComponent message = new TextComponentString("<");
-            message.appendSibling(guildName).appendText("> ").appendSibling(event.getComponent());
+            message.appendSibling(guildName).appendText(">").appendSibling(event.getComponent());
 
             event.setComponent(message);
         }
