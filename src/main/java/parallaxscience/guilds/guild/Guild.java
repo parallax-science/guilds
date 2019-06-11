@@ -1,9 +1,9 @@
 package parallaxscience.guilds.guild;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import parallaxscience.guilds.config.GuildConfig;
 import parallaxscience.guilds.alliance.Alliance;
 import java.io.Serializable;
@@ -183,11 +183,12 @@ public class Guild implements Serializable {
     /**
      * Returns a list of admin names
      * Used for tab completion and member list command
+     * @param server MinecraftServer instance
      * @return String List admin names
      */
-    public List<String> getAdmins()
+    public List<String> getAdmins(MinecraftServer server)
     {
-        PlayerList playerList = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
+        PlayerList playerList = server.getPlayerList();
         List<String> adminList = new ArrayList<>();
         for(Map.Entry<UUID, Rank> rankEntry : members.entrySet())
         {
@@ -199,11 +200,12 @@ public class Guild implements Serializable {
     /**
      * Returns a list of ordinary member names
      * Used for tab completion and member list command
+     * @param server MinecraftServer instance
      * @return String List ordinary member names
      */
-    public List<String> getMembers()
+    public List<String> getMembers(MinecraftServer server)
     {
-        PlayerList playerList = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
+        PlayerList playerList = server.getPlayerList();
         List<String> adminList = new ArrayList<>();
         for(Map.Entry<UUID, Rank> rankEntry : members.entrySet())
         {

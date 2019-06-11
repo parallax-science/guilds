@@ -1,8 +1,5 @@
 package parallaxscience.guilds.raid;
 
-import net.minecraft.server.management.PlayerList;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import parallaxscience.guilds.config.RaidConfig;
@@ -62,8 +59,6 @@ public class RaidTimer {
         else if(currentTime > startAt)
         {
             raid.setActive();
-            PlayerList players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
-            players.sendMessage(new TextComponentString("The raid on " + raid.getDefendingGuild() + " has begun!"));
         }
     }
 }

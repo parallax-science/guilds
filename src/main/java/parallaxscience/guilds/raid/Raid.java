@@ -1,5 +1,7 @@
 package parallaxscience.guilds.raid;
 
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import parallaxscience.guilds.guild.GuildCache;
 import java.util.ArrayList;
@@ -55,18 +57,25 @@ public class Raid {
     private raidPhase phase;
 
     /**
+     * Minecraft server instance of the raid
+     */
+    private MinecraftServer server;
+
+    /**
      * Constructor for the raid class
      * Called whenever a new raid is joined
+     * @param server Minecraft Server instance
      * @param defendingGuild the guild being raided
      * @param primaryAttacker the first person to join the raid
      */
-    Raid(String defendingGuild, UUID primaryAttacker)
+    Raid(MinecraftServer server, String defendingGuild, UUID primaryAttacker)
     {
         this.defendingGuild = defendingGuild;
         attackers = new ArrayList<>();
         defenders = GuildCache.getGuild(defendingGuild).getAllMembers();
         attackers.add(primaryAttacker);
         phase = raidPhase.SETUP;
+        this.server = server;
     }
 
     /**
@@ -149,6 +158,7 @@ public class Raid {
     void setActive()
     {
         phase = raidPhase.ACTIVE;
+        server.getPlayerList().sendMessage(new TextComponentString("The raid on " + defendingGuild + " has begun!"));
     }
 
     /**
@@ -184,5 +194,14 @@ public class Raid {
     void stopTimer()
     {
         MinecraftForge.EVENT_BUS.unregister(raidTimer);
+    }
+
+    /**
+     * Returns the Minecraft Server instance of the Raid
+     * @return MinecraftServer instance
+     */
+    MinecraftServer getServer()
+    {
+        return server;
     }
 }

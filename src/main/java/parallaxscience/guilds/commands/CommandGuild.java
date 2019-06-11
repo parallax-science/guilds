@@ -12,7 +12,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import parallaxscience.guilds.alliance.AllianceCache;
 import parallaxscience.guilds.config.GeneralConfig;
 import parallaxscience.guilds.guild.ChunkCache;
@@ -149,7 +148,7 @@ public class CommandGuild extends CommandBase {
                     if(guild != null)
                     {
                         List<String> names = new ArrayList<>();
-                        for(EntityPlayer entityPlayer : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers())
+                        for(EntityPlayer entityPlayer : server.getPlayerList().getPlayers())
                         {
                             if(GuildCache.getPlayerGuild(entityPlayer.getUniqueID()) == null) names.add(entity.getDisplayName().getUnformattedText());
                         }
@@ -159,22 +158,22 @@ public class CommandGuild extends CommandBase {
                 case "kick":
                     if(guild != null) if(guild.isAdmin(player))
                     {
-                        List<String> members = guild.getMembers();
-                        members.addAll(guild.getAdmins());
+                        List<String> members = guild.getMembers(server);
+                        members.addAll(guild.getAdmins(server));
                         return getLastMatchingStrings(args, members);
                     }
                     break;
                 case "promote":
-                    if(guild != null) if(guild.isAdmin(player)) return getLastMatchingStrings(args, guild.getMembers());
+                    if(guild != null) if(guild.isAdmin(player)) return getLastMatchingStrings(args, guild.getMembers(server));
                     break;
                 case "demote":
-                    if(guild != null) if(guild.isAdmin(player)) return getLastMatchingStrings(args, guild.getAdmins());
+                    if(guild != null) if(guild.isAdmin(player)) return getLastMatchingStrings(args, guild.getAdmins(server));
                     break;
                 case "transfer":
                     if(guild != null) if(guild.getGuildMaster().equals(player))
                     {
-                        List<String> members = guild.getMembers();
-                        members.addAll(guild.getAdmins());
+                        List<String> members = guild.getMembers(server);
+                        members.addAll(guild.getAdmins(server));
                         return getLastMatchingStrings(args, members);
                     }
                     break;
@@ -242,7 +241,7 @@ public class CommandGuild extends CommandBase {
                     leaveGuild(sender, player, guild);
                     break;
                 case "members":
-                    listMembers(sender, guild);
+                    listMembers(server, sender, guild);
                     break;
                 case "invite":
                     if(args.length == 2) invite(sender, player, guild, args[1]);
@@ -473,23 +472,24 @@ public class CommandGuild extends CommandBase {
 
     /**
      * Called whenever a player attempts to get a list of their guild members
+     * @param server MinecraftServer instance
      * @param sender ICommandSender reference to the player
      * @param guild Guild object reference to the player's guild
      */
-    private void listMembers(ICommandSender sender, Guild guild)
+    private void listMembers(MinecraftServer server, ICommandSender sender, Guild guild)
     {
         if(guild == null) guildMessage(sender, "You are not currently a part of a guild!");
         else
         {
             guildMessage(sender, "*Guild Master: " + guild.getGuildMaster());
             guildMessage(sender, "*Admins:");
-            for(String player : guild.getAdmins())
+            for(String player : guild.getAdmins(server))
             {
                 guildMessage(sender, " - " + player);
             }
 
             guildMessage(sender, "*Members:");
-            for(String player : guild.getMembers())
+            for(String player : guild.getMembers(server))
             {
                 guildMessage(sender, " - " + player);
             }

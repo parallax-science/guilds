@@ -1,12 +1,12 @@
 package parallaxscience.guilds.raid;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import parallaxscience.guilds.events.RaidEvents;
 import java.io.*;
@@ -104,9 +104,9 @@ public class RaidCache {
      * @param raidName String name of the raid
      * @param primaryAttacker UUID of primary attacker
      */
-    public static void createRaid(String raidName, UUID primaryAttacker)
+    public static void createRaid(MinecraftServer server, String raidName, UUID primaryAttacker)
     {
-        raids.put(raidName, new Raid(raidName, primaryAttacker));
+        raids.put(raidName, new Raid(server, raidName, primaryAttacker));
         blockRestore.put(raidName, new HashMap<>());
         if(!isActive) MinecraftForge.EVENT_BUS.register(raidEvents);
     }
@@ -114,23 +114,24 @@ public class RaidCache {
     /**
      * Stops a raid, removes it from the raid list, and calls the block restore
      * Called whenever either the timer runs out, or one side kills the other
-     * @param raid String name of raid
+     * @param raidName String name of raid
      * @param defenseWon true if defense has won
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    static void stopRaid(String raid, boolean defenseWon)
+    static void stopRaid(String raidName, boolean defenseWon)
     {
-        getRaid(raid).stopTimer();
-        PlayerList players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
-        players.sendMessage(new TextComponentString("The raid on " + raid + " is now over!"));
-        if(defenseWon) players.sendMessage(new TextComponentString(raid + " has successfully held off the attackers!"));
-        else players.sendMessage(new TextComponentString("The attackers have successfully raided " + raid + "!"));
+        Raid raid = getRaid(raidName);
+        raid.stopTimer();
+        PlayerList players = raid.getServer().getPlayerList();
+        players.sendMessage(new TextComponentString("The raid on " + raidName + " is now over!"));
+        if(defenseWon) players.sendMessage(new TextComponentString(raidName + " has successfully held off the attackers!"));
+        else players.sendMessage(new TextComponentString("The attackers have successfully raided " + raidName + "!"));
 
-        for(Map.Entry<BlockPos, IBlockState> blocks : blockRestore.get(raid).entrySet())
+        for(Map.Entry<BlockPos, IBlockState> blocks : blockRestore.get(raidName).entrySet())
         {
             restoreBlock(blocks.getKey(), blocks.getValue());
         }
-        blockRestore.remove(raid);
+        blockRestore.remove(raidName);
 
         if(blockRestore.isEmpty())
         {
@@ -139,7 +140,7 @@ public class RaidCache {
         }
         else saveRaid();
 
-        raids.remove(raid);
+        raids.remove(raidName);
         if(raids.isEmpty())
         {
             MinecraftForge.EVENT_BUS.unregister(raidEvents);
