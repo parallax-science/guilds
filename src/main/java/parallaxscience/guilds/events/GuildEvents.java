@@ -28,10 +28,13 @@ public class GuildEvents {
         Guild guild = GuildCache.getPlayerGuild(playerID);
         if(guild != null)
         {
-            //FIX THIS
-            ITextComponent textComponent = new TextComponentString("<" + guild.getGuildName() + ">").appendSibling(event.getComponent());
-            textComponent.setStyle(guild.getColor());
-            event.setComponent(textComponent);
+            ITextComponent guildName = new TextComponentString(guild.getGuildName());
+            guildName.setStyle(guild.getColor());
+
+            ITextComponent message = new TextComponentString("<");
+            message.appendSibling(guildName).appendText("> ").appendSibling(event.getComponent());
+
+            event.setComponent(message);
         }
     }
 }
