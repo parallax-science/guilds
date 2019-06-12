@@ -1,7 +1,8 @@
 package parallaxscience.guilds.guild;
 
+import com.mojang.authlib.GameProfile;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerList;
+import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import parallaxscience.guilds.config.GuildConfig;
@@ -188,11 +189,15 @@ public class Guild implements Serializable
      */
     public List<String> getAdmins(MinecraftServer server)
     {
-        PlayerList playerList = server.getPlayerList();
+        PlayerProfileCache playerProfileCache = server.getPlayerProfileCache();
         List<String> adminList = new ArrayList<>();
         for(Map.Entry<UUID, Rank> rankEntry : members.entrySet())
         {
-            if(rankEntry.getValue() == Rank.ADMIN) adminList.add(playerList.getPlayerByUUID(rankEntry.getKey()).getDisplayNameString());
+            if(rankEntry.getValue() == Rank.ADMIN)
+			{
+				GameProfile gameProfile = playerProfileCache.getProfileByUUID(rankEntry.getKey());
+				if(gameProfile != null) adminList.add(gameProfile.getName());
+			}
         }
         return adminList;
     }
@@ -205,13 +210,17 @@ public class Guild implements Serializable
      */
     public List<String> getMembers(MinecraftServer server)
     {
-        PlayerList playerList = server.getPlayerList();
-        List<String> adminList = new ArrayList<>();
-        for(Map.Entry<UUID, Rank> rankEntry : members.entrySet())
-        {
-            if(rankEntry.getValue() == Rank.MEMBER) adminList.add(playerList.getPlayerByUUID(rankEntry.getKey()).getDisplayNameString());
-        }
-        return adminList;
+		PlayerProfileCache playerProfileCache = server.getPlayerProfileCache();
+		List<String> memberList = new ArrayList<>();
+		for(Map.Entry<UUID, Rank> rankEntry : members.entrySet())
+		{
+			if(rankEntry.getValue() == Rank.MEMBER)
+			{
+				GameProfile gameProfile = playerProfileCache.getProfileByUUID(rankEntry.getKey());
+				if(gameProfile != null) memberList.add(gameProfile.getName());
+			}
+		}
+		return memberList;
     }
 
     /**

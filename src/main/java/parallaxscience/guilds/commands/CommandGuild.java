@@ -1,12 +1,12 @@
 package parallaxscience.guilds.commands;
 
+import com.mojang.authlib.GameProfile;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.Style;
@@ -238,7 +238,7 @@ public class CommandGuild extends CommandBase
                 case "kick":
                     if(args.length == 2)
                     {
-                        kick(sender, player, guild, args[1]);
+                        kick(server, sender, player, guild, args[1]);
                     }
                     else notEnoughArguments(sender);
                     break;
@@ -248,14 +248,14 @@ public class CommandGuild extends CommandBase
                 case "promote":
                     if(args.length == 2)
                     {
-                        promote(sender, player, guild, args[1]);
+                        promote(server, sender, player, guild, args[1]);
                     }
                     else notEnoughArguments(sender);
                     break;
                 case "demote":
                     if(args.length == 2)
                     {
-                        demote(sender, player, guild, args[1]);
+                        demote(server, sender, player, guild, args[1]);
                     }
                     else notEnoughArguments(sender);
                     break;
@@ -366,9 +366,12 @@ public class CommandGuild extends CommandBase
                     MessageUtility.guildMessage(sender, "Successfully joined " + guildName + "!");
 
                     //Notify members
-                    PlayerList playerList = server.getPlayerList();
-                    String playerName = playerList.getPlayerByUUID(player).getDisplayNameString();
-                    for(UUID playerID : newGuild.getAllMembers()) if(!playerID.equals(player)) MessageUtility.guildMessage(playerList.getPlayerByUUID(playerID), playerName + " has joined the guild!");
+                    for(EntityPlayerMP entityPlayerMP : server.getPlayerList().getPlayers())
+                    {
+                        if(newGuild.isMember(entityPlayerMP.getUniqueID()))
+                            if(!entityPlayerMP.getUniqueID().equals(player))
+                                MessageUtility.guildMessage(entityPlayerMP, "Your guild has been disbanded!");
+                    }
                 }
                 else MessageUtility.guildMessage(sender, "You have not received an invitation from " + guildName + "!");
             }
@@ -390,15 +393,17 @@ public class CommandGuild extends CommandBase
         else
         {
             if(guild.getAlliance() != null) AllianceCache.leaveAlliance(guild);
-            List<UUID> members = guild.getAllMembers();
             GuildCache.removeGuild(guild);
             GuildCache.save();
             MessageUtility.guildMessage(sender, "Successfully disbanded " + guild.getGuildName() + "!");
 
             //Notify members
-            PlayerList playerList = server.getPlayerList();
-            for(UUID playerID : members) if(!playerID.equals(player)) MessageUtility.guildMessage(playerList.getPlayerByUUID(playerID), "Your guild has been disbanded!");
-
+            for(EntityPlayerMP entityPlayerMP : server.getPlayerList().getPlayers())
+            {
+                if(guild.isMember(entityPlayerMP.getUniqueID()))
+                    if(!entityPlayerMP.getUniqueID().equals(player))
+                        MessageUtility.guildMessage(entityPlayerMP, "Your guild has been disbanded!");
+            }
         }
     }
 
@@ -463,17 +468,22 @@ public class CommandGuild extends CommandBase
         if(guild == null) MessageUtility.guildMessage(sender, "You are not currently a part of a guild!");
         else
         {
-            MessageUtility.guildMessage(sender, "*Guild Master: " + server.getPlayerList().getPlayerByUUID(guild.getGuildMaster()).getDisplayNameString());
-            MessageUtility.guildMessage(sender, "*Admins:");
-            for(String player : guild.getAdmins(server))
+            GameProfile gameProfile = server.getPlayerProfileCache().getProfileByUUID(guild.getGuildMaster());
+            if(gameProfile == null) MessageUtility.guildMessage(sender, "ERROR: Guild Master does not exist!");
+            else
             {
-                MessageUtility.guildMessage(sender, " - " + player);
-            }
+                MessageUtility.guildMessage(sender, "*Guild Master: " + gameProfile.getName());
+                MessageUtility.guildMessage(sender, "*Admins:");
+                for(String player : guild.getAdmins(server))
+                {
+                    MessageUtility.guildMessage(sender, " - " + player);
+                }
 
-            MessageUtility.guildMessage(sender, "*Members:");
-            for(String player : guild.getMembers(server))
-            {
-                MessageUtility.guildMessage(sender, " - " + player);
+                MessageUtility.guildMessage(sender, "*Members:");
+                for(String player : guild.getMembers(server))
+                {
+                    MessageUtility.guildMessage(sender, " - " + player);
+                }
             }
         }
     }
@@ -539,35 +549,44 @@ public class CommandGuild extends CommandBase
 
     /**
      * Called whenever a player attempts to kick another player from their guild
+     * @param server MinecraftServer instance
      * @param sender ICommandSender reference to the player
      * @param player UUID of player
      * @param guild Guild object reference to the player's guild
      * @param playerName String name of the target player
      */
-    private void kick(ICommandSender sender, UUID player, Guild guild, String playerName)
+    private void kick(MinecraftServer server, ICommandSender sender, UUID player, Guild guild, String playerName)
     {
         if(guild == null) MessageUtility.guildMessage(sender, "You are not currently a part of a guild!");
         else if(!guild.isAdmin(player)) MessageUtility.guildMessage(sender, "You do not have permission to kick a member!");
         else
         {
             EntityPlayer entityPlayer = sender.getEntityWorld().getPlayerEntityByName(playerName);
-            if(entityPlayer == null) MessageUtility.guildMessage(sender, "Player: " + playerName + " does not exist in this world!");
+            UUID member;
+            if(entityPlayer == null)
+            {
+                GameProfile gameProfile = server.getPlayerProfileCache().getGameProfileForUsername(playerName);
+                if(gameProfile == null)
+                {
+                    MessageUtility.guildMessage(sender, "Player: " + playerName + " does not exist in this world!");
+                    return;
+                }
+                else member = gameProfile.getId();
+            }
+            else member = entityPlayer.getUniqueID();
+
+            if(member.equals(player)) MessageUtility.guildMessage(sender, "You cannot kick yourself, that would hurt!");
             else
             {
-                UUID member = entityPlayer.getUniqueID();
-                if(member.equals(player)) MessageUtility.guildMessage(sender, "You cannot kick yourself, that would hurt!");
+                Guild memberGuild = GuildCache.getPlayerGuild(member);
+                if(memberGuild == null) MessageUtility.guildMessage(sender, playerName + " is not in a guild!");
+                else if(!memberGuild.equals(guild)) MessageUtility.guildMessage(sender, playerName + " is not in your guild!");
                 else
                 {
-                    Guild memberGuild = GuildCache.getPlayerGuild(member);
-                    if(memberGuild == null) MessageUtility.guildMessage(sender, playerName + " is not in a guild!");
-                    else if(!memberGuild.equals(guild)) MessageUtility.guildMessage(sender, playerName + " is not in your guild!");
-                    else
-                    {
-                        guild.removeMember(member);
-                        GuildCache.save();
-                        MessageUtility.guildMessage(sender, "Successfully kicked " + playerName + "!");
-                        MessageUtility.guildMessage(entityPlayer, "You have been kicked out of your guild!");
-                    }
+                    guild.removeMember(member);
+                    GuildCache.save();
+                    MessageUtility.guildMessage(sender, "Successfully kicked " + playerName + "!");
+                    if(entityPlayer != null) MessageUtility.guildMessage(entityPlayer, "You have been kicked out of your guild!");
                 }
             }
         }
@@ -575,65 +594,85 @@ public class CommandGuild extends CommandBase
 
     /**
      * Called whenever a player attempts to promote another player to guild admin
+     * @param server MinecraftServer instance
      * @param sender ICommandSender reference to the player
      * @param player UUID of player
      * @param guild Guild object reference to the player's guild
      * @param playerName String name of the target player
      */
-    private void promote(ICommandSender sender, UUID player, Guild guild, String playerName)
+    private void promote(MinecraftServer server, ICommandSender sender, UUID player, Guild guild, String playerName)
     {
         if(guild == null) MessageUtility.guildMessage(sender, "You are not currently a part of a guild!");
         else if(!guild.isAdmin(player)) MessageUtility.guildMessage(sender, "You do not have permission to promote a member!");
         else
         {
             EntityPlayer entityPlayer = sender.getEntityWorld().getPlayerEntityByName(playerName);
-            if(entityPlayer == null) MessageUtility.guildMessage(sender, "Player: " + playerName + " does not exist in this world!");
+            UUID member;
+            if(entityPlayer == null)
+            {
+                GameProfile gameProfile = server.getPlayerProfileCache().getGameProfileForUsername(playerName);
+                if(gameProfile == null)
+                {
+                    MessageUtility.guildMessage(sender, "Player: " + playerName + " does not exist in this world!");
+                    return;
+                }
+                else member = gameProfile.getId();
+            }
+            else member = entityPlayer.getUniqueID();
+
+            Guild memberGuild = GuildCache.getPlayerGuild(member);
+            if(memberGuild == null) MessageUtility.guildMessage(sender, playerName + " is not in a guild!");
+            else if(!memberGuild.equals(guild)) MessageUtility.guildMessage(sender, playerName + " is not in your guild!");
+            else if(guild.isAdmin(member)) MessageUtility.guildMessage(sender, playerName + " is already an admin!");
             else
             {
-                UUID member = entityPlayer.getUniqueID();
-                Guild memberGuild = GuildCache.getPlayerGuild(member);
-                if(memberGuild == null) MessageUtility.guildMessage(sender, playerName + " is not in a guild!");
-                else if(!memberGuild.equals(guild)) MessageUtility.guildMessage(sender, playerName + " is not in your guild!");
-                else if(guild.isAdmin(member)) MessageUtility.guildMessage(sender, playerName + " is already an admin!");
-                else
-                {
-                    guild.promote(member);
-                    GuildCache.save();
-                    MessageUtility.guildMessage(sender, "Successfully promoted " + playerName + "!");
-                }
+                guild.promote(member);
+                GuildCache.save();
+                MessageUtility.guildMessage(sender, "Successfully promoted " + playerName + "!");
+                if(entityPlayer != null) MessageUtility.guildMessage(entityPlayer, "You have been promoted to admin!");
             }
         }
     }
 
     /**
      * Called whenever a player attempts to demote another player from guild admin
+     * @param server MinecraftServer instance
      * @param sender ICommandSender reference to the player
      * @param player UUID of player
      * @param guild Guild object reference to the player's guild
      * @param playerName String name of the target player
      */
-    private void demote(ICommandSender sender, UUID player, Guild guild, String playerName)
+    private void demote(MinecraftServer server, ICommandSender sender, UUID player, Guild guild, String playerName)
     {
         if(guild == null) MessageUtility.guildMessage(sender, "You are not currently a part of a guild!");
         else if(!guild.isAdmin(player)) MessageUtility.guildMessage(sender, "You do not have permission to demote a member!");
         else
         {
             EntityPlayer entityPlayer = sender.getEntityWorld().getPlayerEntityByName(playerName);
-            if(entityPlayer == null) MessageUtility.guildMessage(sender, "Player: " + playerName + " does not exist in this world!");
+            UUID member;
+            if(entityPlayer == null)
+            {
+                GameProfile gameProfile = server.getPlayerProfileCache().getGameProfileForUsername(playerName);
+                if(gameProfile == null)
+                {
+                    MessageUtility.guildMessage(sender, "Player: " + playerName + " does not exist in this world!");
+                    return;
+                }
+                else member = gameProfile.getId();
+            }
+            else member = entityPlayer.getUniqueID();
+
+            Guild memberGuild = GuildCache.getPlayerGuild(member);
+            if(memberGuild == null) MessageUtility.guildMessage(sender, playerName + " is not in a guild!");
+            else if(!memberGuild.equals(guild)) MessageUtility.guildMessage(sender, playerName + " is not in your guild!");
+            else if(guild.getGuildMaster().equals(member)) MessageUtility.guildMessage(sender, "You cannot demote the guild master!");
+            else if(!guild.isAdmin(member)) MessageUtility.guildMessage(sender, playerName + " is already a regular member!");
             else
             {
-                UUID member = entityPlayer.getUniqueID();
-                Guild memberGuild = GuildCache.getPlayerGuild(member);
-                if(memberGuild == null) MessageUtility.guildMessage(sender, playerName + " is not in a guild!");
-                else if(!memberGuild.equals(guild)) MessageUtility.guildMessage(sender, playerName + " is not in your guild!");
-                else if(guild.getGuildMaster().equals(member)) MessageUtility.guildMessage(sender, "You cannot demote the guild master!");
-                else if(!guild.isAdmin(member)) MessageUtility.guildMessage(sender, playerName + " is already a regular member!");
-                else
-                {
-                    guild.demote(member);
-                    GuildCache.save();
-                    MessageUtility.guildMessage(sender, "Successfully demoted " + playerName + "!");
-                }
+                guild.demote(member);
+                GuildCache.save();
+                MessageUtility.guildMessage(sender, "Successfully demoted " + playerName + "!");
+                if(entityPlayer != null) MessageUtility.guildMessage(entityPlayer, "You have been demoted from admin!");
             }
         }
     }
@@ -667,6 +706,7 @@ public class CommandGuild extends CommandBase
                         guild.transferOwnership(member);
                         GuildCache.save();
                         MessageUtility.guildMessage(sender, "Successfully transferred ownership to " + playerName + " !");
+                        MessageUtility.guildMessage(entityPlayer, "You are now the guild master!");
                     }
                 }
             }
