@@ -16,7 +16,7 @@ import parallaxscience.guilds.alliance.AllianceCache;
 import parallaxscience.guilds.config.GeneralConfig;
 import parallaxscience.guilds.guild.Guild;
 import parallaxscience.guilds.guild.GuildCache;
-import scala.actors.threadpool.Arrays;
+import java.util.Arrays;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
@@ -114,7 +114,6 @@ public class CommandAlliance extends CommandBase {
      */
     @Override
     @Nonnull
-    @SuppressWarnings("unchecked")
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos)
     {
         if(args.length == 1) return getLastMatchingStrings(args, Arrays.asList(commands));

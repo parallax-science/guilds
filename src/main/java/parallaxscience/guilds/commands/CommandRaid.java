@@ -15,7 +15,7 @@ import parallaxscience.guilds.guild.Guild;
 import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.raid.Raid;
 import parallaxscience.guilds.raid.RaidCache;
-import scala.actors.threadpool.Arrays;
+import java.util.Arrays;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
@@ -111,7 +111,7 @@ public class CommandRaid extends CommandBase {
      */
     @Override
     @Nonnull
-    @SuppressWarnings({"unchecked", "SwitchStatementWithTooFewBranches"})
+    @SuppressWarnings( "SwitchStatementWithTooFewBranches")
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos)
     {
         if(args.length == 1) return getLastMatchingStrings(args, Arrays.asList(commands));
