@@ -630,7 +630,7 @@ public class CommandGuild extends CommandBase {
                 {
                     guild.promote(member);
                     GuildCache.save();
-                    guildMessage(sender, "Successfully promoted " + playerName + " !");
+                    guildMessage(sender, "Successfully promoted " + playerName + "!");
                 }
             }
         }
@@ -662,7 +662,7 @@ public class CommandGuild extends CommandBase {
                 {
                     guild.demote(member);
                     GuildCache.save();
-                    guildMessage(sender, "Successfully demoted " + playerName + " !");
+                    guildMessage(sender, "Successfully demoted " + playerName + "!");
                 }
             }
         }
