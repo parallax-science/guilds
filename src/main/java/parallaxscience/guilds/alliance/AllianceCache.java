@@ -66,8 +66,11 @@ public class AllianceCache {
     {
         String guildName = guild.getGuildName();
         Alliance alliance = getAlliance(guildName);
-        alliance.removeGuild(guild.getGuildName());
-        if(alliance.getGuildCount() == 0) alliances.remove(guildName);
+        if(alliance != null)
+        {
+            alliance.removeGuild(guild.getGuildName());
+            if(alliance.getGuildCount() == 0) alliances.remove(guildName);
+        }
         guild.setAlliance(null);
     }
 
