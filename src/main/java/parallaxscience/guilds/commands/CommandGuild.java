@@ -657,7 +657,7 @@ public class CommandGuild extends CommandBase {
                 Guild memberGuild = GuildCache.getPlayerGuild(member);
                 if(memberGuild == null) guildMessage(sender, playerName + " is not in a guild!");
                 else if(!memberGuild.equals(guild)) guildMessage(sender, playerName + " is not in your guild!");
-                else if(guild.isAdmin(member)) guildMessage(sender, playerName + " is already a regular member!");
+                else if(!guild.isAdmin(member)) guildMessage(sender, playerName + " is already a regular member!");
                 else
                 {
                     guild.demote(member);
