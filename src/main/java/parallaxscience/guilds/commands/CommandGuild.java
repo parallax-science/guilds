@@ -624,7 +624,7 @@ public class CommandGuild extends CommandBase {
                 UUID member = entityPlayer.getUniqueID();
                 Guild memberGuild = GuildCache.getPlayerGuild(member);
                 if(memberGuild == null) guildMessage(sender, playerName + " is not in a guild!");
-                else if(memberGuild.equals(guild)) guildMessage(sender, playerName + " is not in your guild!");
+                else if(!memberGuild.equals(guild)) guildMessage(sender, playerName + " is not in your guild!");
                 else if(guild.isAdmin(member)) guildMessage(sender, playerName + " is already an admin!");
                 else
                 {
@@ -656,7 +656,7 @@ public class CommandGuild extends CommandBase {
                 UUID member = entityPlayer.getUniqueID();
                 Guild memberGuild = GuildCache.getPlayerGuild(member);
                 if(memberGuild == null) guildMessage(sender, playerName + " is not in a guild!");
-                else if(memberGuild.equals(guild)) guildMessage(sender, playerName + " is not in your guild!");
+                else if(!memberGuild.equals(guild)) guildMessage(sender, playerName + " is not in your guild!");
                 else if(guild.isAdmin(member)) guildMessage(sender, playerName + " is already a regular member!");
                 else
                 {
