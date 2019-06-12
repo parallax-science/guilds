@@ -8,8 +8,8 @@ import java.util.ArrayList;
  * Created when a new alliance is formed
  * @author Tristan Jay
  */
-public class Alliance implements Serializable {
-
+public class Alliance implements Serializable
+{
     /**
      * List of all of the guilds in the alliance
      */

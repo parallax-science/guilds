@@ -8,8 +8,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class MessageUtility {
-
+public class MessageUtility
+{
     private final static Style guildStyle = new Style();
     private final static Style raidStyle = new Style();
     private final static Style allianceStyle = new Style();

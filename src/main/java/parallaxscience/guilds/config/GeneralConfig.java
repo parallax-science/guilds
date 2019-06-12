@@ -9,8 +9,8 @@ import parallaxscience.guilds.Guilds;
  * @author Tristan Jay
  */
 @Config(modid = Guilds.MODID)
-public class GeneralConfig {
-
+public class GeneralConfig
+{
     /**
      * The amount of characters a guild or alliance can have in their name
      */

@@ -14,8 +14,8 @@ import java.util.*;
  * Contains a list of all members, as well as other guild attributes
  * @author Tristan Jay
  */
-public class Guild implements Serializable {
-
+public class Guild implements Serializable
+{
     /**
      * Enum used to represent a member's rank in a guild
      * Used for rank comparisons
@@ -73,7 +73,8 @@ public class Guild implements Serializable {
      * @param guildName string name of the new guild
      * @param guildMaster UUID of the new guild's master
      */
-    Guild(String guildName, UUID guildMaster){
+    Guild(String guildName, UUID guildMaster)
+    {
         this.guildName = guildName;
         this.guildMaster = guildMaster;
         members = new HashMap<>();

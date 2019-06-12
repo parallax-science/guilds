@@ -12,8 +12,8 @@ import java.util.UUID;
  * Note: raids are identified by the name of the defending guild
  * @author Tristan Jay
  */
-public class Raid {
-
+public class Raid
+{
     /**
      * Enum to represent the raid phase
      * SETUP - Setup phase - Before /raid start is ran, attackers join

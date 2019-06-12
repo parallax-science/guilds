@@ -3,8 +3,8 @@ package parallaxscience.guilds.utility;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandUtility {
-
+public class CommandUtility
+{
     /**
      * Finds the matching strings in the list for the last given argument
      * @param args String array of arguments given from the player

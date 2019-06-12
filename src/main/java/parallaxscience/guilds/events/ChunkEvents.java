@@ -32,8 +32,8 @@ import java.util.List;
  * EventHandler class for claimed chunk protection events
  * @author Tristan Jay
  */
-public class ChunkEvents {
-
+public class ChunkEvents
+{
     /**
      * Called whenever an entity enters a chunk
      * Used to send messages to a player when they enter or exit claimed space

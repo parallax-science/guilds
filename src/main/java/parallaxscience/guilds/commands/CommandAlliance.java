@@ -28,8 +28,8 @@ import java.util.UUID;
  * @see CommandBase
  * @author Tristan Jay
  */
-public class CommandAlliance extends CommandBase {
-
+public class CommandAlliance extends CommandBase
+{
     /**
      * String array of sub-commands uses by the auto tab-completion
      */

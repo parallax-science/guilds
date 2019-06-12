@@ -32,8 +32,8 @@ import java.util.UUID;
  * @see CommandBase
  * @author Tristan Jay
  */
-public class CommandGuild extends CommandBase {
-
+public class CommandGuild extends CommandBase
+{
     /**
      * String array of sub-commands uses by the auto tab-completion
      */

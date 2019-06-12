@@ -9,8 +9,8 @@ import java.util.*;
  * Holds the master list of guilds
  * @author Tristan Jay
  */
-public final class GuildCache {
-
+public final class GuildCache
+{
     /**
      * Filepath to the GuildCache save file location
      */

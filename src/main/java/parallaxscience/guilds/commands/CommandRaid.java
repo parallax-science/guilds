@@ -27,8 +27,8 @@ import java.util.UUID;
  * @see CommandBase
  * @author Tristan Jay
  */
-public class CommandRaid extends CommandBase {
-
+public class CommandRaid extends CommandBase
+{
     /**
      * String array of sub-commands uses by the auto tab-completion
      */

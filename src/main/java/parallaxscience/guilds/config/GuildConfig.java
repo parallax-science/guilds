@@ -9,8 +9,8 @@ import parallaxscience.guilds.Guilds;
  * @author Tristan Jay
  */
 @Config(modid = Guilds.MODID, category = "guild")
-public class GuildConfig {
-
+public class GuildConfig
+{
     /**
      * The amount of land a guild can claim per member
      */

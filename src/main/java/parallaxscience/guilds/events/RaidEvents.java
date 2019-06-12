@@ -22,8 +22,8 @@ import java.util.UUID;
  * Only registered while a raid is active, otherwise unregistered
  * @author Tristan Jay
  */
-public class RaidEvents {
-
+public class RaidEvents
+{
     /**
      * Called whenever a living entity dies during a raid
      * Used to remove slain raiders from the fight

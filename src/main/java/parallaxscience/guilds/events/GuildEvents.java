@@ -14,8 +14,8 @@ import java.util.UUID;
  * EventHandler class for guild events
  * @author Tristan Jay
  */
-public class GuildEvents {
-
+public class GuildEvents
+{
     /**
      * Called whenever someone sends a message in the chat
      * Adds a colored guild header to the message if the player is in a guild

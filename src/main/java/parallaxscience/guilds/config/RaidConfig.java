@@ -9,8 +9,8 @@ import parallaxscience.guilds.Guilds;
  * @author Tristan Jay
  */
 @Config(modid = Guilds.MODID, category = "raid")
-public class RaidConfig {
-
+public class RaidConfig
+{
     /**
      * How long the preparation phase lasts before the raid starts (in seconds)
      */

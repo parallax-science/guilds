@@ -10,8 +10,8 @@ import parallaxscience.guilds.config.RaidConfig;
  * @see Raid
  * @author Tristan Jay
  */
-public class RaidTimer {
-
+public class RaidTimer
+{
     /**
      * Reference to the raid object
      */

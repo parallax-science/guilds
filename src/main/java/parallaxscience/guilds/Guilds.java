@@ -59,7 +59,8 @@ public class Guilds
      */
     @EventHandler
     @SuppressWarnings("unused")
-    public void preInit(FMLPreInitializationEvent event) {
+    public void preInit(FMLPreInitializationEvent event)
+    {
         logger = event.getModLog();
 
         MinecraftForge.EVENT_BUS.register(new GuildEvents());
@@ -74,7 +75,8 @@ public class Guilds
      */
     @EventHandler
     @SuppressWarnings("unused")
-    public void init(FMLInitializationEvent event) {
+    public void init(FMLInitializationEvent event)
+    {
         GuildCache.initialize();
         AllianceCache.initialize();
         ChunkCache.initialize();
@@ -89,7 +91,9 @@ public class Guilds
      */
     @EventHandler
     @SuppressWarnings("unused")
-    public void postInit(FMLPostInitializationEvent event) {
+    public void postInit(FMLPostInitializationEvent event)
+    {
+
     }
 
     /**

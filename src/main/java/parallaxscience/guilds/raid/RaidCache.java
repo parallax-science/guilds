@@ -18,8 +18,8 @@ import java.util.UUID;
  * Holds the master list of raids, as well as the chunk restore list
  * @author Tristan Jay
  */
-public class RaidCache {
-
+public class RaidCache
+{
     /**
      * Filepath to the RaidCache save file location
      */

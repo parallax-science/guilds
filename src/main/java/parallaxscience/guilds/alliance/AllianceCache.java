@@ -13,8 +13,8 @@ import java.util.Map;
  * Holds the master list of alliances
  * @author Tristan Jay
  */
-public class AllianceCache {
-
+public class AllianceCache
+{
     /**
      * Filepath to the AllianceCache save file location
      */
