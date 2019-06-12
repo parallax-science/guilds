@@ -148,9 +148,9 @@ public class CommandGuild extends CommandBase
                     if(guild != null)
                     {
                         List<String> names = new ArrayList<>();
-                        for(EntityPlayer entityPlayer : server.getPlayerList().getPlayers())
+                        for(EntityPlayerMP entityPlayerMP : server.getPlayerList().getPlayers())
                         {
-                            if(GuildCache.getPlayerGuild(entityPlayer.getUniqueID()) == null) names.add(entity.getDisplayName().getUnformattedText());
+                            if(GuildCache.getPlayerGuild(entityPlayerMP.getUniqueID()) == null) names.add(entityPlayerMP.getDisplayNameString());
                         }
                         return CommandUtility.getLastMatchingStrings(args, names);
                     }
