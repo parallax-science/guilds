@@ -13,6 +13,7 @@ import parallaxscience.guilds.events.GuildEvents;
 import parallaxscience.guilds.guild.ChunkCache;
 import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.raid.RaidCache;
+import parallaxscience.guilds.utility.MessageUtility;
 
 /**
  * The main class for the Guilds Mod
@@ -67,6 +68,7 @@ public class Guilds
         AllianceCache.initialize();
         ChunkCache.initialize();
         RaidCache.initialize();
+        MessageUtility.initialize();
     }
 
     /**

@@ -7,15 +7,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import parallaxscience.guilds.alliance.Alliance;
 import parallaxscience.guilds.alliance.AllianceCache;
 import parallaxscience.guilds.config.GeneralConfig;
 import parallaxscience.guilds.guild.Guild;
 import parallaxscience.guilds.guild.GuildCache;
+import parallaxscience.guilds.utility.CommandUtility;
+import parallaxscience.guilds.utility.MessageUtility;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -116,7 +116,7 @@ public class CommandAlliance extends CommandBase {
     @Nonnull
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos)
     {
-        if(args.length == 1) return getLastMatchingStrings(args, Arrays.asList(commands));
+        if(args.length == 1) return CommandUtility.getLastMatchingStrings(args, Arrays.asList(commands));
         else if(args.length == 2)
         {
             Entity entity = sender.getCommandSenderEntity();
@@ -127,32 +127,14 @@ public class CommandAlliance extends CommandBase {
             switch(args[0])
             {
                 case "accept":
-                    if(guild != null) if(guild.getGuildMaster().equals(player)) return getLastMatchingStrings(args, AllianceCache.getAllianceList());
+                    if(guild != null) if(guild.getGuildMaster().equals(player)) return CommandUtility.getLastMatchingStrings(args, AllianceCache.getAllianceList());
                     break;
                 case "invite":
-                    if(guild != null) if(guild.getGuildMaster().equals(player)) return getLastMatchingStrings(args, GuildCache.getFreeGuilds());
+                    if(guild != null) if(guild.getGuildMaster().equals(player)) return CommandUtility.getLastMatchingStrings(args, GuildCache.getFreeGuilds());
                     break;
             }
         }
         return new ArrayList<>();
-    }
-
-    /**
-     * Finds the matching strings in the list for the last given argument
-     * @param args String array of arguments given from the player
-     * @param list String list to match the last argument to
-     * @return String List of matching Strings
-     */
-    private List<String> getLastMatchingStrings(String[] args, List<String> list)
-    {
-        List<String> matching = new ArrayList<>();
-        String string = args[args.length - 1];
-        int length = string.length();
-        for(String item : list)
-        {
-            if(string.toLowerCase().equals(item.substring(0, length).toLowerCase())) matching.add(item);
-        }
-        return matching;
     }
 
     /**
@@ -171,11 +153,11 @@ public class CommandAlliance extends CommandBase {
         UUID player = entity.getUniqueID();
 
         Guild guild = GuildCache.getPlayerGuild(player);
-        if(guild == null) allianceMessage(sender, "You are not currently in a guild!");
-        else if(!guild.getGuildMaster().equals(player)) allianceMessage(sender, "Only guild masters can use alliance commands!");
+        if(guild == null) MessageUtility.allianceMessage(sender, "You are not currently in a guild!");
+        else if(!guild.getGuildMaster().equals(player)) MessageUtility.allianceMessage(sender, "Only guild masters can use alliance commands!");
         else if(args.length == 0)
         {
-            allianceMessage(sender, "Type \"/alliance help\" for help");
+            MessageUtility.allianceMessage(sender, "Type \"/alliance help\" for help");
         }
         else
         {
@@ -209,7 +191,7 @@ public class CommandAlliance extends CommandBase {
                     else notEnoughArguments(sender);
                     break;
                 default:
-                    allianceMessage(sender, "Invalid command! Type /guild help for valid commands!");
+                    MessageUtility.allianceMessage(sender, "Invalid command! Type /guild help for valid commands!");
                     break;
             }
         }
@@ -219,20 +201,7 @@ public class CommandAlliance extends CommandBase {
      * Sends a "Not enough arguments" message back to the player
      * @param sender ICommandSender reference to the player
      */
-    private void notEnoughArguments(ICommandSender sender) { allianceMessage(sender, "Error: Not enough arguments!"); }
-
-    /**
-     * Sends a message to the player
-     * Uses the alliance color style
-     * @param sender ICommandSender reference to the player
-     * @param message String to send to the player
-     */
-    private void allianceMessage(ICommandSender sender, String message)
-    {
-        ITextComponent textComponent = new TextComponentString(message);
-        textComponent.setStyle(style);
-        sender.sendMessage(textComponent);
-    }
+    private void notEnoughArguments(ICommandSender sender) { MessageUtility.allianceMessage(sender, "Error: Not enough arguments!"); }
 
     /**
      * Displays all of the available sub-commands and their uses to the player
@@ -241,16 +210,16 @@ public class CommandAlliance extends CommandBase {
      */
     private void displayHelp(ICommandSender sender, Guild guild)
     {
-        allianceMessage(sender, "/alliance help - Lists all available commands");
+        MessageUtility.allianceMessage(sender, "/alliance help - Lists all available commands");
         if(guild.getAlliance() == null)
         {
-            allianceMessage(sender, "/alliance form <alliance> - Creates a new alliance");
-            allianceMessage(sender, "/alliance accept <alliance> - Accept invite to join alliance");
+            MessageUtility.allianceMessage(sender, "/alliance form <alliance> - Creates a new alliance");
+            MessageUtility.allianceMessage(sender, "/alliance accept <alliance> - Accept invite to join alliance");
         }
         else
         {
-            allianceMessage(sender, "/alliance leave - Remove your guild from the alliance");
-            allianceMessage(sender, "/alliance invite <guild> - Invites a guild to your alliance");
+            MessageUtility.allianceMessage(sender, "/alliance leave - Remove your guild from the alliance");
+            MessageUtility.allianceMessage(sender, "/alliance invite <guild> - Invites a guild to your alliance");
         }
     }
 
@@ -262,16 +231,16 @@ public class CommandAlliance extends CommandBase {
      */
     private void formAlliance(ICommandSender sender, Guild guild, String alliance)
     {
-        if(guild.getAlliance() != null) allianceMessage(sender, "Your guild is already part of an alliance!");
-        else if(AllianceCache.getAlliance(alliance) != null) allianceMessage(sender, "Alliance " + alliance + " already exists!");
-        else if(alliance.length() > GeneralConfig.maxCharLength) allianceMessage(sender, "Alliance name is too long!");
+        if(guild.getAlliance() != null) MessageUtility.allianceMessage(sender, "Your guild is already part of an alliance!");
+        else if(AllianceCache.getAlliance(alliance) != null) MessageUtility.allianceMessage(sender, "Alliance " + alliance + " already exists!");
+        else if(alliance.length() > GeneralConfig.maxCharLength) MessageUtility.allianceMessage(sender, "Alliance name is too long!");
         else
         {
             guild.setAlliance(alliance);
             AllianceCache.createAlliance(alliance, guild.getGuildName());
             GuildCache.save();
             AllianceCache.save();
-            allianceMessage(sender, "New alliance: " + alliance + " has been formed!");
+            MessageUtility.allianceMessage(sender, "New alliance: " + alliance + " has been formed!");
         }
     }
 
@@ -283,18 +252,18 @@ public class CommandAlliance extends CommandBase {
      */
     private void acceptInvitation(ICommandSender sender, Guild guild, String allianceName)
     {
-        if(guild.getAlliance() != null) allianceMessage(sender, "Your guild is already part of an alliance!");
+        if(guild.getAlliance() != null) MessageUtility.allianceMessage(sender, "Your guild is already part of an alliance!");
         else
         {
             Alliance alliance = AllianceCache.getAlliance(allianceName);
-            if(alliance == null) allianceMessage(sender, "That alliance does not exist!");
-            else if(!alliance.acceptInvite(guild.getGuildName())) allianceMessage(sender, "Your guild has not been invited to " + allianceName);
+            if(alliance == null) MessageUtility.allianceMessage(sender, "That alliance does not exist!");
+            else if(!alliance.acceptInvite(guild.getGuildName())) MessageUtility.allianceMessage(sender, "Your guild has not been invited to " + allianceName);
             else
             {
                 guild.setAlliance(allianceName);
                 GuildCache.save();
                 AllianceCache.save();
-                allianceMessage(sender, "Successfully joined " + alliance + "!");
+                MessageUtility.allianceMessage(sender, "Successfully joined " + alliance + "!");
             }
         }
     }
@@ -307,13 +276,13 @@ public class CommandAlliance extends CommandBase {
     private void leaveAlliance(ICommandSender sender, Guild guild)
     {
         String allianceName = guild.getAlliance();
-        if(allianceName == null) allianceMessage(sender, "Your guild is not part of an alliance!");
+        if(allianceName == null) MessageUtility.allianceMessage(sender, "Your guild is not part of an alliance!");
         else
         {
             AllianceCache.leaveAlliance(guild);
             GuildCache.save();
             AllianceCache.save();
-            allianceMessage(sender, "Successfully left alliance!");
+            MessageUtility.allianceMessage(sender, "Successfully left alliance!");
         }
     }
 
@@ -326,19 +295,19 @@ public class CommandAlliance extends CommandBase {
     private void inviteGuild(ICommandSender sender, Guild guild, String invitee)
     {
         String allianceName = guild.getAlliance();
-        if(allianceName == null) allianceMessage(sender, "Your guild is not part of an alliance!");
+        if(allianceName == null) MessageUtility.allianceMessage(sender, "Your guild is not part of an alliance!");
         else
         {
             Guild inviteeGuild = GuildCache.getGuild(invitee);
-            if(inviteeGuild == null) allianceMessage(sender, "That guild does not exist!");
-            else if(inviteeGuild.getAlliance() != null) allianceMessage(sender, "Invitee guild is already part of an alliance!");
+            if(inviteeGuild == null) MessageUtility.allianceMessage(sender, "That guild does not exist!");
+            else if(inviteeGuild.getAlliance() != null) MessageUtility.allianceMessage(sender, "Invitee guild is already part of an alliance!");
             else
             {
                 AllianceCache.getAlliance(allianceName).addInvitee(invitee);
                 AllianceCache.save();
-                allianceMessage(sender, "Successfully invited " + invitee + " to alliance!");
+                MessageUtility.allianceMessage(sender, "Successfully invited " + invitee + " to alliance!");
                 EntityPlayer guildMaster = sender.getEntityWorld().getPlayerEntityByUUID(inviteeGuild.getGuildMaster());
-                if(guildMaster != null) guildMaster.sendMessage(new TextComponentString("Your guild has been invited to join " + allianceName + "!"));
+                if(guildMaster != null) MessageUtility.allianceMessage(guildMaster, "Your guild has been invited to join " + allianceName + "!");
             }
         }
     }
