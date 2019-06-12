@@ -10,7 +10,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -25,6 +24,7 @@ import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.guild.Guild;
 import parallaxscience.guilds.raid.Raid;
 import parallaxscience.guilds.raid.RaidCache;
+import parallaxscience.guilds.utility.MessageUtility;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,9 +51,9 @@ public class ChunkEvents {
             String newOwner = ChunkCache.getChunkOwner(event.getNewChunkX(), event.getNewChunkZ());
             if(newOwner == null)
             {
-                if(oldOwner != null) entity.sendMessage(new TextComponentString("Entering Wilderness."));
+                if(oldOwner != null) MessageUtility.chunkMessage(entity, "Entering Wilderness.");
             }
-            else if(!newOwner.equals(oldOwner)) entity.sendMessage(new TextComponentString("Entering the Territory of " + newOwner));
+            else if(!newOwner.equals(oldOwner)) MessageUtility.chunkMessage(entity,"Entering the Territory of " + newOwner);
         }
     }
 
@@ -82,7 +82,7 @@ public class ChunkEvents {
                 if(iBlockState.getBlock().hasTileEntity(iBlockState))
                 {
                     event.setCanceled(true);
-                    player.sendMessage(new TextComponentString("You cannot break this block during a raid!"));
+                    MessageUtility.chunkMessage(player, "You cannot break this block during a raid!");
                 }
                 else
                 {
@@ -92,13 +92,13 @@ public class ChunkEvents {
             else if(!owner.isMember(player.getUniqueID()))
             {
                 event.setCanceled(true);
-                player.sendMessage(new TextComponentString("You cannot break blocks in another guilds territory!"));
+                MessageUtility.chunkMessage(player, "You cannot break blocks in another guilds territory!");
             }
         }
         else if(!owner.isMember(player.getUniqueID()))
         {
             event.setCanceled(true);
-            player.sendMessage(new TextComponentString("You cannot break blocks in another guilds territory!"));
+            MessageUtility.chunkMessage(player, "You cannot break blocks in another guilds territory!");
         }
     }
 
@@ -123,7 +123,7 @@ public class ChunkEvents {
             if(!owner.isMember((player.getUniqueID())))
             {
                 event.setCanceled(true);
-                player.sendMessage(new TextComponentString("You cannot trample crops in another guilds territory!"));
+                MessageUtility.chunkMessage(player, "You cannot trample crops in another guilds territory!");
             }
         }
     }
@@ -158,14 +158,14 @@ public class ChunkEvents {
                     if(raid.isActive())
                     {
                         event.setCanceled(true);
-                        player.sendMessage(new TextComponentString("You cannot use fluids during a raid!"));
+                        MessageUtility.chunkMessage(player, "You cannot use fluids during a raid!");
                     }
                 }
             }
             else
             {
                 event.setCanceled(true);
-                player.sendMessage(new TextComponentString("You cannot place fluids in another clans territory!"));
+                MessageUtility.chunkMessage(player, "You cannot place fluids in another clans territory!");
             }
         }
     }
@@ -199,13 +199,13 @@ public class ChunkEvents {
                 else
                 {
                     event.setCanceled(true);
-                    player.sendMessage(new TextComponentString("You cannot place blocks in another guilds territory!"));
+                    MessageUtility.chunkMessage(player, "You cannot place blocks in another guilds territory!");
                 }
             }
             else if(!owner.isMember(player.getUniqueID()))
             {
                 event.setCanceled(true);
-                player.sendMessage(new TextComponentString("You cannot place blocks in another guilds territory!"));
+                MessageUtility.chunkMessage(player, "You cannot place blocks in another guilds territory!");
             }
         }
     }
@@ -239,13 +239,13 @@ public class ChunkEvents {
                 else if(!owner.isMember(player.getUniqueID()))
                 {
                     event.setCanceled(true);
-                    player.sendMessage(new TextComponentString("You cannot place blocks in another guilds territory!"));
+                    MessageUtility.chunkMessage(player, "You cannot place blocks in another guilds territory!");
                 }
             }
             if(!owner.isMember(player.getUniqueID()))
             {
                 event.setCanceled(true);
-                player.sendMessage(new TextComponentString("You cannot place blocks in another guilds territory!"));
+                MessageUtility.chunkMessage(player, "You cannot place blocks in another guilds territory!");
             }
         }
     }
@@ -289,19 +289,19 @@ public class ChunkEvents {
                 if(block.hasTileEntity(iBlockState) || (block == Blocks.GRASS && event.getItemStack().getItem() instanceof ItemSpade))
                 {
                     event.setCanceled(true);
-                    player.sendMessage(new TextComponentString("You cannot use this during a raid!"));
+                    MessageUtility.chunkMessage(player, "You cannot use this during a raid!");
                 }
             }
             else if(!owner.isMember(player.getUniqueID()))
             {
                 event.setCanceled(true);
-                player.sendMessage(new TextComponentString("You cannot interact with blocks in another guilds territory!"));
+                MessageUtility.chunkMessage(player, "You cannot interact with blocks in another guilds territory!");
             }
         }
         else if(!owner.isMember(player.getUniqueID()))
         {
             event.setCanceled(true);
-            player.sendMessage(new TextComponentString("You cannot interact with blocks in another guilds territory!"));
+            MessageUtility.chunkMessage(player, "You cannot interact with blocks in another guilds territory!");
         }
     }
 
@@ -329,13 +329,13 @@ public class ChunkEvents {
                 if(!owner.isMember((player.getUniqueID())))
                 {
                     event.setCanceled(true);
-                    player.sendMessage(new TextComponentString("You cannot teleport in another guilds territory!"));
+                    MessageUtility.chunkMessage(player, "You cannot teleport in another guilds territory!");
                 }
             }
             else if(!raid.isActive() || !owner.isMember(player.getUniqueID()))
             {
                 event.setCanceled(true);
-                player.sendMessage(new TextComponentString("You cannot teleport in another guilds territory!"));
+                MessageUtility.chunkMessage(player, "You cannot teleport in another guilds territory!");
             }
         }
     }
@@ -361,18 +361,18 @@ public class ChunkEvents {
             if(raid.isActive())
             {
                 event.setCanceled(true);
-                player.sendMessage(new TextComponentString("You cannot use a hoe during a raid!"));
+                MessageUtility.chunkMessage(player, "You cannot use a hoe during a raid!");
             }
             else if(!owner.isMember((player.getUniqueID())))
             {
                 event.setCanceled(true);
-                player.sendMessage(new TextComponentString("You cannot use a hoe in another guilds territory!"));
+                MessageUtility.chunkMessage(player, "You cannot use a hoe in another guilds territory!");
             }
         }
         else if(!owner.isMember((player.getUniqueID())))
         {
             event.setCanceled(true);
-            player.sendMessage(new TextComponentString("You cannot use a hoe in another guilds territory!"));
+            MessageUtility.chunkMessage(player, "You cannot use a hoe in another guilds territory!");
         }
     }
 
