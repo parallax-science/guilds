@@ -148,7 +148,7 @@ public class Guild implements Serializable {
     public void demote(UUID member)
     {
         Rank currentRank = members.get(member);
-        if(currentRank == Rank.MEMBER) return;
+        if(currentRank.equals(Rank.MEMBER)) return;
         members.replace(member, members.get(member), Rank.MEMBER);
     }
 
