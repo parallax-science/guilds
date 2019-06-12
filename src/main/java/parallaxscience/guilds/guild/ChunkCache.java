@@ -2,6 +2,7 @@ package parallaxscience.guilds.guild;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import parallaxscience.guilds.Guilds;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -183,7 +184,7 @@ public final class ChunkCache
         }
         catch(Exception e)
         {
-            System.out.println("ERROR: IOException on chunk cache file save");
+            Guilds.logger.info("ERROR: IOException on chunk cache file save");
         }
     }
 }

@@ -5,6 +5,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.events.RaidEvents;
 import parallaxscience.guilds.utility.MessageUtility;
 import java.io.*;
@@ -186,7 +187,7 @@ public class RaidCache {
         }
         catch(Exception e)
         {
-            System.out.println("ERROR: IOException on raid cache file save");
+            Guilds.logger.info("ERROR: IOException on raid cache file save");
         }
     }
 
@@ -218,7 +219,7 @@ public class RaidCache {
         }
         catch(Exception e)
         {
-            System.out.println("No chunks to restore!");
+            Guilds.logger.info("No chunks to restore!");
         }
     }
 

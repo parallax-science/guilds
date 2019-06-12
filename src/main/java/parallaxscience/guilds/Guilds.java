@@ -4,6 +4,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import org.apache.logging.log4j.Logger;
 import parallaxscience.guilds.alliance.AllianceCache;
 import parallaxscience.guilds.commands.CommandAlliance;
 import parallaxscience.guilds.commands.CommandGuild;
@@ -44,6 +45,14 @@ public class Guilds
     static final String MC_VERSION = "[1.12.2]";
 
     /**
+     * The mod's logger instance
+     * Used to log messages to the console
+     * Given by the FMLPreInitializationEvent
+     * @see Logger
+     */
+    public static Logger logger;
+
+    /**
      * Called on Forge startup
      * Used primarily for event registration and config management
      * @param event FMLPreInitializationEvent
@@ -51,6 +60,8 @@ public class Guilds
     @EventHandler
     @SuppressWarnings("unused")
     public void preInit(FMLPreInitializationEvent event) {
+        logger = event.getModLog();
+
         MinecraftForge.EVENT_BUS.register(new GuildEvents());
         MinecraftForge.EVENT_BUS.register(new ChunkEvents());
     }

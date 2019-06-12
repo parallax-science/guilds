@@ -1,5 +1,6 @@
 package parallaxscience.guilds.guild;
 
+import parallaxscience.guilds.Guilds;
 import java.io.*;
 import java.util.*;
 
@@ -135,7 +136,7 @@ public final class GuildCache {
         }
         catch(Exception e)
         {
-            System.out.println("ERROR: IOException on guild cache file save");
+            Guilds.logger.info("ERROR: IOException on guild cache file save");
         }
     }
 }
