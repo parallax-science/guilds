@@ -7,7 +7,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import parallaxscience.guilds.config.RaidConfig;
 import parallaxscience.guilds.guild.Guild;
@@ -163,7 +162,7 @@ public class CommandRaid extends CommandBase {
                 case "join":
                     if(args.length == 2)
                     {
-                        joinRaid(server, sender, player, guild, raid, args[1]);
+                        joinRaid(sender, player, guild, raid, args[1]);
                     }
                     else notEnoughArguments(sender);
                     break;
@@ -171,7 +170,7 @@ public class CommandRaid extends CommandBase {
                     leaveRaid(sender, player, guild, raid);
                     break;
                 case "start":
-                    startRaid(server, sender, raid);
+                    startRaid(sender, raid);
                     break;
                 default: MessageUtility.raidMessage(sender, "Invalid command! Type /raid help for valid commands!");
                     break;
@@ -208,14 +207,13 @@ public class CommandRaid extends CommandBase {
 
     /**
      * Called whenever a player attempts to join a new raid
-     * @param server MinecraftServer instance
      * @param sender ICommandSender reference to the player
      * @param player UUID of the player
      * @param guild Guild object reference to the player's guild
      * @param playerRaid Raid object reference of the player's current raid
      * @param newRaidName String name of the new raid
      */
-    private void joinRaid(MinecraftServer server, ICommandSender sender, UUID player, Guild guild, Raid playerRaid, String newRaidName)
+    private void joinRaid(ICommandSender sender, UUID player, Guild guild, Raid playerRaid, String newRaidName)
     {
         if(guild == null) MessageUtility.raidMessage(sender, "Only those who are in a guild may join a raid!");
         else
@@ -231,7 +229,7 @@ public class CommandRaid extends CommandBase {
                     if(raid == null)
                     {
                         MessageUtility.raidMessage(sender, "Successfully joined the raid on " + newRaidName + "!");
-                        RaidCache.createRaid(server, newRaidName, player);
+                        RaidCache.createRaid(newRaidName, player);
                     }
                     else if(raid.isActive()) MessageUtility.raidMessage(sender, "The raid on " + newRaidName + " has already begun!");
                     else
@@ -284,19 +282,17 @@ public class CommandRaid extends CommandBase {
 
     /**
      * Called whenever a player attempts to start a raid
-     * @param server MinecraftServer instance
      * @param sender ICommandSender reference to the player
      * @param raid Raid object reference of the player's current raid
      */
-    private void startRaid(MinecraftServer server, ICommandSender sender, Raid raid)
+    private void startRaid(ICommandSender sender, Raid raid)
     {
         if(raid == null) MessageUtility.raidMessage(sender, "You are not currently a part of a raid!");
         else if(raid.isStarted()) MessageUtility.raidMessage(sender, "Raid is already started!");
         else
         {
             raid.startRaid();
-            //FIX THIS
-            server.getPlayerList().sendMessage(new TextComponentString("The raid on " + raid.getDefendingGuild() + " will begin in " + RaidConfig.prepSeconds + " seconds!"));
+            MessageUtility.raidMessageAll("The raid on " + raid.getDefendingGuild() + " will begin in " + RaidConfig.prepSeconds + " seconds!");
         }
     }
 }

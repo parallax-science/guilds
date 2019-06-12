@@ -1,14 +1,12 @@
 package parallaxscience.guilds.raid;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import parallaxscience.guilds.events.RaidEvents;
+import parallaxscience.guilds.utility.MessageUtility;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -104,9 +102,9 @@ public class RaidCache {
      * @param raidName String name of the raid
      * @param primaryAttacker UUID of primary attacker
      */
-    public static void createRaid(MinecraftServer server, String raidName, UUID primaryAttacker)
+    public static void createRaid(String raidName, UUID primaryAttacker)
     {
-        raids.put(raidName, new Raid(server, raidName, primaryAttacker));
+        raids.put(raidName, new Raid(raidName, primaryAttacker));
         blockRestore.put(raidName, new HashMap<>());
         if(!isActive) MinecraftForge.EVENT_BUS.register(raidEvents);
     }
@@ -122,10 +120,9 @@ public class RaidCache {
     {
         Raid raid = getRaid(raidName);
         raid.stopTimer();
-        PlayerList players = raid.getServer().getPlayerList();
-        players.sendMessage(new TextComponentString("The raid on " + raidName + " is now over!"));
-        if(defenseWon) players.sendMessage(new TextComponentString(raidName + " has successfully held off the attackers!"));
-        else players.sendMessage(new TextComponentString("The attackers have successfully raided " + raidName + "!"));
+        MessageUtility.raidMessageAll("The raid on " + raidName + " is now over!");
+        if(defenseWon) MessageUtility.raidMessageAll(raidName + " has successfully held off the attackers!");
+        else MessageUtility.raidMessageAll("The attackers have successfully raided " + raidName + "!");
 
         for(Map.Entry<BlockPos, IBlockState> blocks : blockRestore.get(raidName).entrySet())
         {

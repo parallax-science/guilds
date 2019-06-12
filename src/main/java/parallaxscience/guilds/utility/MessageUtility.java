@@ -1,10 +1,12 @@
 package parallaxscience.guilds.utility;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class MessageUtility {
 
@@ -12,6 +14,8 @@ public class MessageUtility {
     private final static Style raidStyle = new Style();
     private final static Style allianceStyle = new Style();
     private final static Style chunkStyle = new Style();
+
+    private final static MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
     public static void initialize()
     {
@@ -55,6 +59,18 @@ public class MessageUtility {
     public static void raidMessage(ICommandSender sender, String message)
     {
         message(sender, message, raidStyle);
+    }
+
+    /**
+     * Sends a raid notification to all players
+     * Uses the raid color style
+     * @param message String to send to the players
+     */
+    public static void raidMessageAll(String message)
+    {
+        ITextComponent textComponent = new TextComponentString(message);
+        textComponent.setStyle(raidStyle);
+        server.getPlayerList().sendMessage(textComponent);
     }
 
     /**

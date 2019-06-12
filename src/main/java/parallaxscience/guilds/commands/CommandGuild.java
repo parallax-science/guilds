@@ -10,7 +10,6 @@ import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import parallaxscience.guilds.alliance.AllianceCache;
 import parallaxscience.guilds.config.GeneralConfig;
@@ -427,7 +426,7 @@ public class CommandGuild extends CommandBase {
                     guild.addInvitee(invitee);
                     GuildCache.save();
                     MessageUtility.guildMessage(sender, "Successfully invited " + playerName + "!");
-                    entityPlayer.sendMessage(new TextComponentString("You have been invited to join " + guild.getGuildName() + "!"));
+                    MessageUtility.guildMessage(entityPlayer, "You have been invited to join " + guild.getGuildName() + "!");
                 }
             }
 
