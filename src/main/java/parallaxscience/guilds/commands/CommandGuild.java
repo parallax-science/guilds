@@ -178,7 +178,7 @@ public class CommandGuild extends CommandBase
                     }
                     break;
                 case "setcolor":
-                    if(guild != null) if(guild.getGuildMaster().equals(player)) return CommandUtility.getLastMatchingStrings(args, new ArrayList<>(TextFormatting.getValidValues(false, false)));
+                    if(guild != null) if(guild.getGuildMaster().equals(player)) return CommandUtility.getLastMatchingStrings(args, new ArrayList<>(TextFormatting.getValidValues(true, false)));
                     break;
             }
         }
