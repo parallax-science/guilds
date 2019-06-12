@@ -125,7 +125,7 @@ public class CommandRaid extends CommandBase {
             switch(args[0])
             {
                 case "join":
-                    if(guild != null) getLastMatchingStrings(args, GuildCache.getGuildList());
+                    if(guild != null) return getLastMatchingStrings(args, GuildCache.getGuildList());
                     break;
             }
         }
