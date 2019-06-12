@@ -18,7 +18,7 @@ public class CommandUtility
         int length = string.length();
         for(String item : list)
         {
-            if(string.toLowerCase().equals(item.substring(0, length).toLowerCase())) matching.add(item);
+            if(item.length() >= length) if(string.toLowerCase().equals(item.substring(0, length).toLowerCase())) matching.add(item);
         }
         return matching;
     }
