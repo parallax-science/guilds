@@ -70,7 +70,8 @@ public class Guild implements Serializable
     private TextFormatting color;
 
     /**
-     *
+     * System time that the guild will be able to be raided again
+     * Calculated with System.currentTimeMillis() + raid shield duration
      */
     private long nextRaidInterval;
 
