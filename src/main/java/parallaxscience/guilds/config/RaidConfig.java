@@ -31,4 +31,15 @@ public class RaidConfig
     })
     @Config.Name("Raid Duration")
     public static int raidSeconds = 900;
+
+    /**
+     * The raid shield duration (in minutes)
+     * This is how long after a raid a guild is protected from being raided again
+     */
+    @Config.Comment({
+            "How long after a raid a guild is protected from being raided again (in minutes)",
+            "Default: 480"
+    })
+    @Config.Name("Raid Shield Duration")
+    public static int shieldDuration = 900;
 }

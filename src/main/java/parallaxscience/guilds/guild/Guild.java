@@ -7,6 +7,7 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import parallaxscience.guilds.config.GuildConfig;
 import parallaxscience.guilds.alliance.Alliance;
+import parallaxscience.guilds.config.RaidConfig;
 import java.io.Serializable;
 import java.util.*;
 
@@ -67,6 +68,11 @@ public class Guild implements Serializable
      * @see Style
      */
     private TextFormatting color;
+
+    /**
+     *
+     */
+    private long nextRaidInterval;
 
     /**
      * Constructor for the Guild class
@@ -316,5 +322,23 @@ public class Guild implements Serializable
     public void setAlliance(String alliance)
     {
         this.alliance = alliance;
+    }
+
+    /**
+     * Resets the raid shield interval to the current time + the shield duration in config
+     */
+    public void resetRaidInterval()
+    {
+        nextRaidInterval = RaidConfig.shieldDuration*60000 + System.currentTimeMillis();
+    }
+
+    /**
+     * Returns how many minutes until the guild can be raided again
+     * @return 0 if after interval, remaining minutes if before
+     */
+    public long getRemainingShield()
+    {
+        if(nextRaidInterval <= System.currentTimeMillis()) return 0;
+        else return (nextRaidInterval - System.currentTimeMillis())/60000;
     }
 }

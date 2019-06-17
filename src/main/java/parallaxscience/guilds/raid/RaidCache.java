@@ -7,6 +7,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.events.RaidEvents;
+import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.utility.MessageUtility;
 import java.io.*;
 import java.util.HashMap;
@@ -121,6 +122,7 @@ public class RaidCache
     {
         Raid raid = getRaid(raidName);
         raid.stopTimer();
+        GuildCache.getGuild(raidName).resetRaidInterval();
         MessageUtility.raidMessageAll("The raid on " + raidName + " is now over!");
         if(defenseWon) MessageUtility.raidMessageAll(raidName + " has successfully held off the attackers!");
         else MessageUtility.raidMessageAll("The attackers have successfully raided " + raidName + "!");

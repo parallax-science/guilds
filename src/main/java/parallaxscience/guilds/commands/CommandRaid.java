@@ -1,5 +1,6 @@
 package parallaxscience.guilds.commands;
 
+import net.minecraft.client.gui.Gui;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
@@ -222,38 +223,44 @@ public class CommandRaid extends CommandBase
             else if(newRaidName.equals(guild.getGuildName())) MessageUtility.raidMessage(sender, "You cannot join a raid on your own guild!");
             else
             {
-                if(GuildCache.getGuild(newRaidName) == null) MessageUtility.raidMessage(sender, "That guild does not exist!");
+                Guild newGuild = GuildCache.getGuild(newRaidName);
+                if(newGuild == null) MessageUtility.raidMessage(sender, "That guild does not exist!");
                 else
                 {
                     Raid raid = RaidCache.getRaid(newRaidName);
                     if(raid == null)
                     {
-                        MessageUtility.raidMessage(sender, "Successfully joined the raid on " + newRaidName + "!");
-                        RaidCache.createRaid(newRaidName, player);
+                        long remainingShield = guild.getRemainingShield();
+                        if(remainingShield == 0)
+                        {
+                            MessageUtility.raidMessage(sender, "Successfully joined the raid on " + newRaidName + "!");
+                            RaidCache.createRaid(newRaidName, player);
+                        }
+                        else MessageUtility.raidMessage(sender, "That guild is still shielded for another " + remainingShield + " minutes!");
                     }
                     else if(raid.isActive()) MessageUtility.raidMessage(sender, "The raid on " + newRaidName + " has already begun!");
                     else
                     {
                         String alliance = guild.getAlliance();
-                        if(alliance == null) MessageUtility.raidMessage(sender, "Your guild is not a part of an alliance!");
-                        else if(alliance.equals(GuildCache.getGuild(newRaidName).getAlliance()))
+                        if(alliance != null)
                         {
-                            if(raid.isStarted())
+                            if(alliance.equals(GuildCache.getGuild(newRaidName).getAlliance()))
                             {
-                                raid.addDefender(player);
-                                MessageUtility.raidMessage(sender, "Successfully joined the raid on " + newRaidName + " as a defender!");
+                                if(raid.isStarted())
+                                {
+                                    raid.addDefender(player);
+                                    MessageUtility.raidMessage(sender, "Successfully joined the raid on " + newRaidName + " as a defender!");
+                                }
+                                else MessageUtility.raidMessage(sender, "A raid has not been started for that guild!");
+                                return;
                             }
-                            else MessageUtility.raidMessage(sender, "A raid has not been started for that guild!");
                         }
-                        else
+                        if(raid.canAttackerJoin())
                         {
-                            if(raid.canAttackerJoin())
-                            {
-                                raid.addAttacker(player);
-                                MessageUtility.raidMessage(sender, "Successfully joined the raid on " + newRaidName + "!");
-                            }
-                            else MessageUtility.raidMessage(sender, "No more attackers can join the raid at the moment!");
+                            raid.addAttacker(player);
+                            MessageUtility.raidMessage(sender, "Successfully joined the raid on " + newRaidName + "!");
                         }
+                        else MessageUtility.raidMessage(sender, "No more attackers can join the raid at the moment!");
                     }
                 }
             }
