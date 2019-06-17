@@ -38,7 +38,7 @@ public class Guilds
     /**
      * The mod version
      */
-    static final String VERSION = "ALPHA 1.0";
+    static final String VERSION = "0.9.0.1";
 
     /**
      * The version of Minecraft that this mod is compatible with
