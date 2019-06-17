@@ -538,11 +538,14 @@ public class CommandGuild extends CommandBase
             else if(!owner.equals(guild.getGuildName())) MessageUtility.guildMessage(sender, "This chunk belongs to " + owner + "!");
             else
             {
-                ChunkCache.removeChunkOwner(chunkPos);
-                guild.decrementTerritoryCount();
-                GuildCache.save();
-                ChunkCache.save();
-                MessageUtility.guildMessage(sender, "Chunk successfully abandoned!");
+                if(ChunkCache.removeChunkOwner(chunkPos))
+                {
+                    guild.decrementTerritoryCount();
+                    GuildCache.save();
+                    ChunkCache.save();
+                    MessageUtility.guildMessage(sender, "Chunk successfully abandoned!");
+                }
+                else MessageUtility.guildMessage(sender, "Cannot abandon chunk! Doing so would split your territory!");
             }
         }
     }

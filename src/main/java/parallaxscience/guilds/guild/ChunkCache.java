@@ -146,11 +146,38 @@ public final class ChunkCache
      * Removes the chunk from the chunk list
      * @param chunkPos ChunkPos of the chunk
      */
-    public static void removeChunkOwner(ChunkPos chunkPos)
+    public static boolean removeChunkOwner(ChunkPos chunkPos)
     {
         int x = chunkPos.x;
         int z = chunkPos.z;
-        if(chunkMap.get(x).get(z) != null) chunkMap.get(x).remove(z);
+
+        if(canRemoveChunk(x, z))
+        {
+            chunkMap.get(x).remove(z);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether or not the chunk can be abandoned or not
+     * Uses chunk adjacency check algorithm
+     * @param x X coordinate for the chunk
+     * @param z Z coordinate for the chunk
+     * @return if the chunk can be abandoned
+     */
+    private static boolean canRemoveChunk(int x, int z)
+    {
+        HashMap<Integer, String> subMap = chunkMap.get(x);
+        String owner = subMap.get(z);
+        if(owner == null) return false;
+
+        boolean e = owner.equals(chunkMap.get(x + 1).get(z));
+        boolean w = owner.equals(chunkMap.get(x - 1).get(z));
+
+        if(owner.equals(subMap.get(z + 1))) {if(owner.equals(subMap.get(z - 1))) if(w) return !e;}
+        else if(w) return !e;
+        return true;
     }
 
     /**
