@@ -4,7 +4,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.utility.FileUtility;
-
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;

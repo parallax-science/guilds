@@ -3,7 +3,6 @@ package parallaxscience.guilds.alliance;
 import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.guild.Guild;
 import parallaxscience.guilds.utility.FileUtility;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;

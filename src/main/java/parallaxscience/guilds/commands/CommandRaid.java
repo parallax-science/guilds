@@ -1,6 +1,5 @@
 package parallaxscience.guilds.commands;
 
-import net.minecraft.client.gui.Gui;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
