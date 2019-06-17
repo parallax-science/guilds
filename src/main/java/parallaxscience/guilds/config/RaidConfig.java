@@ -41,5 +41,5 @@ public class RaidConfig
             "Default: 480"
     })
     @Config.Name("Raid Shield Duration")
-    public static int shieldDuration = 900;
+    public static int shieldDuration = 480;
 }
