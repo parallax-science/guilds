@@ -3,6 +3,8 @@ package parallaxscience.guilds.guild;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import parallaxscience.guilds.Guilds;
+import parallaxscience.guilds.utility.FileUtility;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +19,7 @@ public final class ChunkCache
     /**
      * Filepath to the ChunkCache save file location
      */
-    private static final String fileName = "world/Guilds_ChunkCache.dat";
+    private static final String fileName = FileUtility.guildDirectory + "/" + "ChunkCache.dat";
 
     /**
      * List of all of the claimed chunks and the owning guild

@@ -1,6 +1,7 @@
 package parallaxscience.guilds.guild;
 
 import parallaxscience.guilds.Guilds;
+import parallaxscience.guilds.utility.FileUtility;
 import java.io.*;
 import java.util.*;
 
@@ -14,7 +15,7 @@ public final class GuildCache
     /**
      * Filepath to the GuildCache save file location
      */
-    private final static String fileName = "world/Guilds_GuildCache.dat";
+    private final static String fileName = FileUtility.guildDirectory + "/" + "GuildCache.dat";
 
     /**
      * HashMap of guilds

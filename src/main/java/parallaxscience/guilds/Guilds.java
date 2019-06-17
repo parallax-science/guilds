@@ -14,6 +14,7 @@ import parallaxscience.guilds.events.GuildEvents;
 import parallaxscience.guilds.guild.ChunkCache;
 import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.raid.RaidCache;
+import parallaxscience.guilds.utility.FileUtility;
 import parallaxscience.guilds.utility.MessageUtility;
 
 /**
@@ -77,6 +78,7 @@ public class Guilds
     @SuppressWarnings("unused")
     public void init(FMLInitializationEvent event)
     {
+        FileUtility.directoryCheck();
         GuildCache.initialize();
         AllianceCache.initialize();
         ChunkCache.initialize();

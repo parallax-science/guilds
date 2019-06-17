@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.events.RaidEvents;
 import parallaxscience.guilds.guild.GuildCache;
+import parallaxscience.guilds.utility.FileUtility;
 import parallaxscience.guilds.utility.MessageUtility;
 import java.io.*;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ public class RaidCache
     /**
      * Filepath to the RaidCache save file location
      */
-    private final static String fileName = "world/Guilds_RaidsCache.dat";
+    private final static String fileName = FileUtility.guildDirectory + "/" + "RaidsCache.dat";
 
     /**
      * HashMap of raids

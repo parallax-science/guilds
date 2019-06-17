@@ -2,6 +2,8 @@ package parallaxscience.guilds.alliance;
 
 import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.guild.Guild;
+import parallaxscience.guilds.utility.FileUtility;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +20,7 @@ public class AllianceCache
     /**
      * Filepath to the AllianceCache save file location
      */
-    private final static String fileName = "world/Guilds_AllianceCache.dat";
+    private final static String fileName = FileUtility.guildDirectory + "/" + "AllianceCache.dat";
 
     /**
      * List of all of the alliances
