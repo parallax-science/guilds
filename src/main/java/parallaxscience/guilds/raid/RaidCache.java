@@ -175,23 +175,9 @@ public class RaidCache
     /**
      * Saves the raid data to file
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void saveRaid()
     {
-        File file = new File(fileName);
-        try
-        {
-            file.createNewFile();
-            FileOutputStream fileOutputStream = new FileOutputStream(fileName);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(blockRestore);
-            objectOutputStream.close();
-            fileOutputStream.close();
-        }
-        catch(Exception e)
-        {
-            Guilds.logger.info("ERROR: IOException on raid cache file save");
-        }
+        FileUtility.saveToFile(fileName, blockRestore);
     }
 
     /**
@@ -206,11 +192,7 @@ public class RaidCache
         world = event.getServer().getWorld(0);
         try
         {
-            FileInputStream fileInputStream = new FileInputStream(fileName);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            HashMap<String, HashMap<BlockPos, IBlockState>> oldRestore = (HashMap<String, HashMap<BlockPos, IBlockState>>) objectInputStream.readObject();
-            objectInputStream.close();
-            fileInputStream.close();
+            HashMap<String, HashMap<BlockPos, IBlockState>> oldRestore = (HashMap<String, HashMap<BlockPos, IBlockState>>) FileUtility.readFromFile(fileName);
 
             for(Map.Entry<String, HashMap<BlockPos, IBlockState>> raids : oldRestore.entrySet())
             {
@@ -220,9 +202,13 @@ public class RaidCache
                 }
             }
         }
-        catch(Exception e)
+        catch(IOException e)
         {
             Guilds.logger.info("No chunks to restore!");
+        }
+        catch(ClassNotFoundException e)
+        {
+            Guilds.logger.info("ERROR: ClassNotFoundException on raid block restore file!");
         }
     }
 

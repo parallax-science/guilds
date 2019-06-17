@@ -2,9 +2,7 @@ package parallaxscience.guilds.guild;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.utility.FileUtility;
-import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,11 +35,7 @@ public final class ChunkCache
     {
         try
         {
-            FileInputStream fileInputStream = new FileInputStream(fileName);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            chunkMap = (HashMap<Integer, HashMap<Integer,String>>) objectInputStream.readObject();
-            objectInputStream.close();
-            fileInputStream.close();
+            chunkMap = (HashMap<Integer, HashMap<Integer, String>>) FileUtility.readFromFile(fileName);
         }
         catch(Exception e)
         {
@@ -195,24 +189,10 @@ public final class ChunkCache
     }
 
     /**
-     * Saves the guild data to file
+     * Saves the chunk data to file
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void save()
     {
-        File file = new File(fileName);
-        try
-        {
-            file.createNewFile();
-            FileOutputStream fileOutputStream = new FileOutputStream(fileName);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(chunkMap);
-            objectOutputStream.close();
-            fileOutputStream.close();
-        }
-        catch(Exception e)
-        {
-            Guilds.logger.info("ERROR: IOException on chunk cache file save");
-        }
+        FileUtility.saveToFile(fileName, chunkMap);
     }
 }

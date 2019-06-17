@@ -1,8 +1,6 @@
 package parallaxscience.guilds.guild;
 
-import parallaxscience.guilds.Guilds;
 import parallaxscience.guilds.utility.FileUtility;
-import java.io.*;
 import java.util.*;
 
 /**
@@ -35,11 +33,7 @@ public final class GuildCache
     {
         try
         {
-            FileInputStream fileInputStream = new FileInputStream(fileName);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            guilds = (HashMap<String, Guild>) objectInputStream.readObject();
-            objectInputStream.close();
-            fileInputStream.close();
+            guilds = (HashMap<String, Guild>) FileUtility.readFromFile(fileName);
         }
         catch(Exception e)
         {
@@ -122,22 +116,8 @@ public final class GuildCache
     /**
      * Saves the guild data to file
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void save()
     {
-        File file = new File(fileName);
-        try
-        {
-            file.createNewFile();
-            FileOutputStream fileOutputStream = new FileOutputStream(fileName);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(guilds);
-            objectOutputStream.close();
-            fileOutputStream.close();
-        }
-        catch(Exception e)
-        {
-            Guilds.logger.info("ERROR: IOException on guild cache file save");
-        }
+        FileUtility.saveToFile(fileName, guilds);
     }
 }
