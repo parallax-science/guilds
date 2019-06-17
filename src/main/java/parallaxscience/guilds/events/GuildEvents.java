@@ -1,11 +1,15 @@
 package parallaxscience.guilds.events;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.GameType;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import parallaxscience.guilds.guild.GuildCache;
 import parallaxscience.guilds.guild.Guild;
 import java.util.UUID;
@@ -45,5 +49,19 @@ public class GuildEvents
 
             event.setComponent(message);
         }
+    }
+
+    /**
+     * Called on player respawn
+     * Used top set the player back to survival mode after a raid death
+     * @param event PlayerRespawnEvent
+     * @see PlayerEvent.PlayerRespawnEvent
+     */
+    @SubscribeEvent
+    @SuppressWarnings("unused")
+    public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event)
+    {
+        EntityPlayer entityPlayer = event.player;
+        if(entityPlayer instanceof EntityPlayerMP) entityPlayer.setGameType(GameType.SURVIVAL);
     }
 }
