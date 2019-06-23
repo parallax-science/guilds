@@ -37,6 +37,7 @@ public class Guilds
 
     /**
      * The mod version
+     * Denoted by major.minor.patch.build
      */
     static final String VERSION = "0.9.0.1";
 
